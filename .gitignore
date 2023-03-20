@@ -1,3 +1,4 @@
 tags
 .vscode/settings.json
 .config/nvim/lazy-lock.json
+.dotfiles
