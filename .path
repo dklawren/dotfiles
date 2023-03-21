@@ -1,4 +1,4 @@
-export PATH="$PATH:/opt/local/bin:$HOME/.local/bin:$HOME/bin:$HOME/devel/bin"
+export PATH="$PATH:/opt/local/bin:$HOME/.local/bin:$HOME/bin:$HOME/devel/bin:$HOME/.bin"
 export PATH="$PATH:/usr/local/sbin:/usr/local/go/bin"
 export PATH="$PATH:$HOME/.mozbuild/moz-phab"
 export MANPATH="/usr/local/man:$MANPATH"
