@@ -30,7 +30,7 @@ alias dmux="ssh -t docker tmux new -A"
 # Docker
 alias d=docker
 alias dx='docker exec -it'
-alias dc='docker compose'
+alias dc='docker-compose'
 alias da='docker ps -q -a'
 alias dv='docker volume ls -q'
 
