@@ -18,8 +18,13 @@ require('lspconfig').perlnavigator.setup {
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
-    perlcriticProfile = '/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perlcriticrc',
-    perltidyProfile = '/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perltidyrc',
+    perlnavigator = {
+      perlcriticProfile = '/var/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perlcriticrc',
+      perltidyProfile = '/var/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perltidyrc',
+      perlPath = 'perl',
+      enableWarnings = true,
+      perlcriticEnabled = true,
+      perltidyEnabled = true,
+    }
   }
 }
-
