@@ -127,50 +127,10 @@ if [ "$DISTTAG" ]; then
     tmux attach -t default || tmux new -s default && exit
   fi
 
-  source ~/perl5/perlbrew/etc/bashrc
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  nvm use node
+  
+  eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
 fi
-
-# Disable stuff for Spacehip prompt
-#SPACESHIP_GIT_SHOW="false"
-#SPACESHIP_DOCKER_SHOW="false"
-
-#[ -z $DISPLAY  ] && export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
-
-#if [[ -z "$XDG_RUNTIME_DIR" ]]; then
-#  export XDG_RUNTIME_DIR=/run/user/$UID
-#  if [[ ! -d "$XDG_RUNTIME_DIR" ]]; then
-#    export XDG_RUNTIME_DIR=/tmp/$USER-runtime
-#    if [[ ! -d "$XDG_RUNTIME_DIR" ]]; then
-#      mkdir -m 0700 "$XDG_RUNTIME_DIR"
-#    fi
-#  fi
-#fi
-
-# Start Docker daemon automatically when logging in if not running.
-#RUNNING=`ps aux | grep dockerd | grep -v grep`
-#if [ -z "$RUNNING"  ]; then
-#  sudo dockerd > /dev/null 2>&1 &
-#  dockerd-rootless.sh > /dev/null 2>&1 &
-#  disown
-#fi
-
-# Start Onedrive daemon automatically when logging in if not running.
-#RUNNING=`ps aux | grep onedrive | grep -v grep`
-#if [ -z "$RUNNING"  ]; then
-#  onedrive --monitor > /dev/null 2>&1 &
-#  disown
-#fi
-
-# Start Syncthing daemin automatically when logging in if not running.
-#RUNNING=`ps aux | grep syncthing | grep -v grep`
-#if [ -z "$RUNNING"  ]; then
-#  syncthing 2>&1 > /dev/null &
-#  disown
-#fi
-
-#eval "$(starship init zsh)"
-
-#export NVM_DIR="$HOME/.nvm"
-#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-# nvm use node
