@@ -120,11 +120,13 @@ bindkey '^r' history-incremental-search-backward
 source /usr/share/fzf/shell/key-bindings.zsh
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 
-# Tmux plugin support
-export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
-
 # These tasks should only run inside of a container such as toolbox/distrobox
 if [ "$DISTTAG" ]; then
+  export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
+  if [ -z "$TMUX" ]; then
+    tmux attach -t default || tmux new -s default && exit
+  fi
+
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
