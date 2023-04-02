@@ -130,5 +130,3 @@ alias untar='tar xvf'
 
 # make the dir command work kinda like in windows (long format)
 alias dir='ls --color=auto --format=long'
-
-alias mastodon='~/.local/bin/tut-amd64'
