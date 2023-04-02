@@ -25,6 +25,19 @@ sudo dnf config-manager --set-disabled fedora-cisco-openh264 -y
 # Enable copr for lazygit
 sudo dnf copr enable atim/lazygit -y
 
+# Install Google Cloud CLI
+if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
+  sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+[google-cloud-cli]
+name=Google Cloud CLI
+baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el8-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOM
+fi
+
 # Install packages  
 sudo dnf -y install \
   android-tools \
@@ -35,6 +48,7 @@ sudo dnf -y install \
   cargo \
   cifs-utils \
   cmake \
+  composer \
   cpanminus \
   ctags \
   exa \
@@ -47,6 +61,7 @@ sudo dnf -y install \
   glib \
   glibc-all-langpacks \
   golang \
+  google-cloud-sdk-gke-gcloud-auth-plugin \
   htop \
   hub \
   iproute \
@@ -109,3 +124,8 @@ cpanm install --quiet --notest --local-lib $HOME/perl5/lib/perl5 \
   Perl::LanguageServer \
   Perl::Tidy \
   Test::Perl::Critic::Progressive
+
+# Allow use of podman and docker inside the distrobox
+sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/podman
+sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/docker
+sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/rpm-ostree

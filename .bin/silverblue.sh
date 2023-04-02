@@ -50,3 +50,16 @@ rpm-ostree install -y \
   tlp-rdw \
   util-linux-user \
   zsh
+
+# Enable docker
+sudo systemctl --now enable docker.service
+
+# #nable syncthing for current user
+systemctl --user --now enable syncthing.service
+
+# tlp
+sudo cp $HOME/.bin/files/tlp.conf /etc/tlp.conf
+sudo systemctl --now enable tlp.service
+sudo systemctl stop power-profiles-daemon.service
+sudo systemctl disable power-profiles-daemon.service
+sudo systemctl mask power-profiles-daemon.service
