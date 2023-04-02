@@ -1,3 +1,6 @@
-require('core.keymaps')
-require('core.plugins')
-require('core.plugin_config')
+require "user.options"
+require "user.keymaps"
+require "user.lazy"
+require "user.autocommands"
+require "user.lsp"
+vim.cmd("colorscheme darkplus")
