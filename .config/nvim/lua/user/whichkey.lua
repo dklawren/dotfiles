@@ -98,8 +98,8 @@ local mappings = {
 	},
 	["F"] = { "<cmd>Telescope live_grep<cr>", "Find Text" },
 	["p"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
-
-	["r"] = { "<cmd>:Telescope oldfiles<cr>", "Recent Files" },
+	["r"] = { "<cmd>:Http<cr>", "Run HTTP request" },
+	["o"] = { "<cmd>:Telescope oldfiles<cr>", "Recent Files" },
 	["C"] = { "<cmd>:Telescope colorscheme<cr>", "Colorschemes" },
 
 	g = {
@@ -146,10 +146,11 @@ local mappings = {
 		s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
 		S = {
 			"<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-			"Workspace Symbols",
+ 			"Workspace Symbols",
 		},
 	},
-	s = {
+
+  s = {
 		name = "Search",
 		b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
 		c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },

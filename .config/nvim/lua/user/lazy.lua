@@ -230,9 +230,6 @@ require("lazy").setup {
     end,
   },
   {
-    "ellisonleao/gruvbox.nvim",
-  },
-  {
     "farmergreg/vim-lastplace"
   },
   {
@@ -241,4 +238,13 @@ require("lazy").setup {
       require('auto-save').setup {}
     end
   },
+  {
+    "toppair/peek.nvim",
+    config = function ()
+      require "user.peek"
+    end
+  },
+  {
+    "BlackLight/nvim-http"
+  }
 }
