@@ -70,6 +70,7 @@ sudo dnf -y install \
   kubernetes-client \
   lazygit \
   lcms2-devel \
+  webkit2gtk4.0 \
   man \
   mercurial \
   neovim \
@@ -101,6 +102,7 @@ sudo dnf -y install \
   tmux \
   tokei \
   util-linux-user \
+  wl-clipboard \
   xz \
   zsh
 
@@ -129,3 +131,6 @@ cpanm install --quiet --notest --local-lib $HOME/perl5/lib/perl5 \
 sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/podman
 sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/docker
 sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/rpm-ostree
+
+# Installl Deno
+cargo install deno --locked
