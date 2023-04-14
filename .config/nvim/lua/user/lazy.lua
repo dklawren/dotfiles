@@ -15,6 +15,8 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " " -- make sure to set `mapleader` before lazy so your mappings are correct
 
 require("lazy").setup {
+  "tpope/vim-fugitive",
+  "tpope/vim-rhubarb",
   {
     "lukas-reineke/indent-blankline.nvim",
     event = "BufReadPre",
@@ -29,10 +31,7 @@ require("lazy").setup {
       require "user.whichkey"
     end,
   },
-  {
-    "nvim-lua/plenary.nvim",
-    lazy = true
-  },
+  "nvim-lua/plenary.nvim",
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
@@ -89,9 +88,7 @@ require("lazy").setup {
       require "user.bufferline"
     end,
   },
-  {
-    "moll/vim-bbye",
-  },
+  "moll/vim-bbye",
   {
     "nvim-lualine/lualine.nvim",
     config = function()
@@ -130,7 +127,16 @@ require("lazy").setup {
   },
   {
     "lunarvim/darkplus.nvim",
+    config = function ()
+      vim.cmd("colorscheme darkplus")
+    end
   },
+  -- {
+  --   "rebelot/kanagawa.nvim",
+  --   config = function ()
+  --     vim.cmd("colorscheme kanagawa")
+  --   end
+  -- },
   {
     "hrsh7th/nvim-cmp",
     event = {
@@ -138,24 +144,12 @@ require("lazy").setup {
       "CmdlineEnter",
     },
     dependencies = {
-      {
-        "hrsh7th/cmp-nvim-lsp",
-      },
-      {
-        "hrsh7th/cmp-buffer",
-      },
-      {
-        "hrsh7th/cmp-path",
-      },
-      {
-        "hrsh7th/cmp-cmdline",
-      },
-      {
-        "saadparwaiz1/cmp_luasnip",
-      },
-      {
-        "hrsh7th/cmp-nvim-lua",
-      },
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "saadparwaiz1/cmp_luasnip",
+      "hrsh7th/cmp-nvim-lua",
     },
     config = function()
       require "user.cmp"
@@ -180,10 +174,8 @@ require("lazy").setup {
       require "user.lsp.mason"
     end,
     dependencies = {
-      {
-        "williamboman/mason-lspconfig.nvim",
-        lazy = true,
-      },
+      "williamboman/mason-lspconfig.nvim",
+      "folke/neodev.nvim",
     },
   },
   {
@@ -229,22 +221,13 @@ require("lazy").setup {
       require("dap_install").config("python", {})
     end,
   },
-  {
-    "farmergreg/vim-lastplace"
-  },
-  {
-    "Pocco81/auto-save.nvim",
-    config = function()
-      require('auto-save').setup {}
-    end
-  },
+  "farmergreg/vim-lastplace",
+  { "Pocco81/auto-save.nvim", opts = {} },
   {
     "toppair/peek.nvim",
     config = function ()
       require "user.peek"
     end
   },
-  {
-    "BlackLight/nvim-http"
-  }
+  "BlackLight/nvim-http",
 }
