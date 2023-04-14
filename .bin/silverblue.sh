@@ -23,6 +23,9 @@ flatpak install -y --or-update \
   org.videolan.VLC \
   us.zoom.Zoom
 
+# Enable Wayland support for Thunderbird
+flatpak override --user --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
+
 # Install packages
 rpm-ostree upgrade
 rpm-ostree remove -y \
@@ -35,6 +38,7 @@ rpm-ostree install -y \
   fzf \
   git \
   git-extras \
+  gnome-shell-extension-user-theme \
   gnome-tweaks \
   htop \
   langpacks-en \
