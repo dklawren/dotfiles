@@ -13,3 +13,15 @@ function dbox-backup () {
   podman container commit -p fedora-38 fedora-38-distrobox-dkl:latest
   podman save fedora-38-distrobox-dkl:latest | gzip > $HOME/devel/fedora-38-distrobox-dkl.tar.gz
 }
+
+function nvims() {
+  items=("default" "kickstart" "LazyVim" "NvChad" "AstroNvim")
+  config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config  " --height=~50% --layout=reverse --border --exit-0)
+  if [[ -z $config ]]; then
+    echo "Nothing selected"
+    return 0
+  elif [[ $config == "default" ]]; then
+    config=""
+  fi
+  NVIM_APPNAME=$config nvim $@
+}
