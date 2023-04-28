@@ -134,3 +134,5 @@ if [ "$DISTTAG" ]; then
   
   eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
 fi
+
+bindkey -s ^a "nvims\n"
