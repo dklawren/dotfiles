@@ -73,7 +73,7 @@ local opts = {
 	mode = "n", -- NORMAL mode
 	prefix = "<leader>",
 	buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
-	silent = true, -- use `silent` when creating keymaps
+	silent = true, -- use `silent` when creating keymapg
 	noremap = true, -- use `noremap` when creating keymaps
 	nowait = true, -- use `nowait` when creating keymaps
 }
@@ -84,7 +84,6 @@ local mappings = {
 		"<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
 		"Buffers",
 	},
-	["d"] = { "<cmd>Telescope file_browser<cr>", "File browser" },
 	["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
 	["w"] = { "<cmd>w!<CR>", "Save" },
 	["q"] = { "<cmd>q!<CR>", "Quit" },
@@ -92,16 +91,18 @@ local mappings = {
 	["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
 	["m"] = { "<cmd>lua _MOCP_TOGGLE()<CR>", "MOCP" },
 	["j"] = { "<cmd>Jaq<CR>", "Jaq" },
-	["f"] = {
-		"<cmd>lua require('telescope.builtin').find_files(require('telescope.themes'))<cr>",
-		"Find files",
-	},
-	["F"] = { "<cmd>Telescope live_grep<cr>", "Find Text" },
-	["p"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
 	["r"] = { "<cmd>:Http<cr>", "Run HTTP request" },
-	["o"] = { "<cmd>:Telescope oldfiles<cr>", "Recent Files" },
 	["C"] = { "<cmd>:Telescope colorscheme<cr>", "Colorschemes" },
-
+  f = {
+    name = "Files",
+	  f = {
+		  "<cmd>lua require('telescope.builtin').find_files(require('telescope.themes'))<cr>",
+		  "Find files",
+	  },
+	  g = { "<cmd>Telescope live_grep<cr>", "Find Text" },
+	  p = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
+	  o = { "<cmd>:Telescope oldfiles<cr>", "Recent Files" },
+  },
 	g = {
 		name = "Git",
 		g = { "<cmd>lua _LAZYGIT_TOGGLE()<CR>", "Lazygit" },

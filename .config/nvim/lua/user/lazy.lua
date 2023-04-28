@@ -82,12 +82,6 @@ require("lazy").setup {
       require "user.nvim-tree"
     end,
   },
-  {
-    "akinsho/bufferline.nvim",
-    config = function()
-      require "user.bufferline"
-    end,
-  },
   "moll/vim-bbye",
   {
     "nvim-lualine/lualine.nvim",
@@ -131,12 +125,6 @@ require("lazy").setup {
       vim.cmd("colorscheme darkplus")
     end
   },
-  -- {
-  --   "rebelot/kanagawa.nvim",
-  --   config = function ()
-  --     vim.cmd("colorscheme kanagawa")
-  --   end
-  -- },
   {
     "hrsh7th/nvim-cmp",
     event = {
@@ -197,28 +185,6 @@ require("lazy").setup {
     event = "BufReadPre",
     config = function()
       require "user.gitsigns"
-    end,
-  },
-  {
-    "mfussenegger/nvim-dap",
-    event = "VeryLazy",
-    config = function()
-      require "user.dap"
-    end,
-  },
-  {
-    "rcarriga/nvim-dap-ui",
-    event = "VeryLazy",
-    config = function()
-      require "user.dapui"
-    end,
-  },
-  {
-    "ravenxrz/DAPInstall.nvim",
-    lazy = true,
-    config = function()
-      require("dap_install").setup {}
-      require("dap_install").config("python", {})
     end,
   },
   "farmergreg/vim-lastplace",
