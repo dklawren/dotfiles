@@ -196,4 +196,9 @@ require("lazy").setup {
     end
   },
   "BlackLight/nvim-http",
+  "f-person/git-blame.nvim",
+  {
+    "akinsho/bufferline.nvim",
+    opts = {}
+  }
 }
