@@ -1,0 +1,20 @@
+[[language]]
+name = "perl"
+language-server = { command = "perlnavigator", args = ["--stdio"] }
+file-types = ["perl", "pm", "pl", "cgi", "t"]
+comment-token = "#"
+indent = { tab-width = 2, unit = "  " }
+scope = "source.perl"
+shebangs = ["perl"]
+roots = []
+
+[[grammar]]
+name = "perl"
+source = { git = "https://github.com/ganezdragon/tree-sitter-perl" }
+
+[language.auto-pairs]
+'(' = ')'
+'{' = '}'
+'[' = ']'
+'"' = '"'
+'`' = '`'

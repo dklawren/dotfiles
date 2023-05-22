@@ -25,6 +25,9 @@ sudo dnf config-manager --set-disabled fedora-cisco-openh264 -y
 # Enable copr for lazygit
 sudo dnf copr enable atim/lazygit -y
 
+# Enable copr for Helix editor
+sudo dnf copr enable varlad/helix 
+
 # Install Google Cloud CLI
 if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
   sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
@@ -62,6 +65,7 @@ sudo dnf -y install \
   glibc-all-langpacks \
   golang \
   google-cloud-sdk-gke-gcloud-auth-plugin \
+  helix \
   htop \
   hub \
   iproute \
@@ -87,6 +91,7 @@ sudo dnf -y install \
   python3-flake8 \
   python3-invoke \
   python3-ipykernel \
+  python3-lsp-server \
   python3-pip \
   python3-rstcheck \
   python3-sphinx \
