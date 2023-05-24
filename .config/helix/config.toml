@@ -7,6 +7,15 @@ color-modes = true
 auto-save = true
 bufferline = "always"
 shell = ["zsh", "-c"]
+rulers = [80]
+
+[editor.statusline]
+left = ["version-control", "mode", "spinner", "file-name"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending", "file-type"]
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
 
 [keys.normal]
 C-p = ["move_line_up", "scroll_up"]
@@ -17,8 +26,12 @@ esc = ["collapse_selection", "keep_primary_selection"]
 insert = "bar"
 normal = "block"
 select = "underline"
-
+ 
 [editor.lsp]
 display-messages = true
 display-signature-help-docs = true
 display-inlay-hints = true
+snippets = true
+
+[editor.indent-guides]
+render = true
