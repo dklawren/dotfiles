@@ -1,4 +1,4 @@
-#!\bin/bash
+#!/bin/bash
 
 #Moving to the home directory
 cd $HOME || exit
@@ -27,6 +27,9 @@ sudo dnf copr enable atim/lazygit -y
 
 # Enable copr for Helix editor
 sudo dnf copr enable varlad/helix 
+
+# Enable copr for lf binary
+sudo dnf copr enable pennbauman/ports
 
 # Install Google Cloud CLI
 if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
@@ -74,6 +77,7 @@ sudo dnf -y install \
   kubernetes-client \
   lazygit \
   lcms2-devel \
+  lf \
   webkit2gtk4.0 \
   man \
   mercurial \
@@ -139,3 +143,18 @@ sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/rpm-ostree
 
 # Installl Deno
 cargo install deno --locked
+
+# Install node support
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm install node
+nvm use node
+npm install -g neovim
+npm install -g prettier
+npm install -g wormhole
+npm install -g dockerfile-language-server-nodejs
+npm install -g intelephense
+npm install -g vscode-langservers-extracted
+npm install -g yaml-language-server@next
