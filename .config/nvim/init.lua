@@ -8,6 +8,7 @@ vim.opt.conceallevel = 0                        -- so that `` is visible in mark
 vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
 vim.opt.hlsearch = true                         -- highlight all matches on previous search pattern
 vim.opt.ignorecase = true                       -- ignore case in search patterns
+vim.opt.linebreak = true
 vim.opt.mouse = "a"                             -- allow the mouse to be used in neovim
 vim.opt.pumheight = 10                          -- pop up menu height
 vim.opt.showmode = false                        -- we don't need to see things like -- INSERT -- anymore
@@ -41,7 +42,6 @@ vim.opt.shortmess:append "c"                    -- hide all the completion messa
 vim.opt.whichwrap:append("<,>,[,],h,l")         -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
 vim.opt.formatoptions:remove({ "c", "r", "o" }) -- This is a sequence of letters which describes how automatic formatting is to be done
-vim.opt.linebreak = true
 
 vim.g.mapleader = " " -- make sure to set `mapleader` before lazy so your mappings are correct
 
@@ -95,10 +95,23 @@ require("lazy").setup {
   "L3MON4D3/LuaSnip",
   "rafamadriz/friendly-snippets",
   "folke/which-key.nvim",
-  "lewis6991/spaceless.nvim",
+  "akinsho/toggleterm.nvim",
+  "natecraddock/workspaces.nvim",
+  "ntpeters/vim-better-whitespace",
 }
 
 vim.cmd("colorscheme darkplus")
+
+-- workspaces
+
+require("workspaces").setup {}
+
+-- toggleterm
+
+require("toggleterm").setup {
+  size = 25,
+}
+vim.keymap.set("n", [[<c-\>]], "<cmd>ToggleTerm<CR>", { desc = 'Toggle terminal' })
 
 -- WHICH-KEY
 
@@ -121,7 +134,6 @@ require("null-ls").setup {}
 require("lspconfig").perlnavigator.setup {
   settings = {
     perlnavigator = {
-      includePaths = {'./', './lib'},
       perlcriticProfile = '/var/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perlcriticrc',
       perltidyProfile = '/var/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perltidyrc',
       perlPath = 'perl',
@@ -225,15 +237,24 @@ require("telescope").setup {
     path_display = { "smart" },
     file_ignore_patterns = { ".git/", "node_modules" },
   },
+  extensions = {
+    workspaces = {
+      keep_insert = true,
+    }
+  }
 }
 
+require('telescope').load_extension('workspaces')
+
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
-vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
--- vim.keymap.set("n", "<leader>fp", builtin.projects, {})
-vim.keymap.set("n", "<leader><space>", builtin.buffers, {})
+vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = '[F]ind a specific [f]ile' })
+vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = '[F]ind using live [g]rep'})
+vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = '[F]ind existing [b]uffers'})
+vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = '[F]ind in [h]elp documentation' })
+vim.keymap.set("n", "<leader>fw", "<cmd>Telescope workspaces<cr>", { desc = '[F]ind a specific [w]orkspace' })
+vim.keymap.set("n", "<leader><space>", builtin.buffers, { desc = 'Find existing buffers' })
+vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = '[F]ind recently [o]pened files' })
+vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind in current [d]iagnostics' })
 
 -- AUTOCOMPLETE
 
@@ -297,7 +318,7 @@ cmp.setup({
 
 cmp.setup.filetype("gitcommit", {
   sources = cmp.config.sources({
-    { name = "cmp_git" },  
+    { name = "cmp_git" },
     { name = "buffer" },
   })
 })
@@ -324,10 +345,6 @@ require('lspconfig')["perlnavigator"].setup {
 require('lspconfig')["pyright"].setup {
   capabilities = capabilities
 }
-
--- SPACELESS
-
-require("spaceless").setup {}
 
 -- KEYMAPS
 
@@ -375,14 +392,14 @@ keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
 
 -- NvimTree
-keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
+keymap("n", "<leader>e", ":NvimTreeToggle<CR>", {desc = "Toggle Nvim Tree window"})
 
 -- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", {desc = "Toggle LazyGit window"})
 
 -- Comment
-keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
-keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
+keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", {desc = "Comment current line"})
+keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", {desc = "Comment currently selecting lines"})
 
 -- Lsp
-keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
+keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", {desc = "LSP format current buffer"})
