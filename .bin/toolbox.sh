@@ -50,6 +50,7 @@ sudo dnf -y install \
   bind-utils \
   black \
   bzip2 \
+  btop \
   cairo-devel \
   cargo \
   cifs-utils \
