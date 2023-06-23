@@ -98,9 +98,13 @@ require("lazy").setup {
   "akinsho/toggleterm.nvim",
   "natecraddock/workspaces.nvim",
   "ntpeters/vim-better-whitespace",
+  "goolord/alpha-nvim",
 }
 
 vim.cmd("colorscheme darkplus")
+
+-- alpha greeter
+require("alpha").setup(require("alpha.themes.startify").config)
 
 -- workspaces
 
@@ -121,7 +125,7 @@ require("which-key").setup {}
 
 require("mason").setup {}
 require("mason-lspconfig").setup {
-  ensure_installed = {"pyright", "perlnavigator"},
+  ensure_installed = {"pyright", "perlnavigator","html", "lua_ls", "ruff_lsp"},
   automatic_installation = true,
 }
 
@@ -134,12 +138,13 @@ require("null-ls").setup {}
 require("lspconfig").perlnavigator.setup {
   settings = {
     perlnavigator = {
-      perlcriticProfile = '/var/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perlcriticrc',
-      perltidyProfile = '/var/home/dkl/devel/github/mozilla/bmo-new/upstream/master/.perltidyrc',
+      perlcriticProfile = '/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perlcriticrc',
+      perltidyProfile = '/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perltidyrc',
       perlPath = 'perl',
       enableWarnings = true,
       perlcriticEnabled = true,
       perltidyEnabled = true,
+      includePaths = {'./', './lib'},
     }
   }
 }
@@ -401,5 +406,15 @@ keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", {desc = "Toggle Lazy
 keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", {desc = "Comment current line"})
 keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", {desc = "Comment currently selecting lines"})
 
--- Lsp
-keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", {desc = "LSP format current buffer"})
+-- Lsp Format
+function FormatFunction()
+  vim.lsp.buf.format({
+    async = true,
+    range = {
+      ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
+      ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+    }
+  })
+end
+keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", {desc = "[L]SP [f]ormat current buffer"})
+keymap("x", "<leader>ls", "<cmd>lua FormatFunction()<cr>", {noremap = true, desc = "[L]SP format current [s]election"})
