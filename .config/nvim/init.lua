@@ -98,13 +98,10 @@ require("lazy").setup {
   "akinsho/toggleterm.nvim",
   "natecraddock/workspaces.nvim",
   "ntpeters/vim-better-whitespace",
-  "goolord/alpha-nvim",
+  "hrsh7th/cmp-nvim-lsp-signature-help"
 }
 
 vim.cmd("colorscheme darkplus")
-
--- alpha greeter
-require("alpha").setup(require("alpha.themes.startify").config)
 
 -- workspaces
 
@@ -225,7 +222,7 @@ require("nvim-treesitter.configs").setup {
 require("nvim-tree").setup {
   sort_by = "case_sensitive",
   view = {
-    width = 30,
+    width = 45,
   },
   renderer = {
     group_empty = true,
@@ -263,8 +260,10 @@ vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind in curre
 
 -- AUTOCOMPLETE
 
+require("luasnip.loaders.from_vscode").lazy_load()
+
 local cmp = require("cmp")
-local luasnip = require("luasnip");
+local luasnip = require("luasnip")
 
 local check_backspace = function()
   local col = vim.fn.col "." - 1
@@ -318,6 +317,7 @@ cmp.setup({
     { name = "luasnip" },
     { name = "buffer" },
     { name = "path" },
+    { name = 'nvim_lsp_signature_help' }
   })
 })
 
@@ -397,7 +397,7 @@ keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
 
 -- NvimTree
-keymap("n", "<leader>e", ":NvimTreeToggle<CR>", {desc = "Toggle Nvim Tree window"})
+keymap("n", "<leader>e", ":NvimTreeFindFileToggle<CR>", {desc = "Toggle Nvim Tree window"})
 
 -- Git
 keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", {desc = "Toggle LazyGit window"})
