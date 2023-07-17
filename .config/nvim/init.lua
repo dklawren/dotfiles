@@ -98,7 +98,8 @@ require("lazy").setup {
   "akinsho/toggleterm.nvim",
   "natecraddock/workspaces.nvim",
   "ntpeters/vim-better-whitespace",
-  "hrsh7th/cmp-nvim-lsp-signature-help"
+  "hrsh7th/cmp-nvim-lsp-signature-help",
+  "christoomey/vim-tmux-navigator",
 }
 
 vim.cmd("colorscheme darkplus")
