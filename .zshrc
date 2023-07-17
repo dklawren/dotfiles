@@ -131,8 +131,9 @@ if [ "$DISTTAG" ]; then
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
   nvm use node
-  
-  eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+
+  #eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+  source ~/perl5/perlbrew/etc/bashrc
 fi
 
 bindkey -s ^a "nvims\n"

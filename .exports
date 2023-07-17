@@ -18,3 +18,4 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=1
 export PERLBREW_CPAN_MIRROR=https://cpan.metacpan.org/
 export GPG_TTY=$(tty)
 export PERL5LIB=$PERL5LIB:./:./lib
+export PERL_LOCAL_LIB_ROOT=$PERL_LOCAL_LIB_ROOT:./:./lib
