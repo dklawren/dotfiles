@@ -16,17 +16,14 @@ fi
 # Update packages
 sudo dnf upgrade -y
 
-#Remove unneeded packages
-sudo dnf -y remove abrt 
+# Remove unneeded packages
+sudo dnf -y remove abrt
 
-#Disable openh264 repo
+# Disable openh264 repo
 sudo dnf config-manager --set-disabled fedora-cisco-openh264 -y
 
 # Enable copr for lazygit
 sudo dnf copr enable atim/lazygit -y
-
-# Enable copr for Helix editor
-sudo dnf copr enable varlad/helix 
 
 # Enable copr for lf binary
 sudo dnf copr enable pennbauman/ports
@@ -44,7 +41,7 @@ gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOM
 fi
 
-# Install packages  
+# Install packages
 sudo dnf -y install \
   android-tools \
   bind-utils \
@@ -59,6 +56,7 @@ sudo dnf -y install \
   cpanminus \
   ctags \
   exa \
+  expat-devel \
   fd-find \
   fzf \
   gd-devel \
@@ -69,7 +67,6 @@ sudo dnf -y install \
   glibc-all-langpacks \
   golang \
   google-cloud-sdk-gke-gcloud-auth-plugin \
-  helix \
   htop \
   hub \
   iproute \
@@ -82,6 +79,7 @@ sudo dnf -y install \
   webkit2gtk4.0 \
   man \
   mercurial \
+  mysql-devel \
   neovim \
   nodejs \
   openssl-devel \
@@ -118,21 +116,31 @@ sudo dnf -y install \
 
 sudo dnf clean all
 
+# Perlbrew
+curl -L https://install.perlbrew.pl | bash
+source ~/perl5/perlbrew/etc/bashrc
+perlbrew install perl-5.36.1
+perlbrew switch perl-5.36.1
+
 # Install perl modules
-eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
-cpanm install --quiet --notest --local-lib $HOME/perl5/lib/perl5 \
+# eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+# cpanm install --quiet --notest --local-lib $HOME/perl5/lib/perl5 \
+cpanm install --quiet --notest \
   AnyEvent \
   App::cpanminus \
+  App::cpm \
   App::perlimports \
   Carton \
+  Carton::Snapshot \
   common::sense \
   Guard \
   Log::Log4perl \
+  Module::CPANfile \
   Mojolicious \
   Open::This \
   Perl::Critic \
-  Perl::Critic::Policy::Freenode::PackageMatchesFilename \
   Perl::Critic::Policy::Documentation::RequirePodLinksIncludeText \
+  Perl::Critic::Policy::Freenode::PackageMatchesFilename \
   Perl::LanguageServer \
   Perl::Tidy \
   Test::Perl::Critic::Progressive
