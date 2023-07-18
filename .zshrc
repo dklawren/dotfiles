@@ -130,10 +130,11 @@ if [[ -z "$DISTTAG" || -z "$WSL_DISTRO_NAME" ]]; then
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-  nvm use node
+  #nvm use node
 
-  #eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
   source ~/perl5/perlbrew/etc/bashrc
+
+  source "$HOME/.cargo/env"
 fi
 
 bindkey -s ^a "nvims\n"
