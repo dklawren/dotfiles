@@ -121,10 +121,10 @@ curl -L https://install.perlbrew.pl | bash
 source ~/perl5/perlbrew/etc/bashrc
 perlbrew install perl-5.36.1
 perlbrew switch perl-5.36.1
+perlbrew lib create dkl
+perlbrew use perl-5.36.1@dkl
 
 # Install perl modules
-# eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
-# cpanm install --quiet --notest --local-lib $HOME/perl5/lib/perl5 \
 cpanm install --quiet --notest \
   AnyEvent \
   App::cpanminus \
@@ -167,3 +167,7 @@ npm install -g dockerfile-language-server-nodejs
 npm install -g intelephense
 npm install -g vscode-langservers-extracted
 npm install -g yaml-language-server@next
+
+# Rust support
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
