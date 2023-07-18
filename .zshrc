@@ -121,7 +121,7 @@ source /usr/share/fzf/shell/key-bindings.zsh
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 
 # These tasks should only run inside of a container such as toolbox/distrobox
-if [ "$DISTTAG" ]; then
+if [[ -z "$DISTTAG" || -z "$WSL_DISTRO_NAME" ]]; then
   export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
   if [ -z "$TMUX" ]; then
     tmux attach -t default || tmux new -s default && exit
