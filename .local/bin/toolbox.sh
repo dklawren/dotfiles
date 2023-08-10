@@ -28,6 +28,9 @@ sudo dnf copr enable atim/lazygit -y
 # Enable copr for lf binary
 sudo dnf copr enable pennbauman/ports
 
+# Act CLI for Github Actions
+sudo dnf copr enable rubemlrm/act-cli
+
 # Install Google Cloud CLI
 if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
   sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
@@ -41,8 +44,22 @@ gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOM
 fi
 
+# Install VSCode repo
+if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
+  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOM
+fi
+
 # Install packages
 sudo dnf -y install \
+  act-cli \
   android-tools \
   bind-utils \
   black \
@@ -52,6 +69,7 @@ sudo dnf -y install \
   cargo \
   cifs-utils \
   cmake \
+  code \
   composer \
   cpanminus \
   ctags \
@@ -171,3 +189,8 @@ npm install -g yaml-language-server@next
 # Rust support
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
+
+# Distrobox app export
+if [ -x /usr/bin/distrobox-export ]; then
+  distrobox-export --app code
+fi
