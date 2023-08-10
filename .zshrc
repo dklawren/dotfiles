@@ -121,7 +121,7 @@ source /usr/share/fzf/shell/key-bindings.zsh
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 
 # These tasks should only run inside of a container such as toolbox/distrobox
-if [[ -z "$DISTTAG" || -z "$WSL_DISTRO_NAME" ]]; then
+if [[ -n "$DISTTAG" || -n "$WSL_DISTRO_NAME" ]]; then
   export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
   if [ -z "$TMUX" ]; then
     tmux attach -t default || tmux new -s default && exit
@@ -132,7 +132,9 @@ if [[ -z "$DISTTAG" || -z "$WSL_DISTRO_NAME" ]]; then
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
   #nvm use node
 
+  # Perl setup
   source ~/perl5/perlbrew/etc/bashrc
+  perlbrew use perl-5.36.1@dkl
 
   source "$HOME/.cargo/env"
 fi
