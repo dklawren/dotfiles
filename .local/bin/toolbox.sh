@@ -100,6 +100,7 @@ sudo dnf -y install \
   mysql-devel \
   neovim \
   nodejs \
+  openssh-server \
   openssl-devel \
   patch \
   perl-App-cpanminus \
@@ -190,7 +191,21 @@ npm install -g yaml-language-server@next
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
 
-# Distrobox app export
-if [ -x /usr/bin/distrobox-export ]; then
-  distrobox-export --app code
-fi
+# VSCode remote ssh support
+sudo /usr/libexec/openssh/sshd-keygen rsa
+sudo /usr/libexec/openssh/sshd-keygen ecdsa
+sudo /usr/libexec/openssh/sshd-keygen ed25519
+
+echo "
+# For VS Code
+Port 2238                 # Prevent conflicts with other SSH servers
+ListenAddress localhost   # Don’t allow remote connections
+PermitEmptyPasswords yes  # Containers lack passwords by default
+PermitUserEnvironment yes # Allow setting DISPLAY for remote connections" | sudo tee -a /etc/ssh/sshd_config
+
+echo "
+Host toolbox-38
+    HostName localhost
+    Port 2238" >> ~/.ssh/config
+
+sudo /usr/sbin/sshd
