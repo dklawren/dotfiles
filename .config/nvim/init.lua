@@ -95,11 +95,11 @@ require("lazy").setup {
   "L3MON4D3/LuaSnip",
   "rafamadriz/friendly-snippets",
   "folke/which-key.nvim",
-  "akinsho/toggleterm.nvim",
   "natecraddock/workspaces.nvim",
   "ntpeters/vim-better-whitespace",
   "hrsh7th/cmp-nvim-lsp-signature-help",
   "christoomey/vim-tmux-navigator",
+  "kdheepak/lazygit.nvim",
 }
 
 vim.cmd("colorscheme darkplus")
@@ -107,13 +107,6 @@ vim.cmd("colorscheme darkplus")
 -- workspaces
 
 require("workspaces").setup {}
-
--- toggleterm
-
-require("toggleterm").setup {
-  size = 25,
-}
-vim.keymap.set("n", [[<c-\>]], "<cmd>ToggleTerm<CR>", { desc = 'Toggle terminal' })
 
 -- WHICH-KEY
 
@@ -400,8 +393,8 @@ keymap("v", ">", ">gv", opts)
 -- NvimTree
 keymap("n", "<leader>e", ":NvimTreeFindFileToggle<CR>", {desc = "Toggle Nvim Tree window"})
 
--- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", {desc = "Toggle LazyGit window"})
+-- LazyGit
+keymap("n", "<leader>gg", ":LazyGit<CR>", {desc = "Toggle LazyGit window"})
 
 -- Comment
 keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", {desc = "Comment current line"})
