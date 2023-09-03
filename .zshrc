@@ -68,7 +68,7 @@ ZSH_THEME="spaceship"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(cpanm docker docker-compose dnf fzf gitfast git-extras mercurial perl ssh-agent z)
+plugins=(cpanm docker docker-compose dnf fzf gitfast git-extras mercurial perl ripgrep ssh-agent z)
 
 #SPACESHIP_GIT_STATUS_SHOW=false
 
@@ -123,7 +123,7 @@ export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat 
 # These tasks should only run inside of a container such as toolbox/distrobox
 if [[ -n "$DISTTAG" || -n "$WSL_DISTRO_NAME" ]]; then
   export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
-  if [ -z "$TMUX" ]; then
+  if [[ -z "$TMUX" && -z "$VSCODE_NONCE" ]]; then
     tmux attach -t default || tmux new -s default && exit
   fi
 
@@ -135,6 +135,7 @@ if [[ -n "$DISTTAG" || -n "$WSL_DISTRO_NAME" ]]; then
   # Perl setup
   source ~/perl5/perlbrew/etc/bashrc
   perlbrew use perl-5.36.1@dkl
+  export PERL5LIB=$PERL5LIB:./:./local
 
   source "$HOME/.cargo/env"
 fi
