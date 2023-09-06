@@ -34,25 +34,39 @@ rpm-ostree remove -y \
 rpm-ostree install -y \
   cascadia-code-fonts\
   distrobox \
+  dunst \
   exa \
+  firefoxpwa \
+  foot \
+  fuzzel \
   fzf \
   git \
   git-extras \
   gnome-shell-extension-user-theme \
   gnome-tweaks \
+  grim \
   htop \
   langpacks-en \
   moby-engine \
   neovim \
   nodejs \
   onedrive \
+  openssl \
   podman-compose \
   ripgrep \
+  slurp \
+  sway \
+  swaybg \
+  swayidle \
+  swaylock \
   syncthing \
   sysstat \
   tlp \
   tlp-rdw \
   util-linux-user \
+  waybar \
+  waydroid \
+  xdg-desktop-portal-wlr \
   zsh
 
 # Enable docker
