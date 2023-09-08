@@ -36,6 +36,7 @@ rpm-ostree install -y \
   distrobox \
   dunst \
   exa \
+  fira-code-fonts \
   firefoxpwa \
   foot \
   fuzzel \
