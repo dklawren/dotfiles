@@ -100,11 +100,14 @@ require("lazy").setup {
   "hrsh7th/cmp-nvim-lsp-signature-help",
   "christoomey/vim-tmux-navigator",
   "kdheepak/lazygit.nvim",
+  'ThePrimeagen/harpoon',
 }
+
+-- COLORSCHEME
 
 vim.cmd("colorscheme darkplus")
 
--- workspaces
+-- WORKSPACES
 
 require("workspaces").setup {}
 
@@ -241,6 +244,7 @@ require("telescope").setup {
 }
 
 require('telescope').load_extension('workspaces')
+require("telescope").load_extension('harpoon')
 
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = '[F]ind a specific [f]ile' })
@@ -251,6 +255,9 @@ vim.keymap.set("n", "<leader>fw", "<cmd>Telescope workspaces<cr>", { desc = '[F]
 vim.keymap.set("n", "<leader><space>", builtin.buffers, { desc = 'Find existing buffers' })
 vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = '[F]ind recently [o]pened files' })
 vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind in current [d]iagnostics' })
+vim.keymap.set('n', '<leader>hp', "<cmd>Telescope harpoon marks<cr>", { desc = '[H]arpoon [p]rint list of marks' })
+vim.keymap.set('n', '<leader>hm', '<cmd>lua require("harpoon.mark").add_file()<cr>', { desc = '[H]arpoon [m]ark current file' })
+vim.keymap.set('n', '<leader>hu', '<cmd>lua require("harpoon.mark").rm_file()<cr>', { desc = '[H]arpoon [u]nmark current file' })
 
 -- AUTOCOMPLETE
 
