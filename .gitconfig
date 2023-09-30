@@ -20,6 +20,7 @@
     symlinks = true
     preloadindex = true
     commitGraph = true
+    pager = delta
 [merge]
     tool = vimdiff
     conflictstyle = diff3
