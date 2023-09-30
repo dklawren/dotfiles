@@ -14,22 +14,27 @@ if [ $result = 1 ]; then
 fi
 
 # Update packages
-sudo dnf upgrade -y
+sudo dnf -y upgrade
 
 # Remove unneeded packages
 sudo dnf -y remove abrt
 
+sudo dnf -y install dnf-plugins-core
+
 # Disable openh264 repo
-sudo dnf config-manager --set-disabled fedora-cisco-openh264 -y
+sudo dnf -y config-manager --set-disabled fedora-cisco-openh264
 
 # Enable copr for lazygit
-sudo dnf copr enable atim/lazygit -y
+sudo dnf -y copr enable atim/lazygit 
 
 # Enable copr for lf binary
-sudo dnf copr enable pennbauman/ports
+sudo dnf -y copr enable pennbauman/ports
 
 # Act CLI for Github Actions
-sudo dnf copr enable rubemlrm/act-cli
+sudo dnf -y copr enable rubemlrm/act-cli
+
+# Helix editor
+sudo dnf -y copr enable flekz/helix-git
 
 # Install Google Cloud CLI
 if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
@@ -58,7 +63,7 @@ EOM
 fi
 
 # Install packages
-sudo dnf -y install \
+sudo dnf -y install --skip-broken \
   act-cli \
   android-tools \
   bind-utils \
@@ -80,11 +85,13 @@ sudo dnf -y install \
   gd-devel \
   gh \
   git \
+  git-delta \
   git-extras \
   glib \
   glibc-all-langpacks \
   golang \
   google-cloud-sdk-gke-gcloud-auth-plugin \
+  helix-git \
   htop \
   hub \
   iproute \
@@ -178,7 +185,7 @@ sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/podman
 sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/docker
 sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/rpm-ostree
 
-# Installl Deno
+# Install Deno
 cargo install deno --locked
 
 # Install node support
@@ -195,6 +202,7 @@ npm install -g dockerfile-language-server-nodejs
 npm install -g intelephense
 npm install -g vscode-langservers-extracted
 npm install -g yaml-language-server@next
+npm install -g perlnavigator-server
 
 # Rust support
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -215,6 +223,8 @@ PermitUserEnvironment yes # Allow setting DISPLAY for remote connections" | sudo
 echo "
 Host toolbox-38
     HostName localhost
-    Port 2238" >> ~/.ssh/config
+    Port 2238
 
-sudo /usr/sbin/sshd
+Host toolbox-39
+    Hostname localhost
+    Port 2239" >> ~/.ssh/config
