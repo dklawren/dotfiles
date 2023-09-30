@@ -100,8 +100,13 @@ require("lazy").setup {
   "hrsh7th/cmp-nvim-lsp-signature-help",
   "christoomey/vim-tmux-navigator",
   "kdheepak/lazygit.nvim",
-  'ThePrimeagen/harpoon',
+  "stevearc/oil.nvim",
+  "lukas-reineke/indent-blankline.nvim",
 }
+
+-- INDENT BLANKLINE
+
+require("ibl").setup {}
 
 -- COLORSCHEME
 
@@ -219,7 +224,7 @@ require("nvim-treesitter.configs").setup {
 require("nvim-tree").setup {
   sort_by = "case_sensitive",
   view = {
-    width = 45,
+    width = 40,
   },
   renderer = {
     group_empty = true,
@@ -244,7 +249,6 @@ require("telescope").setup {
 }
 
 require('telescope').load_extension('workspaces')
-require("telescope").load_extension('harpoon')
 
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = '[F]ind a specific [f]ile' })
@@ -294,31 +298,58 @@ cmp.setup({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['<Tab>'] = cmp.mapping(function(fallback)
+    -- ['<Tab>'] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     cmp.select_next_item()
+    --   elseif luasnip.expand_or_locally_jumpable() then
+    --     luasnip.expand_or_jump()
+    --   else
+    --     fallback()
+    --   end
+    -- end, { 'i', 's' }),
+    -- ['<S-Tab>'] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     cmp.select_prev_item()
+    --   elseif luasnip.locally_jumpable(-1) then
+    --     luasnip.jump(-1)
+    --   else
+    --     fallback()
+    --   end
+    -- end, { 'i', 's' }),
+    --
+    -- luasnip
+    ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-        luasnip.expand_or_jump()
+      elseif require("luasnip").expand_or_jumpable() then
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
       else
         fallback()
       end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
+    end, {
+      "i",
+      "s",
+    }),
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
-        luasnip.jump(-1)
+      elseif require("luasnip").jumpable(-1) then
+        vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-jump-prev", true, true, true), "")
       else
         fallback()
       end
-    end, { 'i', 's' }),
+    end, {
+      "i",
+      "s",
+    }),
   },
   sources = cmp.config.sources({
     { name = "nvim_lsp" },
     { name = "luasnip" },
     { name = "buffer" },
     { name = "path" },
-    { name = 'nvim_lsp_signature_help' }
+    { name = "nvim_lua" },
+    { name = 'nvim_lsp_signature_help' },
   })
 })
 
@@ -400,6 +431,9 @@ keymap("v", ">", ">gv", opts)
 -- NvimTree
 keymap("n", "<leader>e", ":NvimTreeFindFileToggle<CR>", {desc = "Toggle Nvim Tree window"})
 
+-- Oil
+-- keymap("n", "<leader>e", ":Oil --float .<CR>", {desc = "Toggle Nvim Tree window"})
+
 -- LazyGit
 keymap("n", "<leader>gg", ":LazyGit<CR>", {desc = "Toggle LazyGit window"})
 
@@ -419,3 +453,7 @@ function FormatFunction()
 end
 keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", {desc = "[L]SP [f]ormat current buffer"})
 keymap("x", "<leader>ls", "<cmd>lua FormatFunction()<cr>", {noremap = true, desc = "[L]SP format current [s]election"})
+
+--  OIL
+
+require("oil").setup {}
