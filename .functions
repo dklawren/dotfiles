@@ -7,15 +7,20 @@ function dcleanup () {
     docker rmi $(docker images --filter dangling=true -q 2>/dev/null) 2>/dev/null
 }
 
+function pmcleanup () {
+    podman rm -v $(podman ps --filter status=exited -q 2>/dev/null) 2>/dev/null
+    podman rmi $(podman images --filter dangling=true -q 2>/dev/null) 2>/dev/null
+}
+
 function dbox-backup () {
-  podman exec fedora-38 sudo dnf clean all
-  podman stop fedora-38
-  podman container commit -p fedora-38 fedora-38-distrobox-dkl:latest
-  podman save fedora-38-distrobox-dkl:latest | gzip > $HOME/devel/fedora-38-distrobox-dkl.tar.gz
+  podman exec fedora-39 sudo dnf clean all
+  podman stop fedora-39
+  podman container commit -p fedora-39 fedora-39-distrobox-dkl:latest
+  podman save fedora-39-distrobox-dkl:latest | gzip > $HOME/devel/fedora-39-distrobox-dkl.tar.gz
 }
 
 function nvims() {
-  items=("default" "kickstart" "LazyVim" "NvChad" "AstroNvim")
+  items=("default" "kickstart" "LazyVim" "NvChad" "AstroNvim" "MiniVim" "nvim-starter" "tinyvim")
   config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config  " --height=~50% --layout=reverse --border --exit-0)
   if [[ -z $config ]]; then
     echo "Nothing selected"
@@ -24,4 +29,14 @@ function nvims() {
     config=""
   fi
   NVIM_APPNAME=$config nvim $@
+}
+
+function bmo-prod {
+  gcloud auth login
+  gcloud compute ssh --zone "us-west1-a" "bastion-us-west1" --project "moz-fx-bastion-prod-global" --tunnel-through-iap
+}
+
+function bmo-dev-stage {
+  gcloud auth login
+  gcloud compute ssh --zone "us-west1-a" "bastion-us-west1" --project "moz-fx-bastion-nonprod-global" --tunnel-through-iap 
 }
