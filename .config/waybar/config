@@ -1,80 +1,95 @@
 {
-    "layer": "bottom",
+    "layer": "top",
     "position": "top",
-    "height": 30,
-
-    "modules-left": ["sway/workspaces", "sway/mode"],
+    "height": 24,
+    "modules-left": ["sway/workspaces", "idle_inhibitor", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["tray", "backlight", "pulseaudio", "network", "idle_inhibitor", "battery", "clock"],
-    "sway/mode": {
-        "format": " {}"
-    },
+    "modules-right": [ "pulseaudio", "backlight", "network", "cpu", "memory", "battery#bat0", "battery#bat1",
+                       "tray", "sway/language", "clock" ],
     "sway/workspaces": {
-        "format": "{name}",
-        "disable-scroll": true
+         "disable-scroll": true,
+         "all-outputs": false,
+         //"format": "{index} {name}"
     },
-    "sway/window": {
-        "max-length": 80,
-        "tooltip": false
+    "sway/mode": {
+        "format": "{}"
+    },
+    "sway/language": {
+        "format": "{}",
+        "max-length": 50
+    },
+    "tray": {
+        // "icon-size": 21,
+        "spacing": 10
     },
     "clock": {
+        "tooltip-format": "{:%A\n%d %B %Y\n%H:%M}",
         "format": "{:%a %d %b %H:%M}",
-        "tooltip": false
+        "format-alt": "{:%H:%M}"
     },
-    "battery": {
-        "format": "{capacity}% {icon}",
-        "format-alt": "{time} {icon}",
-        "format-icons": ["", "", "", "", ""],
-        "format-charging": "{capacity}% ",
-        "interval": 30,
+    "cpu": {
+        "format": "{usage:2}% "
+    },
+    "memory": {
+        "format": "{}% "
+    },
+    "battery#bat0": {
+        "bat": "BAT0",
+        "name": "BAT0",
         "states": {
-            "warning": 25,
+            "warning": 20,
             "critical": 10
         },
-        "tooltip": false
+        "format": "{capacity}% {icon}",
+        "format-icons": ["", "", "", "", ""]
+    },
+    "battery#bat1": {
+        "bat": "BAT1",
+        "name": "BAT1",
+        "states": {
+            "warning": 20,
+            "critical": 10
+        },
+        "format": "{capacity}% {icon}",
+        "format-icons": ["", "", "", "", ""]
     },
     "network": {
-        "format": "{icon}",
-        "format-alt": "{ipaddr}/{cidr} {icon}",
-        "format-alt-click": "click-right",
-        "format-icons": {
-            "wifi": ["", "" ,""],
-            "ethernet": [""],
-            "disconnected": [""]
-        },
-        "on-click": "termite -e nmtui",
-        "tooltip": false
+        "interval": 1,
+        "max-width": 50,
+        // "interface": "wlp2s0", // (Optional) To force the use of this interface
+        "format-wifi": "",
+        "format-ethernet": "{bandwidthUpBits} {bandwidthDownBits} ",
+        "format-disconnected": "⚠",
+        "tooltip-format-wifi": " {essid}: {frequency}Mhz ({signalStrength}%)\n{bandwidthUpBits}\n{bandwidthDownBits}",
+        "tooltip-format-ethernet": " {ifname}: {ipaddr}/{cidr}",
+        "tooltip-format-disconnected": "⚠ Disconnected"
     },
     "pulseaudio": {
-        "format": "{icon}",
-        "format-alt": "{volume} {icon}",
-        "format-alt-click": "click-right",
-        "format-muted": "",
+        //"scroll-step": 1,
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon}",
+        "format-muted": "",
         "format-icons": {
-            "phone": [" ", " ", " ", " "],
-            "default": ["", "", "", ""]
+            "headphones": "",
+            "handsfree": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", ""]
         },
-        "scroll-step": 10,
-        "on-click": "pavucontrol",
-        "tooltip": false
+        "on-click": "pavucontrol"
     },
     "backlight": {
-        "format": "{icon}",
-        "format-alt": "{percent}% {icon}",
-        "format-alt-click": "click-right",
-        "format-icons": ["", ""],
-        "on-scroll-down": "light -A 1",
-        "on-scroll-up": "light -U 1"
+        "device": "intel_backlight",
+        "format": "{percent}% {icon}",
+        "format-icons": ["", ""]
     },
     "idle_inhibitor": {
         "format": "{icon}",
         "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        },
-        "tooltip": false
-    },
-    "tray": {
-        "icon-size": 18
+            "activated": "",
+            "deactivated": ""
+        }
     }
 }
