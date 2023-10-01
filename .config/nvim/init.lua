@@ -73,7 +73,6 @@ require("lazy").setup {
   "williamboman/mason.nvim",
   "williamboman/mason-lspconfig.nvim",
   "folke/neodev.nvim",
-  "jose-elias-alvarez/null-ls.nvim",
   "nvim-lualine/lualine.nvim",
   "nvim-tree/nvim-web-devicons",
   "lewis6991/gitsigns.nvim",
@@ -102,6 +101,20 @@ require("lazy").setup {
   "kdheepak/lazygit.nvim",
   "stevearc/oil.nvim",
   "lukas-reineke/indent-blankline.nvim",
+  "stevearc/conform.nvim",
+}
+
+-- CONFORM
+
+require("conform").setup {
+  formatters_by_ft = {
+    lua = { "stylua" },
+    perl = { "perltidy" },
+    python = { "isort", "black" },
+    javascript = { { "prettierd", "prettier" } },
+  },
+  log_level = vim.log.levels.ERROR,
+  notify_on_error = true,
 }
 
 -- INDENT BLANKLINE
@@ -128,21 +141,17 @@ require("mason-lspconfig").setup {
   automatic_installation = true,
 }
 
--- NULL-LS
-
-require("null-ls").setup {}
-
 -- PERLNAVIGATOR
 
 require("lspconfig").perlnavigator.setup {
   settings = {
     perlnavigator = {
       perlcriticProfile = '/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perlcriticrc',
-      perltidyProfile = '/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perltidyrc',
+      -- perltidyProfile = '/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perltidyrc',
       perlPath = 'perl',
       enableWarnings = true,
       perlcriticEnabled = true,
-      perltidyEnabled = true,
+      -- perltidyEnabled = true,
       includePaths = {'./', './lib'},
     }
   }
@@ -443,7 +452,7 @@ keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(v
 
 -- Lsp Format
 function FormatFunction()
-  vim.lsp.buf.format({
+  require("conform").format({
     async = true,
     range = {
       ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
@@ -451,8 +460,8 @@ function FormatFunction()
     }
   })
 end
-keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", {desc = "[L]SP [f]ormat current buffer"})
-keymap("x", "<leader>ls", "<cmd>lua FormatFunction()<cr>", {noremap = true, desc = "[L]SP format current [s]election"})
+keymap("n", "<leader>lf", "<cmd>lua require('conform').format({ async = true })<cr>", {desc = "[L]SP [f]ormat current buffer"})
+keymap("x", "<leader>lf", "<cmd>lua FormatFunction()<cr>", {noremap = true, desc = "[L]SP [f]ormat current selection"})
 
 --  OIL
 
