@@ -72,6 +72,7 @@ sudo dnf -y install --skip-broken \
   btop \
   cairo-devel \
   cargo \
+  chafa \
   cifs-utils \
   cmake \
   code \
