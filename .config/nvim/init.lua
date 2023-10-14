@@ -1,47 +1,47 @@
 -- OPTIONS
 
-vim.opt.backup = false                          -- creates a backup file
-vim.opt.clipboard = "unnamedplus"               -- allows neovim to access the system clipboard
-vim.opt.cmdheight = 1                           -- more space in the neovim command line for displaying messages
+vim.opt.backup = false -- creates a backup file
+vim.opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
+vim.opt.cmdheight = 1 -- more space in the neovim command line for displaying messages
 vim.opt.completeopt = { "menuone", "noselect" } -- mostly just for cmp
-vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
-vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
-vim.opt.hlsearch = true                         -- highlight all matches on previous search pattern
-vim.opt.ignorecase = true                       -- ignore case in search patterns
+vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
+vim.opt.fileencoding = "utf-8" -- the encoding written to a file
+vim.opt.hlsearch = true -- highlight all matches on previous search pattern
+vim.opt.ignorecase = true -- ignore case in search patterns
 vim.opt.linebreak = true
-vim.opt.mouse = "a"                             -- allow the mouse to be used in neovim
-vim.opt.pumheight = 10                          -- pop up menu height
-vim.opt.showmode = false                        -- we don't need to see things like -- INSERT -- anymore
-vim.opt.showtabline = 0                         -- always show tabs
-vim.opt.smartcase = true                        -- smart case
-vim.opt.smartindent = true                      -- make indenting smarter again
-vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
-vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
-vim.opt.swapfile = false                        -- creates a swapfile
-vim.opt.termguicolors = true                    -- set term gui colors (most terminals support this)
-vim.opt.timeoutlen = 1000                       -- time to wait for a mapped sequence to complete (in milliseconds)
-vim.opt.undofile = true                         -- enable persistent undo
-vim.opt.updatetime = 300                        -- faster completion (4000ms default)
-vim.opt.writebackup = false                     -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
-vim.opt.expandtab = true                        -- convert tabs to spaces
-vim.opt.shiftwidth = 2                          -- the number of spaces inserted for each indentation
-vim.opt.tabstop = 2                             -- insert 2 spaces for a tab
-vim.opt.cursorline = true                       -- highlight the current line
-vim.opt.number = true                           -- set numbered lines
-vim.opt.laststatus = 3                          -- only the last window will always have a status line
-vim.opt.showcmd = false                         -- hide (partial) command in the last line of the screen (for performance)
-vim.opt.ruler = false                           -- hide the line and column number of the cursor position
-vim.opt.numberwidth = 4                         -- minimal number of columns to use for the line number {default 4}
-vim.opt.signcolumn = "yes"                      -- always show the sign column, otherwise it would shift the text each time
-vim.opt.wrap = false                            -- display lines as one long line
-vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
-vim.opt.sidescrolloff = 8                       -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
-vim.opt.guifont = "monospace:h17"               -- the font used in graphical neovim applications
-vim.opt.fillchars.eob=" "                       -- show empty lines at the end of a buffer as ` ` {default `~`}
-vim.opt.shortmess:append "c"                    -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
-vim.opt.whichwrap:append("<,>,[,],h,l")         -- keys allowed to move to the previous/next line when the beginning/end of line is reached
-vim.opt.iskeyword:append("-")                   -- treats words with `-` as single words
-vim.opt.formatoptions:remove({ "c", "r", "o" }) -- This is a sequence of letters which describes how automatic formatting is to be done
+vim.opt.mouse = "a" -- allow the mouse to be used in neovim
+vim.opt.pumheight = 10 -- pop up menu height
+vim.opt.showmode = false -- we don't need to see things like -- INSERT -- anymore
+vim.opt.showtabline = 0 -- always show tabs
+vim.opt.smartcase = true -- smart case
+vim.opt.smartindent = true -- make indenting smarter again
+vim.opt.splitbelow = true -- force all horizontal splits to go below current window
+vim.opt.splitright = true -- force all vertical splits to go to the right of current window
+vim.opt.swapfile = false -- creates a swapfile
+vim.opt.termguicolors = true -- set term gui colors (most terminals support this)
+vim.opt.timeoutlen = 1000 -- time to wait for a mapped sequence to complete (in milliseconds)
+vim.opt.undofile = true -- enable persistent undo
+vim.opt.updatetime = 300 -- faster completion (4000ms default)
+vim.opt.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
+vim.opt.expandtab = true -- convert tabs to spaces
+vim.opt.shiftwidth = 2 -- the number of spaces inserted for each indentation
+vim.opt.tabstop = 2 -- insert 2 spaces for a tab
+vim.opt.cursorline = true -- highlight the current line
+vim.opt.number = true -- set numbered lines
+vim.opt.laststatus = 3 -- only the last window will always have a status line
+vim.opt.showcmd = false -- hide (partial) command in the last line of the screen (for performance)
+vim.opt.ruler = false -- hide the line and column number of the cursor position
+vim.opt.numberwidth = 4 -- minimal number of columns to use for the line number {default 4}
+vim.opt.signcolumn = "yes" -- always show the sign column, otherwise it would shift the text each time
+vim.opt.wrap = false -- display lines as one long line
+vim.opt.scrolloff = 8 -- minimal number of screen lines to keep above and below the cursor
+vim.opt.sidescrolloff = 8 -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
+vim.opt.guifont = "monospace:h17" -- the font used in graphical neovim applications
+vim.opt.fillchars.eob = " " -- show empty lines at the end of a buffer as ` ` {default `~`}
+vim.opt.shortmess:append "c" -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
+vim.opt.whichwrap:append "<,>,[,],h,l" -- keys allowed to move to the previous/next line when the beginning/end of line is reached
+vim.opt.iskeyword:append "-" -- treats words with `-` as single words
+vim.opt.formatoptions:remove { "c", "r", "o" } -- This is a sequence of letters which describes how automatic formatting is to be done
 
 vim.g.mapleader = " " -- make sure to set `mapleader` before lazy so your mappings are correct
 
@@ -68,16 +68,16 @@ require("lazy").setup {
   "Pocco81/auto-save.nvim",
   "BlackLight/nvim-http",
   "f-person/git-blame.nvim",
-  "akinsho/bufferline.nvim",
+  { "akinsho/bufferline.nvim", opts = {} },
   "neovim/nvim-lspconfig",
-  "williamboman/mason.nvim",
+  { "williamboman/mason.nvim", opts = {} },
   "williamboman/mason-lspconfig.nvim",
   "folke/neodev.nvim",
   "nvim-lualine/lualine.nvim",
   "nvim-tree/nvim-web-devicons",
-  "lewis6991/gitsigns.nvim",
-  "numToStr/Comment.nvim",
-  "windwp/nvim-autopairs",
+  { "lewis6991/gitsigns.nvim", opts = {} },
+  { "numToStr/Comment.nvim", opts = {} },
+  { "windwp/nvim-autopairs", opts = {} },
   "JoosepAlviste/nvim-ts-context-commentstring",
   "nvim-treesitter/nvim-treesitter",
   "kyazdani42/nvim-tree.lua",
@@ -93,16 +93,64 @@ require("lazy").setup {
   "hrsh7th/nvim-cmp",
   "L3MON4D3/LuaSnip",
   "rafamadriz/friendly-snippets",
-  "folke/which-key.nvim",
-  "natecraddock/workspaces.nvim",
+  { "folke/which-key.nvim", opts = {} },
+  { "natecraddock/workspaces.nvim", opts = {} },
   "ntpeters/vim-better-whitespace",
   "hrsh7th/cmp-nvim-lsp-signature-help",
   "christoomey/vim-tmux-navigator",
   "kdheepak/lazygit.nvim",
-  "stevearc/oil.nvim",
-  "lukas-reineke/indent-blankline.nvim",
+  { "stevearc/oil.nvim", opts = {} },
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
   "stevearc/conform.nvim",
+  { "rcarriga/nvim-notify", opts = {} },
+  {
+    "smoka7/multicursors.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "smoka7/hydra.nvim",
+    },
+    opts = {},
+    cmd = { "MCstart", "MCvisual", "MCclear", "MCpattern", "MCvisualPattern", "MCunderCursor" },
+    keys = {
+      {
+        mode = { "v", "n" },
+        "<Leader>m",
+        "<cmd>MCstart<cr>",
+        desc = "Create a selection for selected text or word under the cursor",
+      },
+    },
+  },
+  {
+    "goolord/alpha-nvim",
+    config = function()
+      require("alpha").setup(require("alpha.themes.startify").config)
+    end,
+  },
+  {
+    "renerocksai/telekasten.nvim",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "renerocksai/calendar-vim",
+    },
+  },
+  -- "nvim-telescope/telescope-media-files.nvim",
+  "KilloPillers/telescope-media-files.nvim",
+  {
+    "toppair/peek.nvim",
+    event = { "BufRead", "BufNewFile" },
+    build = "deno task --quiet build:fast",
+    config = function()
+      require("peek").setup()
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
+  },
+  "dkarter/bullets.vim",
 }
+
+-- MARKDDOWN
+
+require("lspconfig").marksman.setup {}
 
 -- CONFORM
 
@@ -117,27 +165,14 @@ require("conform").setup {
   notify_on_error = true,
 }
 
--- INDENT BLANKLINE
-
-require("ibl").setup {}
-
 -- COLORSCHEME
 
-vim.cmd("colorscheme darkplus")
-
--- WORKSPACES
-
-require("workspaces").setup {}
-
--- WHICH-KEY
-
-require("which-key").setup {}
+vim.cmd "colorscheme darkplus"
 
 -- MASON
 
-require("mason").setup {}
 require("mason-lspconfig").setup {
-  ensure_installed = {"pyright", "perlnavigator","html", "lua_ls", "ruff_lsp"},
+  ensure_installed = { "pyright", "perlnavigator", "html", "lua_ls", "ruff_lsp" },
   automatic_installation = true,
 }
 
@@ -146,26 +181,26 @@ require("mason-lspconfig").setup {
 require("lspconfig").perlnavigator.setup {
   settings = {
     perlnavigator = {
-      perlcriticProfile = '/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perlcriticrc',
-      -- perltidyProfile = '/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perltidyrc',
-      perlPath = 'perl',
+      perlcriticProfile = "/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perlcriticrc",
+      perltidyProfile = "/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perltidyrc",
+      perlPath = "perl",
       enableWarnings = true,
       perlcriticEnabled = true,
-      -- perltidyEnabled = true,
-      includePaths = {'./', './lib'},
-    }
-  }
+      perltidyEnabled = true,
+      includePaths = { "./", "./lib" },
+    },
+  },
 }
 
 -- LUALINE
 -- See `:help lualine.txt`
 
-require('lualine').setup {
+require("lualine").setup {
   options = {
     icons_enabled = true,
-    theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
+    theme = "auto",
+    component_separators = { left = "", right = "" },
+    section_separators = { left = "", right = "" },
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -177,45 +212,29 @@ require('lualine').setup {
       statusline = 1000,
       tabline = 1000,
       winbar = 1000,
-    }
+    },
   },
   sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
+    lualine_a = { "mode" },
+    lualine_b = { "branch", "diff", "diagnostics" },
+    lualine_c = { "filename" },
+    lualine_x = { "encoding", "fileformat", "filetype" },
+    lualine_y = { "progress" },
+    lualine_z = { "location" },
   },
   inactive_sections = {
     lualine_a = {},
     lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
+    lualine_c = { "filename" },
+    lualine_x = { "location" },
     lualine_y = {},
-    lualine_z = {}
+    lualine_z = {},
   },
   tabline = {},
   winbar = {},
   inactive_winbar = {},
   extensions = {},
 }
-
--- BUFFERLINE
-
-require("bufferline").setup {}
-
--- GITSIGNS
-
-require('gitsigns').setup {}
-
--- COMMENTS
-
-require('Comment').setup {}
-
--- AUTOPAIRS
-
-require("nvim-autopairs").setup {}
 
 -- TREESITTER
 
@@ -224,7 +243,7 @@ require("nvim-treesitter.configs").setup {
   sync_install = true,
   auto_install = true,
   highlight = {
-    enable = true
+    enable = true,
   },
 }
 
@@ -233,7 +252,7 @@ require("nvim-treesitter.configs").setup {
 require("nvim-tree").setup {
   sort_by = "case_sensitive",
   view = {
-    width = 40,
+    width = 35,
   },
   renderer = {
     group_empty = true,
@@ -253,35 +272,37 @@ require("telescope").setup {
   extensions = {
     workspaces = {
       keep_insert = true,
-    }
-  }
+    },
+  },
 }
 
-require('telescope').load_extension('workspaces')
+require("telescope").load_extension "workspaces"
+require("telescope").load_extension "media_files"
 
-local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = '[F]ind a specific [f]ile' })
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = '[F]ind using live [g]rep'})
-vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = '[F]ind existing [b]uffers'})
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = '[F]ind in [h]elp documentation' })
-vim.keymap.set("n", "<leader>fw", "<cmd>Telescope workspaces<cr>", { desc = '[F]ind a specific [w]orkspace' })
-vim.keymap.set("n", "<leader><space>", builtin.buffers, { desc = 'Find existing buffers' })
-vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = '[F]ind recently [o]pened files' })
-vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind in current [d]iagnostics' })
+local builtin = require "telescope.builtin"
+vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind a specific [f]ile" })
+vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind using live [g]rep" })
+vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "[F]ind existing [b]uffers" })
+vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind in [h]elp documentation" })
+vim.keymap.set("n", "<leader>fw", "<cmd>Telescope workspaces<cr>", { desc = "[F]ind a specific [w]orkspace" })
+vim.keymap.set("n", "<leader><space>", builtin.buffers, { desc = "Find existing buffers" })
+vim.keymap.set("n", "<leader>fo", builtin.oldfiles, { desc = "[F]ind recently [o]pened files" })
+vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind in current [d]iagnostics" })
+vim.keymap.set("n", "<leader>fm", "<cmd>Telescope media_files<cr>", { desc = "[F]ind [m]edia files" })
 
 -- AUTOCOMPLETE
 
 require("luasnip.loaders.from_vscode").lazy_load()
 
-local cmp = require("cmp")
-local luasnip = require("luasnip")
+local cmp = require "cmp"
+local luasnip = require "luasnip"
 
 local check_backspace = function()
   local col = vim.fn.col "." - 1
   return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
 end
 
-cmp.setup({
+cmp.setup {
   snippet = {
     expand = function(args)
       require("luasnip").lsp_expand(args.body)
@@ -295,35 +316,15 @@ cmp.setup({
     ghost_text = true,
   },
   mapping = cmp.mapping.preset.insert {
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete {},
-    ['<CR>'] = cmp.mapping.confirm {
+    ["<C-n>"] = cmp.mapping.select_next_item(),
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
+    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-Space>"] = cmp.mapping.complete {},
+    ["<CR>"] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    -- ['<Tab>'] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     cmp.select_next_item()
-    --   elseif luasnip.expand_or_locally_jumpable() then
-    --     luasnip.expand_or_jump()
-    --   else
-    --     fallback()
-    --   end
-    -- end, { 'i', 's' }),
-    -- ['<S-Tab>'] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     cmp.select_prev_item()
-    --   elseif luasnip.locally_jumpable(-1) then
-    --     luasnip.jump(-1)
-    --   else
-    --     fallback()
-    --   end
-    -- end, { 'i', 's' }),
-    --
-    -- luasnip
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -349,44 +350,44 @@ cmp.setup({
       "s",
     }),
   },
-  sources = cmp.config.sources({
+  sources = cmp.config.sources {
     { name = "nvim_lsp" },
     { name = "luasnip" },
     { name = "buffer" },
     { name = "path" },
     { name = "nvim_lua" },
-    { name = 'nvim_lsp_signature_help' },
-  })
-})
+    { name = "nvim_lsp_signature_help" },
+  },
+}
 
 cmp.setup.filetype("gitcommit", {
-  sources = cmp.config.sources({
+  sources = cmp.config.sources {
     { name = "cmp_git" },
     { name = "buffer" },
-  })
+  },
 })
 
 cmp.setup.cmdline({ "/", "?" }, {
   mapping = cmp.mapping.preset.cmdline(),
   sources = {
     { name = "buffer" },
-  }
+  },
 })
 
 cmp.setup.cmdline(":", {
   mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
+  sources = cmp.config.sources {
     { name = "path" },
     { name = "cmdline" },
-  })
+  },
 })
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-require('lspconfig')["perlnavigator"].setup {
-  capabilities = capabilities
+require("lspconfig")["perlnavigator"].setup {
+  capabilities = capabilities,
 }
-require('lspconfig')["pyright"].setup {
-  capabilities = capabilities
+require("lspconfig")["pyright"].setup {
+  capabilities = capabilities,
 }
 
 -- KEYMAPS
@@ -435,31 +436,170 @@ keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
 
 -- NvimTree
-keymap("n", "<leader>e", ":NvimTreeFindFileToggle<CR>", {desc = "Toggle Nvim Tree window"})
+keymap("n", "<leader>e", ":NvimTreeFindFileToggle<CR>", { desc = "Toggle Nvim Tree window" })
 
 -- Oil
 -- keymap("n", "<leader>e", ":Oil --float .<CR>", {desc = "Toggle Nvim Tree window"})
 
 -- LazyGit
-keymap("n", "<leader>gg", ":LazyGit<CR>", {desc = "Toggle LazyGit window"})
+keymap("n", "<leader>gg", ":LazyGit<CR>", { desc = "Toggle LazyGit window" })
 
 -- Comment
-keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", {desc = "Comment current line"})
-keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", {desc = "Comment currently selecting lines"})
+keymap(
+  "n",
+  "<leader>/",
+  "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>",
+  { desc = "Comment current line" }
+)
+keymap(
+  "x",
+  "<leader>/",
+  "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
+  { desc = "Comment currently selecting lines" }
+)
+
+-- LSP config
+
+local on_attach = function(_, _)
+  keymap("n", "<leader>rn", vim.lsp.buf.rename, {})
+  keymap("n", "<leader>ca", vim.lsp.buf.code_action, {})
+  keymap("n", "<leader>gd", vim.lsp.buf.definition, {})
+  keymap("n", "<leader>gi", vim.lsp.buf.implementation, {})
+  keymap("n", "<leader>gr", require("telescope.builtin").lsp_references, {})
+  keymap("n", "K", vim.lsp.buf.hover, {})
+end
+
+require("lspconfig").perlnavigator.setup {
+  on_attach = on_attach,
+}
+
+require("lspconfig").marksman.setup {
+  on_attach = on_attach,
+}
+
+require("lspconfig").pyright.setup {
+  on_attach = on_attach,
+}
 
 -- Lsp Format
 function FormatFunction()
-  require("conform").format({
+  require("conform").format {
     async = true,
     range = {
       ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
       ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
-    }
-  })
+    },
+  }
 end
-keymap("n", "<leader>lf", "<cmd>lua require('conform').format({ async = true })<cr>", {desc = "[L]SP [f]ormat current buffer"})
-keymap("x", "<leader>lf", "<cmd>lua FormatFunction()<cr>", {noremap = true, desc = "[L]SP [f]ormat current selection"})
+keymap(
+  "n",
+  "<leader>lf",
+  "<cmd>lua require('conform').format({ async = true })<cr>",
+  { desc = "[L]SP [f]ormat current buffer" }
+)
+keymap(
+  "x",
+  "<leader>lf",
+  "<cmd>lua FormatFunction()<cr>",
+  { noremap = true, desc = "[L]SP [f]ormat current selection" }
+)
 
---  OIL
+-- TELEKASTEN
 
-require("oil").setup {}
+local year = os.date "%Y"
+local month = os.date "%m"
+local notes_dir = vim.fn.expand "~/obsidian/"
+
+require("telekasten").setup {
+  home = notes_dir,
+  take_over_my_home = true,
+  auto_set_filetype = true,
+  dailies = notes_dir .. "Daily",
+  weeklies = notes_dir .. "Weekly",
+  templates = notes_dir .. "Templates",
+  image_subdir = notes_dir .. "Assets",
+  extension = ".md",
+  new_note_filename = "title-uuid",
+  uuid_type = "%Y-%m-%d",
+  uuid_sep = "-",
+  follow_creates_nonexisting = true,
+  dailies_create_nonexisting = true,
+  weeklies_create_nonexisting = true,
+  journal_auto_open = true,
+  template_new_note = nil,
+  template_new_daily = nil,
+  template_new_weekly = nil,
+  image_link_style = "markdown",
+  sort = "filename",
+  plug_into_calendar = true,
+  calendar_opts = {
+    weeknm = 4,
+    calendar_monday = 0,
+    calendar_mark = "left-fit",
+  },
+  close_after_yanking = false,
+  insert_after_inserting = true,
+  tag_notation = "#tag",
+  command_palette_theme = "ivy",
+  show_tags_theme = "ivy",
+  subdirs_in_links = true,
+  template_handling = "smart",
+  new_note_location = "smart",
+  rename_update_links = true,
+  media_previewer = "telescope-media-files",
+  follow_url_fallback = nil,
+}
+
+keymap("n", "<leader>zp", ":lua require('telekasten').panel()<CR>", { noremap = true, desc = "Notes panel" })
+keymap("n", "<leader>zf", ":lua require('telekasten').find_notes()<CR>", { noremap = true, desc = "Find notes" })
+keymap(
+  "n",
+  "<leader>zd",
+  ":lua require('telekasten').find_daily_notes()<CR>",
+  { noremap = true, desc = "Find daily notes" }
+)
+keymap("n", "<leader>zg", ":lua require('telekasten').search_notes()<CR>", { noremap = true, desc = "Search notes" })
+keymap("n", "<leader>zz", ":lua require('telekasten').follow_link()<CR>", { noremap = true, desc = "Follow link" })
+keymap("n", "<leader>zT", ":lua require('telekasten').goto_today()<CR>", { noremap = true, desc = "Goto today" })
+keymap("n", "<leader>zW", ":lua require('telekasten').goto_thisweek()<CR>", { noremap = true, desc = "Goto this week" })
+keymap(
+  "n",
+  "<leader>zw",
+  ":lua require('telekasten').find_weekly_notes()<CR>",
+  { noremap = true, desc = "Find weekly notes" }
+)
+keymap("n", "<leader>zn", ":lua require('telekasten').new_note()<CR>", { noremap = true, desc = "New note" })
+keymap(
+  "n",
+  "<leader>zN",
+  ":lua require('telekasten').new_templated_note()<CR>",
+  { noremap = true, desc = "New template note" }
+)
+keymap("n", "<leader>zy", ":lua require('telekasten').yank_notelink()<CR>", { noremap = true, desc = "Yank note link" })
+keymap("n", "<leader>zc", ":lua require('telekasten').show_calendar()<CR>", { noremap = true, desc = "Show calendar" })
+keymap("n", "<leader>zC", ":CalendarT<CR>", { noremap = true, desc = "CalendarT" })
+keymap(
+  "n",
+  "<leader>zi",
+  ":lua require('telekasten').paste_img_and_link()<CR>",
+  { noremap = true, desc = "Paste image and link" }
+)
+keymap("n", "<leader>zt", ":lua require('telekasten').toggle_todo()<CR>", { noremap = true, desc = "Toggle todo" })
+keymap(
+  "n",
+  "<leader>zb",
+  ":lua require('telekasten').show_backlinks()<CR>",
+  { noremap = true, desc = "Show backlinks" }
+)
+keymap("n", "<leader>zF", ":lua require('telekasten').find_friends()<CR>", { noremap = true, desc = "Find friends" })
+keymap(
+  "n",
+  "<leader>zI",
+  ":lua require('telekasten').insert_img_link({ i=true })<CR>",
+  { noremap = true, desc = "Insert image link" }
+)
+keymap("n", "<leader>zP", ":lua require('telekasten').preview_img()<CR>", { noremap = true, desc = "Preview image" })
+keymap("n", "<leader>zm", ":lua require('telekasten').browse_media()<CR>", { noremap = true, desc = "Browse media" })
+keymap("n", "<leader>za", ":lua require('telekasten').show_tags()<CR>", { noremap = true, desc = "Show tags" })
+keymap("n", "<leader>#", ":lua require('telekasten').show_tags()<CR>", { noremap = true, desc = "Show tags" })
+keymap("n", "<leader>zr", ":lua require('telekasten').rename_note()<CR>", { noremap = true, desc = "Rename note" })
