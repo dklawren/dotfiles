@@ -145,4 +145,10 @@ if [[ -n "$DISTTAG" || -n "$WSL_DISTRO_NAME" ]]; then
   source "$HOME/.cargo/env"
 fi
 
+# pyenv support
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv virtualenv-init -)"
+
 bindkey -s ^a "nvims\n"

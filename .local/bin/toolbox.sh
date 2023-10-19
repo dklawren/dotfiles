@@ -25,7 +25,7 @@ sudo dnf -y install dnf-plugins-core
 sudo dnf -y config-manager --set-disabled fedora-cisco-openh264
 
 # Enable copr for lazygit
-sudo dnf -y copr enable atim/lazygit 
+sudo dnf -y copr enable atim/lazygit
 
 # Enable copr for lf binary
 sudo dnf -y copr enable pennbauman/ports
@@ -106,6 +106,7 @@ sudo dnf -y install --skip-broken \
   man \
   mercurial \
   mysql-devel \
+  ncurses-devel \
   neovim \
   nodejs \
   openssh-server \
@@ -126,14 +127,17 @@ sudo dnf -y install --skip-broken \
   python3-rstcheck \
   python3-sphinx \
   python3-virtualenv \
+  readline-devel \
   ripgrep \
   rsync \
   ruby \
   ruby-devel \
   rubygems \
+  sqlite-devel \
   socat \
   sysstat \
   tar \
+  tk-devel \
   tmux \
   tokei \
   util-linux-user \
@@ -209,23 +213,31 @@ npm install -g perlnavigator-server
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
 
+# Pyenv support
+curl https://pyenv.run | bash
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv virtualenv-init -)"
+# google-cloud-sdk support
+pyenv install 3.8.3
+
 # VSCode remote ssh support
 sudo /usr/libexec/openssh/sshd-keygen rsa
 sudo /usr/libexec/openssh/sshd-keygen ecdsa
 sudo /usr/libexec/openssh/sshd-keygen ed25519
 
-echo "
-# For VS Code
-Port 2238                 # Prevent conflicts with other SSH servers
-ListenAddress localhost   # Don’t allow remote connections
-PermitEmptyPasswords yes  # Containers lack passwords by default
-PermitUserEnvironment yes # Allow setting DISPLAY for remote connections" | sudo tee -a /etc/ssh/sshd_config
-
-echo "
-Host toolbox-38
-    HostName localhost
-    Port 2238
-
-Host toolbox-39
-    Hostname localhost
-    Port 2239" >> ~/.ssh/config
+# echo "
+# # For VS Code
+# Port 2238                 # Prevent conflicts with other SSH servers
+# ListenAddress localhost   # Don’t allow remote connections
+# PermitEmptyPasswords yes  # Containers lack passwords by default
+# PermitUserEnvironment yes # Allow setting DISPLAY for remote connections" | sudo tee -a /etc/ssh/sshd_config
+#
+# echo "
+# Host toolbox-38
+#     HostName localhost
+#     Port 2238
+#
+# Host toolbox-39
+#     Hostname localhost
+#     Port 2239" >> ~/.ssh/config
