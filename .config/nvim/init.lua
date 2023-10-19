@@ -146,9 +146,43 @@ require("lazy").setup {
     end,
   },
   "dkarter/bullets.vim",
+  {
+    "nvim-telescope/telescope-file-browser.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {},
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+  },
 }
 
--- MARKDDOWN
+-- NOICE
+
+require("noice").setup {
+  lsp = {
+    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true,
+    },
+  },
+  -- you can enable a preset for easier configuration
+  presets = {
+    bottom_search = true, -- use a classic bottom cmdline for search
+    command_palette = true, -- position the cmdline and popupmenu together
+    long_message_to_split = true, -- long messages will be sent to a split
+    inc_rename = false, -- enables an input dialog for inc-rename.nvim
+    lsp_doc_border = false, -- add a border to hover docs and signature help
+  },
+}
+
+-- MARKDOWN
 
 require("lspconfig").marksman.setup {}
 
@@ -181,13 +215,9 @@ require("mason-lspconfig").setup {
 require("lspconfig").perlnavigator.setup {
   settings = {
     perlnavigator = {
-      perlcriticProfile = "/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perlcriticrc",
       perltidyProfile = "/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perltidyrc",
-      perlPath = "perl",
-      enableWarnings = true,
-      perlcriticEnabled = true,
-      perltidyEnabled = true,
-      includePaths = { "./", "./lib" },
+      perlcriticProfile = "/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perlcriticrc",
+      includePaths = {'./', './local', './lib'},
     },
   },
 }
@@ -278,6 +308,7 @@ require("telescope").setup {
 
 require("telescope").load_extension "workspaces"
 require("telescope").load_extension "media_files"
+require("telescope").load_extension "file_browser"
 
 local builtin = require "telescope.builtin"
 vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind a specific [f]ile" })
@@ -289,6 +320,7 @@ vim.keymap.set("n", "<leader><space>", builtin.buffers, { desc = "Find existing 
 vim.keymap.set("n", "<leader>fo", builtin.oldfiles, { desc = "[F]ind recently [o]pened files" })
 vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind in current [d]iagnostics" })
 vim.keymap.set("n", "<leader>fm", "<cmd>Telescope media_files<cr>", { desc = "[F]ind [m]edia files" })
+vim.keymap.set("n", "<leader>fb", "<cmd>Telescope file_browser<cr>", { desc = "[F]ile [B]rowser" })
 
 -- AUTOCOMPLETE
 
