@@ -116,6 +116,7 @@ sudo dnf -y install --skip-broken \
   php \
   php-curl \
   php-json \
+  podman-compose \
   procps-ng \
   pylint \
   python3 \
