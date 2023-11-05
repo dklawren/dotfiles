@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Dotfile management
-alias config='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'  
+alias config='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+
+# BMO localhost fix
+alias bmo-local='patch -p1 < $HOME/devel/patches/localhost_8000.patch'
+alias bmo-unlocal='patch -p1 -R < $HOME/devel/patches/localhost_8000.patch'
 
 # Various Neovim configurations
 alias nvim-lazy="NVIM_APPNAME=LazyVim nvim"
