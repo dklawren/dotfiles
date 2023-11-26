@@ -174,6 +174,7 @@ cpanm install --quiet --notest \
   Carton \
   Carton::Snapshot \
   common::sense \
+  Git::Critic \
   Guard \
   Log::Log4perl \
   Module::CPANfile \
