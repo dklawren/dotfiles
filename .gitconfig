@@ -126,8 +126,6 @@
     default = matching
 [github]
     user = dklawren
-[credential]
-	  helper = osxkeychain
 [filter "lfs"]
 	  required = true
 	  clean = git-lfs clean %f
@@ -137,6 +135,6 @@
 	  version-check = 1579111512
 [pull]
 	  rebase = true
-	  ff = false
-[commit]
-    #gpgsign = true
+    ff = false
+[credential]
+    helper = libsecret
