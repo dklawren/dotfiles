@@ -1,95 +1,89 @@
+//====================================================================================================//
+// Waybar Configuration File                                                                          //
+//----------------------------------------------------------------------------------------------------//
+// Purpose: Creates a minimalistic (yet functional) waybar at                                         //
+// the top of the screen.                                                                             //
+// themes and colors, set the wallpaper, and more.                                                    //
+//                                                                                                    //
+// License: Creative Commons Attribution 4.0 International                                            //
+//                                                                                                    //
+// Credit:                                                                                            //
+// Battery section adapted from:                                                                      //
+// https://github.com/Egosummiki/dotfiles/blob/master/waybar/config                                   //
+//                                                                                                    //
+// Pipewire audio adapted from:                                                                       //
+// https://www.reddit.com/r/swaywm/comments/sks343/pwvolume_pipewire_volume_control_and_waybar_module //
+//====================================================================================================//
+
 {
     "layer": "top",
     "position": "top",
-    "height": 24,
-    "modules-left": ["sway/workspaces", "idle_inhibitor", "sway/mode"],
-    "modules-center": ["sway/window"],
-    "modules-right": [ "pulseaudio", "backlight", "network", "cpu", "memory", "battery#bat0", "battery#bat1",
-                       "tray", "sway/language", "clock" ],
-    "sway/workspaces": {
+    "height": 36,
+    "spacing": 4,
+    "margin-top": 0,
+    "margin-bottom": 0,
+
+    // Choose the order of the modules
+    "modules-center": ["sway/workspaces", "tray"],
+    "modules-left": ["custom/hostname"],
+    "modules-right": [ "custom/audio","network","battery","clock"],
+
+    // Configuration for individual modules
+     "sway/workspaces": {
          "disable-scroll": true,
          "all-outputs": false,
-         //"format": "{index} {name}"
+         "format": "{name}",
     },
-    "sway/mode": {
-        "format": "{}"
-    },
-    "sway/language": {
-        "format": "{}",
-        "max-length": 50
-    },
+
     "tray": {
-        // "icon-size": 21,
-        "spacing": 10
+        "icon-size": 18,
+        "spacing": 10,
     },
+
     "clock": {
-        "tooltip-format": "{:%A\n%d %B %Y\n%H:%M}",
-        "format": "{:%a %d %b %H:%M}",
-        "format-alt": "{:%H:%M}"
+        "timezone": "America/Detroit",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d}",
     },
-    "cpu": {
-        "format": "{usage:2}% "
-    },
-    "memory": {
-        "format": "{}% "
-    },
-    "battery#bat0": {
-        "bat": "BAT0",
-        "name": "BAT0",
+
+    "battery": {
         "states": {
-            "warning": 20,
-            "critical": 10
+            // "good": 95,
+            "warning": 30,
+            "critical": 15,
         },
-        "format": "{capacity}% {icon}",
-        "format-icons": ["", "", "", "", ""]
+        "format": "{icon} {capacity}%",
+        "format-charging": "⚡{capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-alt": "{time} {icon}",
+        // "format-good": "", // An empty format will hide the module
+        // "format-full": "",
+        "format-icons": ["", "", "", "", ""],
     },
-    "battery#bat1": {
-        "bat": "BAT1",
-        "name": "BAT1",
-        "states": {
-            "warning": 20,
-            "critical": 10
-        },
-        "format": "{capacity}% {icon}",
-        "format-icons": ["", "", "", "", ""]
-    },
+
     "network": {
-        "interval": 1,
-        "max-width": 50,
-        // "interface": "wlp2s0", // (Optional) To force the use of this interface
-        "format-wifi": "",
-        "format-ethernet": "{bandwidthUpBits} {bandwidthDownBits} ",
-        "format-disconnected": "⚠",
-        "tooltip-format-wifi": " {essid}: {frequency}Mhz ({signalStrength}%)\n{bandwidthUpBits}\n{bandwidthDownBits}",
-        "tooltip-format-ethernet": " {ifname}: {ipaddr}/{cidr}",
-        "tooltip-format-disconnected": "⚠ Disconnected"
+        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        "format-wifi": " {signalStrength}%",
+        "format-ethernet": "Connected  ",
+        "tooltip-format": "{ifname}: {gwaddr}",
+        "format-linked": "{ifname} (No IP)",
+        "format-disconnected": "Disconnected ⚠",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "on-click-right": "bash ~/.config/rofi/wifi_menu/rofi_wifi_menu",
     },
-    "pulseaudio": {
-        //"scroll-step": 1,
-        "format": "{volume}% {icon}",
-        "format-bluetooth": "{volume}% {icon}",
-        "format-muted": "",
-        "format-icons": {
-            "headphones": "",
-            "handsfree": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", ""]
-        },
-        "on-click": "pavucontrol"
+
+    "custom/audio": {
+        "format": "{}",
+        "signal": 8,
+        "interval": "once",
+        "exec": "/home/jay/.config/sway/audio.sh",
+        "on-click": "pavucontrol",
     },
-    "backlight": {
-        "device": "intel_backlight",
-        "format": "{percent}% {icon}",
-        "format-icons": ["", ""]
+
+    "custom/hostname": {
+        "format": "🖳  {}",
+        "exec": "/usr/bin/hostname -f",
+        "interval": "once",
+        "on-click": "/usr/bin/rxvt -e /usr/bin/htop",
     },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        }
-    }
 }
