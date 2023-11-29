@@ -111,6 +111,7 @@ sudo dnf -y install --skip-broken \
   nodejs \
   openssh-server \
   openssl-devel \
+  openssl-perl \
   patch \
   perl-App-cpanminus \
   php \
@@ -160,10 +161,10 @@ ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/the
 # Perlbrew
 curl -L https://install.perlbrew.pl | bash
 source ~/perl5/perlbrew/etc/bashrc
-perlbrew install perl-5.38.0
-perlbrew switch perl-5.38.0
+perlbrew install perl-5.38.1
+perlbrew switch perl-5.38.1
 perlbrew lib create dkl
-perlbrew use perl-5.38.0@dkl
+perlbrew use perl-5.38.1@dkl
 
 # Install perl modules
 cpanm install --quiet --notest \
