@@ -19,18 +19,6 @@ function dbox-backup () {
   podman save fedora-39-distrobox-dkl:latest | gzip > $HOME/devel/fedora-39-distrobox-dkl.tar.gz
 }
 
-function nvims() {
-  items=("default" "kickstart" "LazyVim" "NvChad" "AstroNvim" "MiniVim" "nvim-starter" "tinyvim" "normalnvim" "LunarVim")
-  config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config  " --height=~50% --layout=reverse --border --exit-0)
-  if [[ -z $config ]]; then
-    echo "Nothing selected"
-    return 0
-  elif [[ $config == "default" ]]; then
-    config=""
-  fi
-  NVIM_APPNAME=$config nvim $@
-}
-
 function bmo-prod {
   pyenv global 3.8.3
   gcloud auth login

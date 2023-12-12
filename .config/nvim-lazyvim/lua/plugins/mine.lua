@@ -34,6 +34,12 @@ return {
 
   -- autocomplete
   {
+    "L3MON4D3/LuaSnip",
+    keys = function()
+      return {}
+    end,
+  },
+  {
     "hrsh7th/nvim-cmp",
     opts = function(_, opts)
       local has_words_before = function()
@@ -95,8 +101,8 @@ return {
           settings = {
             perlnavigator = {
               includePaths = { "./" },
-              perlcriticProfile = "/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perlcriticrc",
-              perltidyProfile = "/var/home/dkl/devel/github/mozilla/bmo/upstream/master/.perltidyrc",
+              perlcriticProfile = "/var/home/dkl/devel/github/mozilla/bmo/master/.perlcriticrc",
+              perltidyProfile = "/var/home/dkl/devel/github/mozilla/bmo/master/.perltidyrc",
             },
           },
         },
