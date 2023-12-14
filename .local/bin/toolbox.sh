@@ -102,6 +102,7 @@ sudo dnf -y install --skip-broken \
   lazygit \
   lcms2-devel \
   lf \
+  libxkbcommon-devel \
   webkit2gtk4.0 \
   man \
   mercurial \
