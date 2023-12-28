@@ -103,6 +103,7 @@ sudo dnf -y install --skip-broken \
   lcms2-devel \
   lf \
   libxkbcommon-devel \
+  luarocks \
   webkit2gtk4.0 \
   man \
   mercurial \
