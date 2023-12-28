@@ -1,13 +1,13 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "perl",
-        "python",
-        "sql",
-        "http",
-        "php",
+    build = ":TSUpdate",
+    config = function()
+      local config = require("nvim-treesitter.configs")
+      config.setup({
+        auto_install = true,
+        highlight = { enable = true },
+        indent = { enable = true },
       })
     end,
   },
