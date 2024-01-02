@@ -1,9 +1,10 @@
 return {
   "lunarvim/darkplus.nvim",
+  "tanvirtin/monokai.nvim",
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "darkplus",
+      colorscheme = "tokyonight-night",
     },
   },
 }
