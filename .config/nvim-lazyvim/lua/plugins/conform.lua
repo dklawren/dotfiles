@@ -5,7 +5,8 @@ return {
       lua = { "stylua" },
       perl = { "perltidy" },
       python = { "isort", "black" },
-      javascript = { { "prettierd", "prettier" } },
+      javascript = { "prettier" },
+      json = { "prettier" },
     }
     opts.log_level = vim.log.levels.ERROR
     opts.notify_on_error = true
