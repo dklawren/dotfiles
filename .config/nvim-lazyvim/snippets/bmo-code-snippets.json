@@ -1,4 +1,13 @@
 {
+  "Debug Output": {
+    "scope": "perl",
+    "prefix": "debug",
+    "body": [
+      "use Bugzilla::Logging;",
+      "use Mojo::Util qw(dumper);",
+      "DEBUG(dumper ${1});"
+    ]
+  },
   "Moo Package": {
     "scope": "perl",
     "prefix": "package-moo",
