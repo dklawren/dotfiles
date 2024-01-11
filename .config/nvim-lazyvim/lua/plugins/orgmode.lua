@@ -20,8 +20,8 @@ return {
 
       -- Setup orgmode
       require("orgmode").setup({
-        org_agenda_files = "~/NextCloud/Orgmode/**/*",
-        org_default_notes_file = "~/NextCloud/Orgmode/Inbox.org",
+        org_agenda_files = "~/logseq/pages/Orgmode/**/*",
+        org_default_notes_file = "~/logseq/pages/Orgmode/Capture.org",
       })
     end,
   },
