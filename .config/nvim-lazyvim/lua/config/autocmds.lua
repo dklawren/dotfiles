@@ -4,7 +4,7 @@
 
 -- Disable autoformat for Perl files
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "perl" },
+  pattern = { "perl", "php", "python" },
   callback = function()
     vim.b.autoformat = false
   end,
