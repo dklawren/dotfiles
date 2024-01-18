@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="spaceship"
+ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -68,9 +68,26 @@ ZSH_THEME="spaceship"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(cpanm dnf docker docker-compose fzf gitfast git-extras perl ripgrep ssh-agent z)
-
-#SPACESHIP_GIT_STATUS_SHOW=false
+plugins=(
+  cpanm
+  dnf 
+  docker 
+  docker-compose 
+  fzf 
+  gh 
+  gitfast 
+  git-extras 
+  perl
+  podman
+  python 
+  ripgrep
+  rsync
+  rust
+  ssh-agent
+  systemd
+  tmux
+  zoxide
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -151,3 +168,6 @@ eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
 
 bindkey -s ^a "nvims\n"
+
+# starship
+eval "$(starship init zsh)"
