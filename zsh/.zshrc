@@ -84,9 +84,10 @@ plugins=(
   rsync
   rust
   ssh-agent
+  starship
   systemd
   tmux
-  zoxide
+  z
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -168,6 +169,3 @@ eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
 
 bindkey -s ^a "nvims\n"
-
-# starship
-eval "$(starship init zsh)"
