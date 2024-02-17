@@ -1,6 +1,7 @@
 return {
   "epwalsh/obsidian.nvim",
   version = "*",
+  enabled = false,
   lazy = true,
   ft = "markdown",
   dependencies = {
@@ -32,7 +33,7 @@ return {
 
     -- Optional, set to true to use the current directory as a vault; otherwise
     -- the first workspace is opened by default.
-    detect_cwd = false,
+    -- detect_cwd = false,
 
     -- Optional, if you keep notes in a specific subdirectory of your vault.
     -- notes_subdir = "notes",
