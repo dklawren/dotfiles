@@ -1,7 +1,7 @@
 [user]
     name = David Lawrence
     email = dkl@mozilla.com
-    signingkey = C88138B002222D68
+    signingkey = ~/.ssh/id_rsa_github_2015-10-19.pub
 [core]
     # Treat spaces before tabs and all kinds of trailing whitespace as an error
     # [default] trailing-space: looks for spaces at the end of a line
@@ -137,4 +137,6 @@
 	  rebase = true
     ff = false
 [credential]
-    helper = libsecret
+  helper = libsecret
+[gpg]
+  format = ssh
