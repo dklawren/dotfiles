@@ -15,6 +15,9 @@ return {
         return vim.fn.executable 'make' == 1
       end,
     },
+    {
+      'smartpde/telescope-recent-files'
+    }
   },
   opts = {
     defaults = {

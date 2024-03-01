@@ -7,7 +7,7 @@ return {
     "renerocksai/calendar-vim",
   },
   config = function()
-    local home = vim.fn.expand("~/silverbullet")
+    local home = vim.fn.expand("~/zettelkasten")
 
     require("telekasten").setup({
       home = home,
@@ -26,7 +26,7 @@ return {
       -- image (sub)dir for pasting
       -- dir name (absolute path or subdir name)
       -- or nil if pasted images shouldn't go into a special subdir
-      image_subdir = "img",
+      image_subdir = "assets",
 
       -- markdown file extension
       extension = ".md",
