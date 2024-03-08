@@ -1,0 +1,86 @@
+theme = freenode || core || certrec || certrule || performance || security
+severity = 1
+
+[-CodeLayout::RequireTidyCode]
+#perltidyrc = .perltidyrc
+#severity = 2
+
+[-CodeLayout::ProhibitParensWithBuiltins]
+
+[InputOutput::RequireCheckedSyscalls]
+severity = 2
+functions = :builtins
+exclude_functions = print say sleep binmode
+
+[ValuesAndExpressions::ProhibitInterpolationOfLiterals]
+severity = 2
+
+[Freenode::EmptyReturn]
+severity = 2
+
+[CodeLayout::RequireTrailingCommas]
+severity = 2
+
+[CodeLayout::ProhibitParensWithBuiltins]
+severity = 2
+
+[RegularExpressions::ProhibitUnusualDelimiters]
+severity = 2
+
+[-BuiltinFunctions::ProhibitUselessTopic]
+[-ControlStructures::ProhibitCascadingIfElse]
+[-ControlStructures::ProhibitPostfixControls]
+[-ControlStructures::ProhibitUnlessBlocks]
+[-Documentation::RequirePodLinksIncludeText]
+[-Documentation::RequirePodSections]
+[-ErrorHandling::RequireCarping]
+[-InputOutput::RequireBracedFileHandleWithPrint]
+[-Modules::RequireFilenameMatchesPackage]
+[-Modules::RequireVersionVar]
+[-References::ProhibitDoubleSigils]
+[-RegularExpressions::ProhibitComplexRegexes]
+[-RegularExpressions::RequireDotMatchAnything]
+[-RegularExpressions::RequireExtendedFormatting]
+[-RegularExpressions::RequireLineBoundaryMatching]
+[-Subroutines::ProhibitExcessComplexity]
+[-ValuesAndExpressions::ProhibitConstantPragma]
+[-ValuesAndExpressions::ProhibitEmptyQuotes]
+[-ValuesAndExpressions::ProhibitMagicNumbers]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
+[-ValuesAndExpressions::ProhibitVersionStrings]
+[-ValuesAndExpressions::ProhibitImplicitNewlines]
+[-ValuesAndExpressions::RequireInterpolationOfMetachars]
+[-Variables::ProhibitLocalVars]
+[-Variables::ProhibitPackageVars]
+
+# this policy is broken currently
+[-Freenode::PackageMatchesFilename]
+
+# This is not a good policy.
+# Non-explicit return is often easier to read.
+# think of JavaScript arrow functions.
+[-Subroutines::RequireFinalReturn]
+
+# This test is technically correct but I do not care.
+[-InputOutput::ProhibitInteractiveTest]
+
+# I believe in the opposite of this test.
+[-InputOutput::ProhibitExplicitStdin]
+
+# _build_* are allowed
+[Subroutines::ProhibitUnusedPrivateSubroutines]
+private_name_regex = _(?!_|build_)\w+
+
+# I don't agree with this policy because
+# a bare return can actually cause more problems.
+[-Subroutines::ProhibitExplicitReturnUndef]
+
+[Variables::RequireLocalizedPunctuationVars]
+allow = @ARGV $ARGV %ENV %SIG
+
+[Variables::ProhibitPunctuationVars]
+allow = $@ $! $/ $^O $^V
+
+
+

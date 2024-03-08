@@ -1,13 +1,12 @@
 return {
   "renerocksai/telekasten.nvim",
-  enabled = false,
   dependencies = {
     "nvim-telescope/telescope.nvim",
     "nvim-lua/plenary.nvim",
     "renerocksai/calendar-vim",
   },
   config = function()
-    local home = vim.fn.expand("~/zettelkasten")
+    local home = vim.fn.expand("~/silverbullet")
 
     require("telekasten").setup({
       home = home,
@@ -19,14 +18,14 @@ return {
       auto_set_filetype = true,
 
       -- dir names for special notes (absolute path or subdir name)
-      dailies = home .. "/" .. "daily",
-      weeklies = home .. "/" .. "weekly",
-      templates = home .. "/" .. "templates",
+      dailies = home .. "/" .. "Daily",
+      weeklies = home .. "/" .. "Weekly",
+      templates = home .. "/" .. "Templates",
 
       -- image (sub)dir for pasting
       -- dir name (absolute path or subdir name)
       -- or nil if pasted images shouldn't go into a special subdir
-      image_subdir = "assets",
+      image_subdir = "Assets",
 
       -- markdown file extension
       extension = ".md",
@@ -38,15 +37,15 @@ return {
 
       -- template for new notes (new_note, follow_link)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_note = home .. "/" .. "templates/new_note.md",
+      template_new_note = home .. "/" .. "Templates/Note.md",
 
       -- template for newly created daily notes (goto_today)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_daily = home .. "/" .. "templates/daily.md",
+      template_new_daily = home .. "/" .. "Templates/Daily.md",
 
       -- template for newly created weekly notes (goto_thisweek)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_weekly = home .. "/" .. "templates/weekly.md",
+      template_new_weekly = home .. "/" .. "Templates/Weekly.md",
 
       -- image link style
       -- wiki:     ![[image name]]
