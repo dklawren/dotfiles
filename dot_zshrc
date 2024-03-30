@@ -157,7 +157,7 @@ if [[ -n "$DISTTAG" || -n "$WSL_DISTRO_NAME" ]]; then
 
   # Perl setup
   source ~/perl5/perlbrew/etc/bashrc
-  perlbrew use 5.38.0
+  perlbrew use perl-5.38.2
 
   source "$HOME/.cargo/env"
 fi

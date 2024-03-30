@@ -101,17 +101,29 @@ keymap.set(
 	{ desc = "Create New Git Worktree" }
 )
 
--- Obsidian
-keymap.set(
-	"n",
-	"<leader>oc",
-	"<cmd>lua require('obsidian').util.toggle_checkbox()<CR>",
-	{ desc = "Obsidian Check Checkbox" }
-)
-keymap.set("n", "<leader>ot", "<cmd>ObsidianTemplate<CR>", { desc = "Insert Obsidian Template" })
-keymap.set("n", "<leader>oo", "<cmd>ObsidianOpen<CR>", { desc = "Open in Obsidian App" })
-keymap.set("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>", { desc = "Show ObsidianBacklinks" })
-keymap.set("n", "<leader>ol", "<cmd>ObsidianLinks<CR>", { desc = "Show ObsidianLinks" })
-keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "Create New Note" })
-keymap.set("n", "<leader>os", "<cmd>ObsidianSearch<CR>", { desc = "Search Obsidian" })
-keymap.set("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick Switch" })
+-- -- Obsidian
+-- keymap.set(
+-- 	"n",
+-- 	"<leader>oc",
+-- 	"<cmd>lua require('obsidian').util.toggle_checkbox()<CR>",
+-- 	{ desc = "Obsidian Check Checkbox" }
+-- )
+-- keymap.set("n", "<leader>ot", "<cmd>ObsidianTemplate<CR>", { desc = "Insert Obsidian Template" })
+-- keymap.set("n", "<leader>oo", "<cmd>ObsidianOpen<CR>", { desc = "Open in Obsidian App" })
+-- keymap.set("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>", { desc = "Show ObsidianBacklinks" })
+-- keymap.set("n", "<leader>ol", "<cmd>ObsidianLinks<CR>", { desc = "Show ObsidianLinks" })
+-- keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "Create New Note" })
+-- keymap.set("n", "<leader>os", "<cmd>ObsidianSearch<CR>", { desc = "Search Obsidian" })
+-- keymap.set("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick Switch" })
+
+-- Telekasten
+keymap.set("n", "<leader>zp", "<cmd>Telekasten panel<CR>", {desc = "Menu panel"})
+keymap.set("n", "<leader>zf", "<cmd>Telekasten find_notes<CR>", {desc = "Find notes"})
+keymap.set("n", "<leader>zg", "<cmd>Telekasten search_notes<CR>", {desc = "Search notes"})
+keymap.set("n", "<leader>zd", "<cmd>Telekasten goto_today<CR>", {desc = "Go to today"})
+keymap.set("n", "<leader>zz", "<cmd>Telekasten follow_link<CR>", {desc = "Follow link"})
+keymap.set("n", "<leader>zn", "<cmd>Telekasten new_note<CR>", {desc = "New note"})
+keymap.set("n", "<leader>zc", "<cmd>Telekasten show_calendar<CR>", {desc = "Show calendar"})
+keymap.set("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>", {desc = "Show backlinks"})
+keymap.set("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>", {desc = "Insert image link"})
+keymap.set("i", "[[", "<cmd>Telekasten insert_link<CR>", {desc = "Insert link"})

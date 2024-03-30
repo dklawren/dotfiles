@@ -28,13 +28,13 @@ sudo dnf -y config-manager --set-disabled fedora-cisco-openh264
 sudo dnf -y copr enable atim/lazygit
 
 # Enable copr for lf binary
-sudo dnf -y copr enable pennbauman/ports
+# sudo dnf -y copr enable pennbauman/ports
 
 # Act CLI for Github Actions
 sudo dnf -y copr enable rubemlrm/act-cli
 
 # Helix editor
-sudo dnf -y copr enable flekz/helix-git
+# sudo dnf -y copr enable flekz/helix-git
 
 # Install Google Cloud CLI
 if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
@@ -50,17 +50,17 @@ EOM
 fi
 
 # Install VSCode repo
-if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
-  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-  sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
-[code]
-name=Visual Studio Code
-baseurl=https://packages.microsoft.com/yumrepos/vscode
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-EOM
-fi
+#if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
+#  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+#  sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+#[code]
+#name=Visual Studio Code
+#baseurl=https://packages.microsoft.com/yumrepos/vscode
+#enabled=1
+#gpgcheck=1
+#gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+#EOM
+#fi
 
 # Install packages
 sudo dnf -y install --skip-broken \
@@ -75,7 +75,6 @@ sudo dnf -y install --skip-broken \
   chafa \
   cifs-utils \
   cmake \
-  code \
   composer \
   cpanminus \
   ctags \
@@ -88,11 +87,11 @@ sudo dnf -y install --skip-broken \
   git \
   git-delta \
   git-extras \
+  git-credential-libsecret \
   glib \
   glibc-all-langpacks \
   golang \
   google-cloud-sdk-gke-gcloud-auth-plugin \
-  helix-git \
   htop \
   hub \
   iproute \
@@ -101,7 +100,6 @@ sudo dnf -y install --skip-broken \
   kubernetes-client \
   lazygit \
   lcms2-devel \
-  lf \
   libxkbcommon-devel \
   luarocks \
   webkit2gtk4.0 \
@@ -143,7 +141,6 @@ sudo dnf -y install --skip-broken \
   tar \
   tk-devel \
   tmux \
-  tokei \
   util-linux-user \
   wl-clipboard \
   xz \
@@ -162,10 +159,8 @@ curl -sS https://starship.rs/install.sh | sh
 # Perlbrew
 curl -L https://install.perlbrew.pl | bash
 source ~/perl5/perlbrew/etc/bashrc
-perlbrew install perl-5.38.1
-perlbrew switch perl-5.38.1
-perlbrew lib create dkl
-perlbrew use perl-5.38.1@dkl
+perlbrew install perl-5.38.2
+perlbrew use perl-5.38.2
 
 # Install perl modules
 cpanm install --quiet --notest \
@@ -194,11 +189,9 @@ sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/podman
 sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/docker
 sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/rpm-ostree
 
-# Install Deno
-cargo install deno --locked
-
 # Install node support
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+mkdir $HOME/.nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -212,10 +205,14 @@ npm install -g intelephense
 npm install -g vscode-langservers-extracted
 npm install -g yaml-language-server@next
 npm install -g perlnavigator-server
+npm install -g typescript typescript-language-server
 
 # Rust support
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
+
+# Install Deno
+curl -fsSL https://deno.land/install.sh | sh
 
 # Pyenv support
 curl https://pyenv.run | bash
@@ -226,9 +223,9 @@ eval "$(pyenv virtualenv-init -)"
 pyenv install 3.8.3
 
 # VSCode remote ssh support
-sudo /usr/libexec/openssh/sshd-keygen rsa
-sudo /usr/libexec/openssh/sshd-keygen ecdsa
-sudo /usr/libexec/openssh/sshd-keygen ed25519
+#sudo /usr/libexec/openssh/sshd-keygen rsa
+#sudo /usr/libexec/openssh/sshd-keygen ecdsa
+#sudo /usr/libexec/openssh/sshd-keygen ed25519
 
 # echo "
 # # For VS Code

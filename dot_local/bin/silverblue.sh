@@ -9,14 +9,11 @@ flatpak update
 
 # Install flatpak apps
 flatpak install -y --or-update \
-  com.github.alexkdeveloper.somafm \
   com.github.johnfactotum.Foliate \
   com.github.tchx84.Flatseal \
   com.gitlab.newsflash \
-  com.logseq.Logseq \
   com.mattjakeman.ExtensionManager \
   com.slack.Slack \
-  de.haeckerfelix.Shortwave \
   org.gnome.World.PikaBackup \
   org.mozilla.Thunderbird \
   org.mozilla.firefox \
@@ -26,6 +23,9 @@ flatpak install -y --or-update \
 # Enable Wayland support for Thunderbird
 flatpak override --user --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
 
+# Firefox nightly
+flatpak install https://gitlab.com/projects261/firefox-nightly-flatpak/-/raw/main/firefox-nightly.flatpakref
+
 # Install packages
 rpm-ostree upgrade
 rpm-ostree remove -y \
@@ -34,20 +34,14 @@ rpm-ostree remove -y \
 rpm-ostree install -y \
   cascadia-code-fonts\
   distrobox \
-  dunst \
   exa \
   fira-code-fonts \
-  firefoxpwa \
-  foot \
-  fuzzel \
   fzf \
   git \
   git-extras \
-  gnome-shell-extension-user-theme \
   gnome-tweaks \
   grim \
   htop \
-  langpacks-en \
   moby-engine \
   neovim \
   nodejs \
@@ -56,16 +50,10 @@ rpm-ostree install -y \
   podman-compose \
   ripgrep \
   slurp \
-  sway \
-  swaybg \
-  swayidle \
-  swaylock \
   syncthing \
   sysstat \
   tlp \
   tlp-rdw \
-  util-linux-user \
-  waybar \
   waydroid \
   xdg-desktop-portal-wlr \
   zsh
@@ -77,8 +65,8 @@ sudo systemctl --now enable docker.service
 systemctl --user --now enable syncthing.service
 
 # tlp
-sudo cp $HOME/.bin/files/tlp.conf /etc/tlp.conf
-sudo systemctl --now enable tlp.service
-sudo systemctl stop power-profiles-daemon.service
-sudo systemctl disable power-profiles-daemon.service
-sudo systemctl mask power-profiles-daemon.service
+# sudo cp $HOME/.bin/files/tlp.conf /etc/tlp.conf
+# sudo systemctl --now enable tlp.service
+# sudo systemctl stop power-profiles-daemon.service
+# sudo systemctl disable power-profiles-daemon.service
+# sudo systemctl mask power-profiles-daemon.service

@@ -18,6 +18,7 @@ return {
 			perl = { "perltidy" },
 			python = { "isort", "black" },
 			javascript = { "prettier" },
+      typescript = { "prettier" },
 		},
 		format_on_save = false,
 		formatters = {

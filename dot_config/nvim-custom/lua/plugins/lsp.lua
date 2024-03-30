@@ -27,7 +27,8 @@ return {
         'lua_ls',
         'marksman',
         'perlnavigator',
-        'gopls'
+        'gopls',
+        'tsserver'
       }
     })
 
@@ -75,6 +76,8 @@ return {
       }
     }
 
+    -- Typescript
+    lspconfig.tsserver.setup {}
   end
 }
 
