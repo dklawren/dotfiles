@@ -1,0 +1,15 @@
+[Unit]
+Description=Silverbullet
+Documentation=https://silverbullet.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/home/dkl
+ExecStart=/var/home/dkl/.deno/bin/silverbullet /var/home/dkl/silverbullet
+Restart=on-failure
+Environment="PATH=/var/home/dkl/.deno/bin"
+
+[Install]
+WantedBy=default.target
