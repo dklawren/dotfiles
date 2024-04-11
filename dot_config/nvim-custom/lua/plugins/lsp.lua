@@ -76,6 +76,12 @@ return {
       }
     }
 
+    -- marksman
+    lspconfig.marksman.setup{
+      filetypes = {"markdown"},
+      root_pattern = { "~/silverbullet" }
+    }
+
     -- Typescript
     lspconfig.tsserver.setup {}
   end

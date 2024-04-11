@@ -127,3 +127,6 @@ keymap.set("n", "<leader>zc", "<cmd>Telekasten show_calendar<CR>", {desc = "Show
 keymap.set("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>", {desc = "Show backlinks"})
 keymap.set("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>", {desc = "Insert image link"})
 keymap.set("i", "[[", "<cmd>Telekasten insert_link<CR>", {desc = "Insert link"})
+
+-- Undotree
+keymap.set("n", "<leader>ut", "<cmd>UndotreeToggle<CR>", {desc = "Undotree Toggle"})
