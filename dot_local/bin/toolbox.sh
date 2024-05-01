@@ -144,7 +144,9 @@ sudo dnf -y install --skip-broken \
   util-linux-user \
   wl-clipboard \
   xz \
-  zsh
+  zsh \
+  zsh-autosuggestions  \
+  zsh-syntax-highlighting
 
 sudo dnf clean all
 

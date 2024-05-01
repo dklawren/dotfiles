@@ -13,10 +13,10 @@ function pmcleanup () {
 }
 
 function dbox-backup () {
-  podman exec fedora-39 sudo dnf clean all
-  podman stop fedora-39
-  podman container commit -p fedora-39 fedora-39-distrobox-dkl:latest
-  podman save fedora-39-distrobox-dkl:latest | gzip > $HOME/devel/fedora-39-distrobox-dkl.tar.gz
+  podman exec fedora-40 sudo dnf clean all
+  podman stop fedora-40
+  podman container commit -p fedora-40 fedora-40-distrobox-dkl:latest
+  podman save fedora-40-distrobox-dkl:latest | gzip > $HOME/devel/fedora-40-distrobox-dkl.tar.gz
 }
 
 function bmo-prod {

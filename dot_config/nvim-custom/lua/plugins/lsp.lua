@@ -25,7 +25,7 @@ return {
       -- Install these LSPs automatically
       ensure_installed = {
         'lua_ls',
-        'marksman',
+        --'marksman',
         'perlnavigator',
         'gopls',
         'tsserver'
