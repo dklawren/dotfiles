@@ -1,0 +1,151 @@
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+
+# flock wrapper for running only one process
+set $flock ~/.config/sway/scripts/flock.sh
+
+# Your preferred terminal emulator
+set $term foot
+set $term_cwd $term -D "$(~/.config/sway/scripts/swaycwd.sh 2>/dev/null || echo $HOME)"
+set $term_float footclient -a floating_shell
+
+# rofi theme
+set $rofi_theme "* {lightbg: $background-color; background: $background-color; lightfg: $accent-color; foreground: $text-color; border-color: $accent-color;} window {border: 2;}"
+
+# Your preferred application launcher
+set $menu rofi -show combi -combi-modi "drun,run" -terminal $term -ssh-command "{terminal} {ssh-client} {host} [-p {port}]" -run-shell-command "{terminal} {cmd}" -show-icons -font "$gui-font"
+
+# Add --to-code to bindsym, support for non-latin layouts
+set $bindsym bindsym --to-code
+
+# Volume notification
+set $volume_bar ~/.config/sway/scripts/volume-notify.sh
+
+# Brightness notification
+set $brightness_bar ~/.config/sway/scripts/brightness-notify.sh
+
+# brightness control
+set $brightness ~/.config/sway/scripts/brightness.sh
+set $brightness_up $brightness up && $brightness_bar
+set $brightness_down $brightness down && $brightness_bar
+
+# Volume control
+set $volume_down pulsemixer --change-volume -5 && $volume_bar
+set $volume_up pulsemixer --change-volume +5 && $volume_bar
+set $volume_mute pulsemixer --toggle-mute && $volume_bar
+
+# clipboard history
+set $clipboard cliphist list | rofi -dmenu -font "$gui-font" -p "Select item to copy" -lines 10 -width 35 | cliphist decode | wl-copy
+set $clipboard-del cliphist list | rofi -dmenu -font "$gui-font" -p "Select item to delete" -lines 10 -width 35 | cliphist delete
+
+# bluetooth menu
+set $bluetooth $flock $term_float bluetuith
+
+# Pulseaudo command
+set $pulseaudio $term_float pulsemixer
+
+# calendar application
+set $calendar $term_float calcurse
+
+# help overlay
+set $help_menu '[ -x "$(command -v nwg-wrapper)" ] && [ -f $HOME/.config/nwg-wrapper/help.sh ] && ~/.config/sway/scripts/help.sh'
+
+# help overlay command
+set $help ~/.config/sway/scripts/help.sh --toggle
+
+# workspace names
+set $ws1 number 1
+set $ws2 number 2
+set $ws3 number 3
+set $ws4 number 4
+set $ws5 number 5
+set $ws6 number 6
+set $ws7 number 7
+set $ws8 number 8
+set $ws9 number 9
+set $ws10 number 10
+
+# screenshot
+set $grimshot /usr/bin/grimshot
+set $pipe_output $grimshot save output -
+set $pipe_selection $grimshot save window -
+set $pipe_active $grimshot save active -
+set $notify_paste bash -c '[[ $(wl-paste -l) == "image/png" ]] && notify-send "Screenshot copied to clipboard"'
+set $swappy swappy -f -
+
+set $screenshot_screen $pipe_output | $swappy && $notify_paste
+set $screenshot_selection $pipe_selection | $swappy && $notify_paste
+set $screenshot_active $pipe_active | $swappy && $notify_paste
+
+### Idle configuration
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 300 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+#
+set $idle_timeout 240
+set $locking_timeout 300
+set $screen_timeout 600
+set $sleep_timeout_bat 900
+set $sleep_timeout_ac 3600
+set $sleep_delay 2
+set $locking ~/.config/sway/scripts/swaylock.sh
+
+set $swayidle swayidle -w \
+    timeout $idle_timeout 'brightnessctl -s && brightnessctl set 10' \
+    resume 'brightnessctl -r' \
+    timeout $locking_timeout 'exec $locking' \
+    timeout $screen_timeout '~/.config/sway/scripts/kbd-backlight.sh off && swaymsg "output * power off"' \
+    resume '~/.config/sway/scripts/kbd-backlight.sh on && swaymsg "output * power on"' \
+    timeout $sleep_timeout_bat '[ "$(acpi -b | grep Discharging)" != "" ] && systemctl suspend' \
+    timeout $sleep_timeout_ac '[ "$(acpi -b | grep Discharging)" = "" ] && systemctl suspend' \
+    before-sleep 'playerctl pause' \
+    before-sleep 'exec $locking & sleep $sleep_delay' \
+    after-resume '~/.config/sway/scripts/kbd-backlight.sh on && swaymsg "output * power on" && brightnessctl -r'
+
+# PolicyKit agent
+set $polkit_agent /usr/bin/mate-polkit
+
+# Night color
+set $wlsunset '[ -x "$(command -v wlsunset)" ] && ~/.config/sway/scripts/sunset.sh "on"'
+
+# Autotiling script
+set $autotiling '[ -x "$(command -v autotiling)" ] && autotiling -w 1 3 5 7 9'
+
+# switch between top-level containers (windows) in a workspace
+set $switch_toplevel '[ -f ~/.config/sway/scripts/switch-top-level.py ] && ~/.config/sway/scripts/switch-top-level.py'
+
+# Automatic workspace names
+set $autoname_workspaces '[ -f ~/.config/sway/scripts/autoname-workspaces.py ] && ~/.config/sway/scripts/autoname-workspaces.py'
+
+# restart kanshi https://github.com/emersion/kanshi/issues/43#issuecomment-531679213
+set $kanshi '[ -x "$(command -v kanshi)" ] && pkill kanshi; exec kanshi'
+
+# Start PCmanFM as a daemon
+set $pcmanfm_daemon '[ -x "$(command -v pcmanfm)" ] && pcmanfm -d'
+
+# Clipboard manager
+set $cliphist_store '[ -x "$(command -v wl-paste)" ] && [ -x "$(command -v cliphist)" ] && wl-paste --watch cliphist store'
+set $cliphist_watch '[ -x "$(command -v wl-paste)" ] && [ -x "$(command -v cliphist)" ] && wl-paste --watch pkill -RTMIN+9 waybar'
+
+# Start nwg-drawer as a daemon
+set $nwg_drawer_daemon '[ -x "$(command -v nwg-drawer)" ] && nwg-drawer -r'
+
+# Start playerctl as daemon
+set $watch_playerctl '[ -x "$(command -v playerctl)" ] && pkill playerctl; playerctl -a metadata --format \'{{status}} {{title}}\' --follow | while read line; do pkill -RTMIN+5 waybar; done'
+
+# Update Rofi theme based on $rofi_theme colors
+set $update_rofi_theme mkdir -p $HOME/.config/rofi/ && echo $rofi_theme > $HOME/.config/rofi/config.rasi
+
+# Start Calcurse calendar as a daemon
+set $calendar_daemon 'calcurse --daemon'
+
+# Notifications from Swappy
+set $swappy_notify '[ -x "$(command -v swappy)" ] && ~/.config/sway/scripts/screenshot-notify.sh'

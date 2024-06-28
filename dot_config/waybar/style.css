@@ -1,115 +1,241 @@
+@keyframes blink-warning {
+    70% {
+        color: @wm_icon_bg;
+    }
+
+    to {
+        color: @wm_icon_bg;
+        background-color: @warning_color;
+    }
+}
+
+@keyframes blink-critical {
+    70% {
+        color: @wm_icon_bg;
+    }
+
+    to {
+        color: @wm_icon_bg;
+        background-color: @error_color;
+    }
+}
+
+/* Reset all styles */
 * {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    border: none;
+    border-radius: 4;
     min-height: 0;
-    padding-bottom: 2px;
-    padding-top: 2px;
+    margin: 0;
+    padding: 0;
 }
 
-#battery {
-    background: transparent;
-    color: #ffffff;
-    opacity: 0.7;
-    padding: 2px 8px;
+/* The whole bar */
+#waybar {
+    background: @theme_bg_color;
+    color: @theme_fg_color;
+    font-family: "Ubuntu", "Font Awesome 6 Free", "Font Awesome";
+    font-size: 14px;
 }
 
-#battery.charging, #battery.plugged {
-    color: #ffffff;
-    padding: 2px 8px;
-}
-
-#battery.critical:not(.charging) {
-    animation-direction: alternate;
-    animation-duration: 0.5s;
-    animation-iteration-count: infinite;
-    animation-name: blink;
-    animation-timing-function: linear;
-    background-color: #f53c3c;
-    color: gray;
-}
-
-#clock {
-    background: #1f1f1f;
-    color: #ffffff;
-    margin-right: 4px;
-    padding: 2px 8px;
-}
-
-#network {
-    background: transparent;
-    color: #ffffff;
-    opacity: 0.7;
-    padding: 2px 8px;
-}
-
-#network.disconnected {
-    background: #1f1f1f;
-    color: red;
-}
-
-#tray {
-    background: #1f1f1f;
-    color: #ffffff;
-    margin-left: 18px;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-    background: #1f1f1f;
-    color: #ffffff;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-    background: #1f1f1f;
-    color: #ffffff;
+#window {
+    margin-left: 10px;
 }
 
 window#waybar {
-    background: transparent;
-    border-bottom: 1px solid #332b2b;
-    transition-duration: .2s;
-    transition-property: background-color;
+    margin-left: 10px;
+    border-radius: 0;
 }
 
-#workspaces button:hover {
-    /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
-    background: @background;
-    border-bottom: 1px solid #ffffff;
-    box-shadow: inherit;
-    color: #ffffff;
+window#waybar.hidden {
+    opacity: 0.2;
 }
 
 #workspaces button {
-    background: transparent;
-    color: #ffffff;
-    margin-left: 2px;
-    margin-right: 2px;
-    opacity: 0.7;
+    /* To compensate for the top border and still have vertical centering */
+    padding: 0 0.5em;
+    margin: 4px 3px;
+    color: @wm_icon_bg;
 }
 
 #workspaces button.focused {
-    background: #453e3d;
-    color: #ffffff;
-    opacity: 0.8;
+    border-color: @theme_selected_bg_color;
+    color: @wm_icon_bg;
+    background-color: @theme_selected_bg_color;
 }
 
 #workspaces button.urgent {
-    background-color: #eb4d4b;
+    border-color: @error_color;
+    color: @error_color;
 }
 
-
-/* Custom Stuff */
-#custom-audio {
-    background: transparent;
-    color: #ffffff;
-    opacity: 0.7;
-    padding: 2px 8px;
+#mode {
+    background: @background_color;
 }
 
-#custom-hostname {
-    background: transparent;
-    color: #ffffff;
-    padding: 2px 8px;
-    opacity: 0.7;
+#clock,
+#custom-help,
+#custom-playerctl,
+#custom-power,
+#custom-weather,
+#custom-wlsunset,
+#custom-clipboard,
+#custom-menu,
+#custom-dnd,
+#battery,
+#cpu,
+#language,
+#memory,
+#network,
+#bluetooth,
+#pulseaudio,
+#tray,
+#mode,
+#idle_inhibitor {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 4px 3px;
+}
+
+#clock {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-weather {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-wlsunset {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-playerctl {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-help {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-power {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-clipboard {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-menu {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-dnd {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#battery {
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#battery.warning {
+    color: @warning_color;
+}
+
+#battery.critical {
+    color: @error_color;
+}
+
+#battery.warning.discharging {
+    animation-name: blink-warning;
+    animation-duration: 3s;
+}
+
+#battery.critical.discharging {
+    animation-name: blink-critical;
+    animation-duration: 2s;
+}
+
+label:focus {
+    background-color: #000000;
+}
+
+#cpu {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#language {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#memory {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#custom-gpu-usage {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#network {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#bluetooth {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#bluetooth.disabled {
+    background: @theme_bg_color;
+    color: @wm_icon_bg;
+}
+
+#network.disconnected {
+    background: @theme_bg_color;
+    color: @wm_icon_bg
+}
+
+#pulseaudio {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+
+#pulseaudio.muted {
+    background: @theme_bg_color;
+    color: @wm_icon_bg;
+}
+
+#custom-wf-recorder {
+    color: @error_color;
+    padding-right: 10px;
+}
+
+#tray {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#idle_inhibitor {
+    background: @theme_selected_bg_color;
+}
+
+#idle_inhibitor.activated {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
 }

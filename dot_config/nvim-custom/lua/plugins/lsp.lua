@@ -25,7 +25,8 @@ return {
       -- Install these LSPs automatically
       ensure_installed = {
         'lua_ls',
-        --'marksman',
+        'marksman',
+        'markdown_oxide',
         'perlnavigator',
         'gopls',
         'tsserver'
@@ -84,6 +85,9 @@ return {
 
     -- Typescript
     lspconfig.tsserver.setup {}
+
+    -- Markdown-oxide
+    lspconfig.markdown_oxide.setup {}
   end
 }
 

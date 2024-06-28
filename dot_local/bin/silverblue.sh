@@ -34,29 +34,41 @@ rpm-ostree remove -y \
 rpm-ostree install -y \
   cascadia-code-fonts\
   distrobox \
+  #dunst \
   exa \
   fira-code-fonts \
+  #foot \
   fzf \
+  # fuzzel \
   git \
   git-extras \
   gnome-tweaks \
-  grim \
+  #grim \
   htop \
   moby-engine \
   neovim \
   nodejs \
   onedrive \
   openssl \
+  pandoc \
   podman-compose \
+  polkit \
   ripgrep \
-  slurp \
+  # `slurp \
+  # sway \
+  # swaybg \
+  # swayidle \
+  # swaylock \
   syncthing \
   sysstat \
   tlp \
   tlp-rdw \
+  # waybar \
   waydroid \
+  # wmenu \
   xdg-desktop-portal-wlr \
-  zsh
+  xorg-x11-server-Xwayland \
+  zsh 
 
 # Enable docker
 sudo systemctl --now enable docker.service
@@ -65,8 +77,8 @@ sudo systemctl --now enable docker.service
 systemctl --user --now enable syncthing.service
 
 # tlp
-# sudo cp $HOME/.bin/files/tlp.conf /etc/tlp.conf
-# sudo systemctl --now enable tlp.service
-# sudo systemctl stop power-profiles-daemon.service
-# sudo systemctl disable power-profiles-daemon.service
-# sudo systemctl mask power-profiles-daemon.service
+sudo cp $HOME/.local/bin/files/tlp.conf /etc/tlp.conf
+sudo systemctl --now enable tlp.service
+sudo systemctl stop power-profiles-daemon.service
+sudo systemctl disable power-profiles-daemon.service
+sudo systemctl mask power-profiles-daemon.service

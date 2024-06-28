@@ -1,6 +1,5 @@
 return {
   "renerocksai/telekasten.nvim",
-  enabled = false,
   dependencies = {
     "nvim-telescope/telescope.nvim",
     "nvim-lua/plenary.nvim",
@@ -19,9 +18,9 @@ return {
       auto_set_filetype = true,
 
       -- dir names for special notes (absolute path or subdir name)
-      dailies = home .. "/" .. "Daily",
-      weeklies = home .. "/" .. "Weekly",
-      templates = home .. "/" .. "Templates",
+      dailies = home .. "/Daily",
+      weeklies = home .. "/Weekly",
+      templates = home .. "/Templates",
 
       -- image (sub)dir for pasting
       -- dir name (absolute path or subdir name)
@@ -38,15 +37,15 @@ return {
 
       -- template for new notes (new_note, follow_link)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_note = home .. "/" .. "Templates/Note.md",
+      template_new_note = home .. "/Templates/Note.md",
 
       -- template for newly created daily notes (goto_today)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_daily = home .. "/" .. "Templates/Daily.md",
+      template_new_daily = home .. "/Library/Custom/New Page/Daily Note.md",
 
       -- template for newly created weekly notes (goto_thisweek)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_weekly = home .. "/" .. "Templates/Weekly.md",
+      template_new_weekly = home .. "/Templates/Weekly.md",
 
       -- image link style
       -- wiki:     ![[image name]]

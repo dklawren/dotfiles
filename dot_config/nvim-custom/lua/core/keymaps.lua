@@ -46,7 +46,7 @@ keymap.set("n", "<leader>qc", ":cclose<CR>", { desc = "Close quickfix list" })
 keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>", { desc = "Toggle maximize tab" })
 
 -- Neotree
-keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { desc = "Toggle file explorer" })
+keymap.set("n", "<leader>e", ":Neotree toggle reveal<CR>", { desc = "Toggle file explorer" })
 keymap.set("n", "<leader>er", ":Neotree focus<CR>", { desc = "Toggle focus to file explorer" })
 
 -- Telescope
@@ -117,16 +117,19 @@ keymap.set(
 -- keymap.set("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick Switch" })
 
 -- Telekasten
--- keymap.set("n", "<leader>zp", "<cmd>Telekasten panel<CR>", {desc = "Menu panel"})
--- keymap.set("n", "<leader>zf", "<cmd>Telekasten find_notes<CR>", {desc = "Find notes"})
--- keymap.set("n", "<leader>zg", "<cmd>Telekasten search_notes<CR>", {desc = "Search notes"})
--- keymap.set("n", "<leader>zd", "<cmd>Telekasten goto_today<CR>", {desc = "Go to today"})
--- keymap.set("n", "<leader>zz", "<cmd>Telekasten follow_link<CR>", {desc = "Follow link"})
--- keymap.set("n", "<leader>zn", "<cmd>Telekasten new_note<CR>", {desc = "New note"})
--- keymap.set("n", "<leader>zc", "<cmd>Telekasten show_calendar<CR>", {desc = "Show calendar"})
--- keymap.set("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>", {desc = "Show backlinks"})
--- keymap.set("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>", {desc = "Insert image link"})
--- keymap.set("i", "[[", "<cmd>Telekasten insert_link<CR>", {desc = "Insert link"})
+keymap.set("n", "<leader>zp", "<cmd>Telekasten panel<CR>", {desc = "Menu panel"})
+keymap.set("n", "<leader>zf", "<cmd>Telekasten find_notes<CR>", {desc = "Find notes"})
+keymap.set("n", "<leader>zg", "<cmd>Telekasten search_notes<CR>", {desc = "Search notes"})
+keymap.set("n", "<leader>zd", "<cmd>Telekasten goto_today<CR>", {desc = "Go to today"})
+keymap.set("n", "<leader>zz", "<cmd>Telekasten follow_link<CR>", {desc = "Follow link"})
+keymap.set("n", "<leader>zn", "<cmd>Telekasten new_note<CR>", {desc = "New note"})
+keymap.set("n", "<leader>zc", "<cmd>Telekasten show_calendar<CR>", {desc = "Show calendar"})
+keymap.set("n", "<leader>zb", "<cmd>Telekasten show_backlinks<CR>", {desc = "Show backlinks"})
+keymap.set("n", "<leader>zI", "<cmd>Telekasten insert_img_link<CR>", {desc = "Insert image link"})
+keymap.set("i", "[[", "<cmd>Telekasten insert_link<CR>", {desc = "Insert link"})
 
 -- Undotree
 keymap.set("n", "<leader>ut", "<cmd>UndotreeToggle<CR>", {desc = "Undotree Toggle"})
+
+-- Oil
+vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })

@@ -20,15 +20,15 @@ function dbox-backup () {
 }
 
 function bmo-prod {
-  pyenv global 3.8.3
+  pyenv global 3.11.6
   gcloud auth login
   gcloud compute ssh --zone "us-west1-a" "bastion-us-west1" --project "moz-fx-bastion-prod-global" --tunnel-through-iap
-  pyenv global system
+  #pyenv global system
 }
 
 function bmo-dev-stage {
-  pyenv global 3.8.3
+  #pyenv global 3.8.3
   gcloud auth login
   gcloud compute ssh --zone "us-west1-a" "bastion-us-west1" --project "moz-fx-bastion-nonprod-global" --tunnel-through-iap
-  pyenv global system
+  #pyenv global system
 }

@@ -23,7 +23,7 @@ return {
 		format_on_save = false,
 		formatters = {
 			perltidy = {
-				append_args = { "-pro=~/devel/github/mozilla/bmo/master/.perltidyrc" },
+				append_args = { "-pro=/var/home/dkl/devel/github/mozilla/bmo/master/.perltidyrc" },
 			},
 		},
 	},
