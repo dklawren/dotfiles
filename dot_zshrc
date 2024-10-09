@@ -72,16 +72,14 @@ plugins=(
   cpanm
   dnf 
   docker 
-  docker-compose 
-  fd
-  fzf 
-  gh 
+  docker-compose
+  fzf
+  gh
   gitfast 
   git-extras 
   perl
   podman
-  python 
-  ripgrep
+  python
   rsync
   rust
   ssh-agent
@@ -141,7 +139,7 @@ source /usr/share/fzf/shell/key-bindings.zsh
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 
 # These tasks should only run inside of a container such as toolbox/distrobox
-if [[ -n "$CONTAINER_ID" || -n "$WSL_DISTRO_NAME" ]]; then
+if [[ -n "$CONTAINER_ID" || -n "$TOOLBOX_PATH" || -n "$WSL_DISTRO_NAME" ]]; then
   # Start sshd if not running (currently needed for vscode)
   #if [[ -z "$VSCODE_INJECTION" ]]; then
   #  sudo /usr/sbin/sshd > /dev/null 2>&1 &

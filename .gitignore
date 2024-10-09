@@ -1,2 +1,3 @@
-dot_config/nvim-custom/lazy-lock.json
+dot_config/nvim-lazy/lazy-lock.json
+dot_config/nvim-mini/pack
 dot_tmux/plugins

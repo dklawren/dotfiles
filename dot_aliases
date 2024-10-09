@@ -41,7 +41,7 @@ alias llt='eza -1 --icons --tree --git-ignore'
 # Docker
 alias d=docker
 alias dx='docker exec -it'
-alias dc='docker-compose'
+alias dc='docker compose'
 alias da='docker ps -q -a'
 alias dv='docker volume ls -q'
 

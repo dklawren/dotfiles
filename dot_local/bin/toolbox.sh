@@ -27,14 +27,8 @@ sudo dnf -y config-manager --set-disabled fedora-cisco-openh264
 # Enable copr for lazygit
 sudo dnf -y copr enable atim/lazygit
 
-# Enable copr for lf binary
-# sudo dnf -y copr enable pennbauman/ports
-
 # Act CLI for Github Actions
 sudo dnf -y copr enable rubemlrm/act-cli
-
-# Helix editor
-# sudo dnf -y copr enable flekz/helix-git
 
 # Install Google Cloud CLI
 if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
@@ -48,19 +42,6 @@ repo_gpgcheck=0
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOM
 fi
-
-# Install VSCode repo
-#if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
-#  sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-#  sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
-#[code]
-#name=Visual Studio Code
-#baseurl=https://packages.microsoft.com/yumrepos/vscode
-#enabled=1
-#gpgcheck=1
-#gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-#EOM
-#fi
 
 # Install packages
 sudo dnf -y install --skip-broken \
@@ -187,9 +168,9 @@ cpanm install --quiet --notest \
   Test::Perl::Critic::Progressive
 
 # Allow use of podman and docker inside the distrobox
-sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/podman
-sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/docker
-sudo ln -s /usr/bin/distrobox-host-exec /usr/local/bin/rpm-ostree
+sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman
+sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/docker
+sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/rpm-ostree
 
 # Install node support
 mkdir $HOME/.nvm
@@ -221,26 +202,3 @@ curl https://pyenv.run | bash
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
-# google-cloud-sdk support
-pyenv install 3.8.3
-
-# VSCode remote ssh support
-#sudo /usr/libexec/openssh/sshd-keygen rsa
-#sudo /usr/libexec/openssh/sshd-keygen ecdsa
-#sudo /usr/libexec/openssh/sshd-keygen ed25519
-
-# echo "
-# # For VS Code
-# Port 2238                 # Prevent conflicts with other SSH servers
-# ListenAddress localhost   # Don’t allow remote connections
-# PermitEmptyPasswords yes  # Containers lack passwords by default
-# PermitUserEnvironment yes # Allow setting DISPLAY for remote connections" | sudo tee -a /etc/ssh/sshd_config
-#
-# echo "
-# Host toolbox-38
-#     HostName localhost
-#     Port 2238
-#
-# Host toolbox-39
-#     Hostname localhost
-#     Port 2239" >> ~/.ssh/config
