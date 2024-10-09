@@ -37,6 +37,7 @@ alias dmux="ssh -t docker tmux new -A"
 alias ls="eza --color=always --long --git --icons=always"
 alias ll="eza --color=always --long --git --icons=always"
 alias llt='eza -1 --icons --tree --git-ignore'
+alias ch='chezmoi'
 
 # Docker
 alias d=docker
