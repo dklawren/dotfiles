@@ -30,6 +30,9 @@ sudo dnf -y copr enable atim/lazygit
 # Act CLI for Github Actions
 sudo dnf -y copr enable rubemlrm/act-cli
 
+# Terraform
+sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+
 # Install Google Cloud CLI
 if [ ! -f /etc/yum.repos.d/google-cloud-sdk.repo ]; then
   sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
@@ -120,6 +123,7 @@ sudo dnf -y install --skip-broken \
   socat \
   sysstat \
   tar \
+  terraform \
   tk-devel \
   tmux \
   util-linux-user \
