@@ -69,3 +69,4 @@ fi
 
 # cd $HOME
 . "$HOME/.cargo/env"
+. "$HOME/.deno/env"

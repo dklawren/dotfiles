@@ -1,3 +1,5 @@
+# Add deno completions to search path
+if [[ ":$FPATH:" != *":/var/home/dkl/.zsh/completions:"* ]]; then export FPATH="/var/home/dkl/.zsh/completions:$FPATH"; fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -174,3 +176,8 @@ bindkey -s ^a "nvims\n"
 source ~/local-devel/fzf-git.sh/fzf-git.sh
 
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /var/home/dkl/.deno/env
+
+# Initialize zsh completions (added by deno install script)
+autoload -Uz compinit
+compinit

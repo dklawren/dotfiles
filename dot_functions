@@ -13,22 +13,18 @@ function pmcleanup () {
 }
 
 function dbox-backup () {
-  podman exec fedora-40 sudo dnf clean all
-  podman stop fedora-40
-  podman container commit -p fedora-40 fedora-40-distrobox-dkl:latest
-  podman save fedora-40-distrobox-dkl:latest | gzip > $HOME/devel/fedora-40-distrobox-dkl.tar.gz
+  podman exec fedora-41 sudo dnf clean all
+  podman stop fedora-41
+  podman container commit -p fedora-41 fedora-41-distrobox-dkl:latest
+  podman save fedora-41-distrobox-dkl:latest | gzip > $HOME/devel/fedora-41-distrobox-dkl.tar.gz
 }
 
 function bmo-prod {
-  pyenv global 3.11.6
   gcloud auth login
   gcloud compute ssh --zone "us-west1-a" "bastion-us-west1" --project "moz-fx-bastion-prod-global" --tunnel-through-iap
-  #pyenv global system
 }
 
 function bmo-dev-stage {
-  #pyenv global 3.8.3
   gcloud auth login
   gcloud compute ssh --zone "us-west1-a" "bastion-us-west1" --project "moz-fx-bastion-nonprod-global" --tunnel-through-iap
-  #pyenv global system
 }
