@@ -9,15 +9,65 @@ flatpak update
 
 # Install flatpak apps
 flatpak install -y --or-update \
+  ca.andyholmes.Valent \
+  ca.desrt.dconf-editor \
+  com.calibre_ebook.calibre \
+  com.github.alexkdeveloper.somafm \
+  com.github.d4nj1.tlpui \
   com.github.johnfactotum.Foliate \
+  com.github.neithern.g4music \
   com.github.tchx84.Flatseal \
   com.gitlab.newsflash \
+  com.google.Chrome \
+  com.jeffser.Alpaca \
   com.mattjakeman.ExtensionManager \
   com.slack.Slack \
+  com.transmissionbt.Transmission \
+  com.ultimaker.cura \
+  com.usebottles.bottles \
+  com.vivaldi.Vivaldi \
+  dev.bragefuglseth.Keypunch \
+  fr.handbrake.ghb \
+  io.github.alexkdeveloper.radio \
+  io.github.flattool.Warehouse \
+  io.github.vikdevelop.SaveDesktop \
+  io.github.zen_browser.zen \
+  io.gitlab.adhami3310.Impression \
+  io.gitlab.librewolf-community \
+  io.missioncenter.MissionCenter \
+  io.podman_desktop.PodmanDesktop \
+  it.mijorus.gearlever \
+  md.obsidian.Obsidian \
+  me.iepure.devtoolbox \
+  net.codelogistics.webapps \
+  net.waterfox.waterfox \
+  one.ablaze.floorp \
+  org.cockpit_project.CockpitClient \
+  org.fedoraproject.MediaWriter \
+  org.gnome.baobab \
+  org.gnome.Calculator \
+  org.gnome.Characters \
+  org.gnome.Cheese \
+  org.gnome.clocks \
+  org.gnome.Connections \
+  org.gnome.Evince \
+  org.gnome.Firmware \
+  org.gnome.font-viewer \
+  org.gnome.Logs \
+  org.gnome.Loupe \
+  org.gnome.NautilusPreviewer \
+  org.gnome.SimpleScan \
+  org.gnome.Solanum \
+  org.gnome.TextEditor \
+  org.gnome.Weather \
   org.gnome.World.PikaBackup \
-  org.mozilla.Thunderbird \
+  org.libreoffice.LibreOffice \
+  org.mamedev.MAME \
   org.mozilla.firefox \
+  org.mozilla.Thunderbird \
+  org.mozilla.vpn \
   org.videolan.VLC \
+  page.codeberg.libre_menu_editor.LibreMenuEditor \
   us.zoom.Zoom
 
 # Enable Wayland support for Thunderbird
@@ -34,16 +84,12 @@ rpm-ostree remove -y \
 rpm-ostree install -y \
   cascadia-code-fonts\
   distrobox \
-  #dunst \
   exa \
   fira-code-fonts \
-  #foot \
   fzf \
-  # fuzzel \
   git \
   git-extras \
   gnome-tweaks \
-  #grim \
   htop \
   moby-engine \
   neovim \
@@ -54,21 +100,16 @@ rpm-ostree install -y \
   podman-compose \
   polkit \
   ripgrep \
-  # `slurp \
-  # sway \
-  # swaybg \
-  # swayidle \
-  # swaylock \
   syncthing \
   sysstat \
   tlp \
   tlp-rdw \
-  # waybar \
+  tmux \
   waydroid \
-  # wmenu \
   xdg-desktop-portal-wlr \
   xorg-x11-server-Xwayland \
-  zsh 
+  zsh \
+  zsh-syntax-highlighting
 
 # Enable docker
 sudo systemctl --now enable docker.service
