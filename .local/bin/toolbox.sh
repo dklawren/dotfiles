@@ -86,12 +86,14 @@ sudo dnf -y install --skip-broken \
   lcms2-devel \
   libxkbcommon-devel \
   luarocks \
+  java-21-openjdk \
   webkit2gtk4.0 \
   man \
   mercurial \
   mysql-devel \
   ncurses-devel \
   neovim \
+  nikola \
   nodejs \
   openssh-server \
   openssl-devel \
@@ -121,6 +123,7 @@ sudo dnf -y install --skip-broken \
   rubygems \
   sqlite-devel \
   socat \
+  stow \
   sysstat \
   tar \
   terraform \
