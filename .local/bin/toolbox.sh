@@ -50,6 +50,8 @@ fi
 sudo dnf -y install --skip-broken \
   act-cli \
   android-tools \
+  ansible \
+  bat \
   bind-utils \
   black \
   bzip2 \

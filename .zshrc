@@ -72,13 +72,13 @@ ZSH_THEME=""
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   cpanm
-  dnf 
-  docker 
+  dnf
+  docker
   docker-compose
   fzf
   gh
-  gitfast 
-  git-extras 
+  gitfast
+  git-extras
   perl
   podman
   python
