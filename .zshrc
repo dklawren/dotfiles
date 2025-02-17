@@ -172,9 +172,6 @@ eval "$(pyenv virtualenv-init -)"
 
 bindkey -s ^a "nvims\n"
 
-# FZF support for git
-source ~/local-devel/fzf-git.sh/fzf-git.sh
-
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /var/home/dkl/.deno/env
 
