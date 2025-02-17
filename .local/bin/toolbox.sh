@@ -47,10 +47,11 @@ EOM
 fi
 
 # Install packages
-sudo dnf -y install --skip-broken \
+sudo dnf -y install --skip-broken --skip-unavailable \
   act-cli \
   android-tools \
   ansible \
+  awk \
   bat \
   bind-utils \
   black \
@@ -128,7 +129,6 @@ sudo dnf -y install --skip-broken \
   stow \
   sysstat \
   tar \
-  terraform \
   tk-devel \
   tmux \
   util-linux-user \
@@ -146,6 +146,7 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # Oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
 curl -sS https://starship.rs/install.sh | sh
 
 # Perlbrew
