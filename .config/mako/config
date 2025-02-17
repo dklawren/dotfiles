@@ -1,0 +1,18 @@
+layer=overlay
+anchor=bottom-right
+width=300
+height=400
+background-color=#242424
+border-color=#3584e4
+font=Noto Sans 11
+text-color=#ffffff
+outer-margin=10
+margin=10,0
+border-radius=5
+border-size=1
+max-icon-size=32
+max-visible=5
+default-timeout=8000
+
+[urgency=high]
+ignore-timeout=1

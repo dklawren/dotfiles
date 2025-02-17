@@ -1,0 +1,123 @@
+{
+    "modules-left": ["sway/workspaces"],
+    "modules-center": ["wlr/taskbar"],
+    "modules-right": ["privacy", "tray", "pulseaudio#sink", "pulseaudio#source", "temperature#gpu", "temperature#cpu", "clock"],
+    
+    "sway/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "11": "1",
+            "12": "2",
+            "13": "3",
+            "14": "4",
+            "15": "5",
+            "16": "6",
+            "17": "7",
+            "18": "8",
+            "19": "9",
+            "21": "1",
+            "22": "2",
+            "23": "3",
+            "24": "4",
+            "25": "5",
+            "26": "6",
+            "27": "7",
+            "28": "8",
+            "29": "9"
+        }
+    },
+    
+    "wlr/taskbar": {
+        "format": "{icon} {title:.15}",
+        "icon-size": 14,
+        "tooltip-format": "{app_id}: {title}",
+        "on-click": "activate",
+        "on-click-middle": "close"
+    }, 
+
+    "privacy": {
+        "icon-spacing": 5,
+        "icon-size": 15,
+        "transition-duration": 250,
+        "modules": [
+            {
+                "type": "screenshare",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-out",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-in",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            }
+        ]
+    },
+
+    "tray": {
+        "icon-size": 17,
+        "spacing": 5,
+        "show-passive-items": true
+    }, 
+    
+    "pulseaudio#sink": {
+        "format": "{icon}  {volume}%",
+        "scroll-step": 2,
+        "on-click": "pavucontrol",
+        "on-click-middle": "helvum",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "format-icons": ["", "", ""]
+    },
+
+    "pulseaudio#source": {
+        "format": "{format_source}",
+        "format-source": "  {volume}%",
+        "format-source-muted": "  {volume}%",
+        "on-click": "pavucontrol",
+        "on-click-middle": "helvum",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+        "on-scroll-up": "",
+        "on-scroll-down": ""
+    },
+
+    "temperature#gpu": {
+        "hwmon-path": "/sys/class/drm/card0/device/hwmon/hwmon1/temp1_input",
+        "format": "{icon}  {temperatureC}°C",
+        "interval": 1,
+        "format-icons": ["", "", "", ""],
+        "critical-threshold": 80,
+        "tooltip-format": "GPU",
+        "on-click": "footclient ~/.bin/tempctl",
+        "on-click-right": "footclient btop"
+    },
+
+    "temperature#cpu": {
+        "hwmon-path": "/sys/class/hwmon/hwmon5/temp1_input",
+        "format": "{icon}  {temperatureC}°C",
+        "interval": 1,
+        "format-icons": ["", "", "", ""],
+        "critical-threshold": 80,
+        "tooltip-format": "CPU",
+        "on-click": "footclient ~/.bin/tempctl",
+        "on-click-right": "footclient btop"
+    },
+
+    "clock": {
+        "format": "{:%a %d - %H:%M}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+                    "mode": "year",
+                    "mode-mon-col": 3,
+                    "format": {
+                              "months":     "<span color='#5294e2'><b>{}</b></span>",
+                              "days":       "<span color='#e0e5eb'><b>{}</b></span>",
+                              "weekdays":   "<span color='#b5d2f2'><b>{}</b></span>",
+                              "today":      "<span color='#bf616a'><b>{}</b></span>"
+                              }
+                    }
+    }
+}
