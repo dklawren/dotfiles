@@ -160,6 +160,7 @@ if [[ -n "$CONTAINER_ID" || -n "$TOOLBOX_PATH" || -n "$WSL_DISTRO_NAME" ]]; then
   # Perl setup
   source ~/perl5/perlbrew/etc/bashrc
   perlbrew use perl-5.38.2
+  eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
 
   source "$HOME/.cargo/env"
 fi
