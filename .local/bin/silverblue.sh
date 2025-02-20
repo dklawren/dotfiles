@@ -8,11 +8,11 @@ flatpak update --appstream
 flatpak update
 
 # Install flatpak apps
-flatpak install -y --or-update \
-  ca.andyholmes.Valent \
+flatpak install -y --or-update --reinstall \
   ca.desrt.dconf-editor \
   com.calibre_ebook.calibre \
-  com.github.alexkdeveloper.somafm \ com.github.johnfactotum.Foliate \
+  com.github.alexkdeveloper.somafm \
+  com.github.johnfactotum.Foliate \
   com.github.d4nj1.tlpui \
   com.github.tchx84.Flatseal \
   com.google.Chrome \
@@ -50,7 +50,6 @@ flatpak install -y --or-update \
   org.mamedev.MAME \
   org.mozilla.firefox \
   org.mozilla.Thunderbird \
-  org.mozilla.vpn \
   org.videolan.VLC \
   page.codeberg.libre_menu_editor.LibreMenuEditor \
   us.zoom.Zoom
@@ -80,6 +79,7 @@ rpm-ostree remove -y \
   firefox-langpacks
 rpm-ostree install -y --allow-inactive --idempotent \
   alacritty \
+  android-tools \
   ansible \
   btop \
   cascadia-code-fonts \
@@ -89,10 +89,13 @@ rpm-ostree install -y --allow-inactive --idempotent \
   docker-ce \
   docker-ce-cli \
   docker-compose-plugin \
+  edk2-ovmf \
   fira-code-fonts \
+  firefoxpwa \
   fzf \
   git \
   git-extras \
+  gnome-boxes \
   gnome-tweaks \
   grim \
   grimshot \
@@ -104,18 +107,23 @@ rpm-ostree install -y --allow-inactive --idempotent \
   onedrive \
   openssl \
   pandoc \
+  pandoc-pdf \
   playerctl \
   podman-compose \
   polkit \
   ripgrep \
   rofi \
+  rsms-inter-fonts \
+  rsms-inter-vf-fonts \
   slurp \
+  smbios-utils \
   swaybg \
   swayidle \
   swayimg \
   swaylock \
   SwayNotificationCenter \
   sway-wallpapers \
+  swtpm-tools \
   syncthing \
   sysstat \
   thunar \
