@@ -37,11 +37,11 @@ return {
 
       -- template for newly created daily notes (goto_today)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_daily = home .. "/Library/Custom/New Page/Daily Note.md",
+      template_new_daily = home .. "/MyLibrary/New Page/Daily Note.md",
 
       -- template for newly created weekly notes (goto_thisweek)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_weekly = home .. "/Library/Custom/New Page/Weekly Note.md",
+      template_new_weekly = home .. "/MyLibrary/New Page/Weekly Note.md",
 
       -- image link style
       -- wiki:     ![[image name]]

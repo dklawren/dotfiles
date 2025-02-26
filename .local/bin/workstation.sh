@@ -90,41 +90,21 @@ sudo dnf install -y --skip-broken --skip-unavailable --allowerasing \
   git \
   git-extras \
   gnome-tweaks \
-  grim \
-  grimshot \
   htop \
-  mako \
-  mousepad \
   neovim \
   nodejs \
   onedrive \
   openssl \
   pandoc \
-  playerctl \
   podman-compose \
   polkit \
   ripgrep \
-  rofi \
-  slurp \
-  swaybg \
-  swayidle \
-  swayimg \
-  swaylock \
-  SwayNotificationCenter \
-  sway-wallpapers \
   syncthing \
   sysstat \
-  thunar \
   tlp \
   tlp-rdw \
   tmux \
-  udiskie \
-  waybar \
-  waydroid \
-  wf-recorder \
   wireplumber \
-  wlsunset \
-  xdg-desktop-portal-wlr \
   xorg-x11-server-Xwayland \
   zsh \
   zsh-syntax-highlighting

@@ -48,17 +48,14 @@ flatpak install -y --or-update --reinstall \
   org.gnome.World.PikaBackup \
   org.libreoffice.LibreOffice \
   org.mamedev.MAME \
-  org.mozilla.firefox \
-  org.mozilla.Thunderbird \
+#  org.mozilla.firefox \
+#  org.mozilla.Thunderbird \
   org.videolan.VLC \
   page.codeberg.libre_menu_editor.LibreMenuEditor \
   us.zoom.Zoom
 
 # Enable Wayland support for Thunderbird
 flatpak override --user --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
-
-# Firefox nightly
-# flatpak install https://gitlab.com/projects261/firefox-nightly-flatpak/-/raw/main/firefox-nightly.flatpakref
 
 # Install Docker CE
 if [ ! -f /etc/yum.repos.d/docker-ce.repo ]; then
@@ -97,46 +94,26 @@ rpm-ostree install -y --allow-inactive --idempotent \
   git-extras \
   gnome-boxes \
   gnome-tweaks \
-  grim \
-  grimshot \
   htop \
-  mako \
-  mousepad \
   neovim \
   nodejs \
   onedrive \
   openssl \
   pandoc \
   pandoc-pdf \
-  playerctl \
   podman-compose \
   polkit \
   ripgrep \
-  rofi \
   rsms-inter-fonts \
   rsms-inter-vf-fonts \
-  slurp \
   smbios-utils \
-  swaybg \
-  swayidle \
-  swayimg \
-  swaylock \
-  SwayNotificationCenter \
-  sway-wallpapers \
   swtpm-tools \
   syncthing \
   sysstat \
-  thunar \
   tlp \
   tlp-rdw \
   tmux \
-  udiskie \
-  waybar \
-  waydroid \
-  wf-recorder \
   wireplumber \
-  wlsunset \
-  xdg-desktop-portal-wlr \
   xorg-x11-server-Xwayland \
   zsh \
   zsh-syntax-highlighting
