@@ -11,7 +11,7 @@
     # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
     trustctime = false
     editor = vi
-    excludesfile = /home/dkl/.gitignore
+	  excludesfile = /home/dkl/.gitignore
     filemode = false
     repositoryformatversion = 0
     bare = false
@@ -21,9 +21,11 @@
     preloadindex = true
     commitGraph = true
     pager = delta
+	  fsmonitor = true
+	  untrackedCache = true
 [merge]
     tool = vimdiff
-    conflictstyle = diff3
+	  conflictstyle = zdiff3
 [mergetool]
     prompt = false
 [url "ssh://gitolite3@git.mozilla.org/"]
@@ -87,10 +89,10 @@
     update = pull --rebase
     stashed = "stash list --pretty=format:'%gd: %Cred%h%Creset %Cgreen[%ar]%Creset %s'"
     conflicts = "!git ls-files -u | cut -f 2 | sort -u"
-    wt = worktree  
-    wtl = worktree list  
-    wtb = "!f() { git branch -f $1 $2; git worktree add $1 $1; }; f"  
-    wtbm = "!f() { git branch -f $1 origin/$(git remote show origin | awk '/HEAD branch/ {print $NF}'); git worktree add $1 $1; }; f"  
+    wt = worktree
+    wtl = worktree list
+    wtb = "!f() { git branch -f $1 $2; git worktree add $1 $1; }; f"
+    wtbm = "!f() { git branch -f $1 origin/$(git remote show origin | awk '/HEAD branch/ {print $NF}'); git worktree add $1 $1; }; f"
     wtr = "!f() { git worktree remove -f $1; git branch -D $1; }; f"
 [apply]
     # Detect whitespace errors when applying a patch
@@ -112,10 +114,13 @@
     untracked = cyan
 [diff]
     # Detect copies as well as renames
-    renames = copies
+	  renames = true
+	  algorithm = histogram
+	  colorMoved = plain
+	  mnemonicPrefix = true
 [help]
     # Automatically correct and execute mistyped commands
-    autocorrect = 1
+  	autocorrect = prompt
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
     log = true
@@ -123,7 +128,9 @@
     # Use the Git 1.x.x default to avoid errors on machines with old Git
     # installations. To use `simple` instead, add this to your `~/.extra` file:
     # `git config --global push.default simple`. See http://git.io/mMah-w.
-    default = matching
+	  default = simple
+	  autoSetupRemote = true
+	  followTags = true
 [github]
     user = dklawren
 [filter "lfs"]
@@ -137,6 +144,27 @@
 	  rebase = true
     ff = false
 [credential]
-  helper = libsecret
+    helper = libsecret
 [gpg]
-  format = ssh
+    format = ssh
+[column]
+	  ui = auto
+[branch]
+	  sort = -committerdate
+[tag]
+	  sort = version:refname
+[init]
+  	defaultBranch = main
+[fetch]
+	  prune = true
+	  pruneTags = true
+	  all = true
+[commit]
+	  verbose = true
+[rerere]
+	  enabled = true
+	  autoupdate = true
+[rebase]
+	  autoSquash = true
+	  autoStash = true
+	  updateRefs = true
