@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use Mojo::UserAgent;
+my $ua = Mojo::UserAgent->new;
+
+use constant BUGZILLA_URL => 'https://bugzilla.mozilla.org/rest';
+
+my $dir = shift || '.';
+
+opendir my $dir_fh, $dir || die "can't opendir $dir: $!";
+my @items = grep { /^\d+$/ && -d "$dir/$_" } readdir($dir_fh);
+closedir $dir_fh;
+
+foreach my $item (@items) {
+    my $res =
+      $ua->get( BUGZILLA_URL . "/bug/$item?include_fields=id,summary,status" );
+    my $json = $res->result->json;
+    my $bug  = $json->{bugs}->[0];
+    next if !$bug->{id};
+    print $bug->{id} . " - " . $bug->{status} . " - " . $bug->{summary} . "\n";
+}
+
+1;

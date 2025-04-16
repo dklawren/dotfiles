@@ -1,15 +1,15 @@
 [Unit]
 Description=Silverbullet
-Documentation=https://silverbullet.md
-Wants=network-online.target
-After=network-online.target
 
 [Service]
-Type=simple
-WorkingDirectory=/var/home/dkl
 ExecStart=/var/home/dkl/.deno/bin/silverbullet /var/home/dkl/silverbullet
 Restart=on-failure
-Environment="PATH=/usr/bin:/var/home/dkl/.deno/bin"
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+Environment="DENO_DIR=/var/home/dkl/.deno"
+Environment="PATH=/usr/local/bin:/usr/bin:/var/home/dkl/.deno/bin"
+Environment="SB_INDEX_PAGE=Home"
 
 [Install]
 WantedBy=default.target

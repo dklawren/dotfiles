@@ -149,12 +149,6 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
 curl -sS https://starship.rs/install.sh | sh
 
-# Perlbrew
-curl -L https://install.perlbrew.pl | bash
-source ~/perl5/perlbrew/etc/bashrc
-perlbrew install perl-5.38.2
-perlbrew use perl-5.38.2
-
 # Install perl modules
 cpanm install --quiet --notest \
   AnyEvent \

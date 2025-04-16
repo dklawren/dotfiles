@@ -1,3 +1,7 @@
+[window]
+opacity = 0.9
+decorations = "none"
+
 [colors.bright]
 black = "#444b6a"
 blue = "#7da6ff"
@@ -22,3 +26,9 @@ yellow = "#e0af68"
 background = "#1a1b26"
 foreground = "#a9b1d6"
 
+[font]
+size = 12
+
+[font.normal]
+family = "FiraCode Nerd Font"
+style = "Regular"

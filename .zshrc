@@ -151,19 +151,18 @@ if [[ -n "$CONTAINER_ID" || -n "$TOOLBOX_PATH" || -n "$WSL_DISTRO_NAME" ]]; then
   if [[ -z "$TMUX" && -z "$VSCODE_INJECTION" ]]; then
     tmux attach -t default || tmux new -s default && exit
   fi
-
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-  #nvm use node
-
-  # Perl setup
-  source ~/perl5/perlbrew/etc/bashrc
-  perlbrew use perl-5.38.2
-  eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
-
-  source "$HOME/.cargo/env"
 fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Perl setup
+# source ~/perl5/perlbrew/etc/bashrc
+# perlbrew use perl-5.40.1@dkl
+# perlbrew switch perl-5.40.1@dkl
+
+source "$HOME/.cargo/env"
 
 # pyenv support
 export PYENV_ROOT="$HOME/.pyenv"
@@ -174,8 +173,14 @@ eval "$(pyenv virtualenv-init -)"
 bindkey -s ^a "nvims\n"
 
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /var/home/dkl/.deno/env
 
 # Initialize zsh completions (added by deno install script)
 autoload -Uz compinit
 compinit
+. "/var/home/dkl/.deno/env"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then . "$HOME/google-cloud-sdk/path.bash.inc"; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then . "$HOME/google-cloud-sdk/completion.bash.inc"; fi

@@ -4,13 +4,13 @@
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
 flatpak remote-add --if-not-exists gnome-nightly https://nightly.gnome.org/gnome-nightly.flatpakrepo
+flatpak install https://gitlab.com/projects261/firefox-nightly-flatpak/-/raw/main/firefox-nightly.flatpakref
 flatpak update --appstream
 flatpak update
 
 # Install flatpak apps
-flatpak install -y --or-update --reinstall \
+flatpak install -y --or-update \
   ca.desrt.dconf-editor \
-  com.calibre_ebook.calibre \
   com.github.alexkdeveloper.somafm \
   com.github.johnfactotum.Foliate \
   com.github.d4nj1.tlpui \
@@ -32,8 +32,6 @@ flatpak install -y --or-update --reinstall \
   md.obsidian.Obsidian \
   me.iepure.devtoolbox \
   org.cockpit_project.CockpitClient \
-  org.gnome.Cheese \
-  org.gnome.clocks \
   org.gnome.Connections \
   org.gnome.Evince \
   org.gnome.Firmware \
@@ -48,10 +46,9 @@ flatpak install -y --or-update --reinstall \
   org.gnome.World.PikaBackup \
   org.libreoffice.LibreOffice \
   org.mamedev.MAME \
-#  org.mozilla.firefox \
-#  org.mozilla.Thunderbird \
+  org.mozilla.firefox \
+  org.mozilla.Thunderbird \
   org.videolan.VLC \
-  page.codeberg.libre_menu_editor.LibreMenuEditor \
   us.zoom.Zoom
 
 # Enable Wayland support for Thunderbird
@@ -70,10 +67,6 @@ EOM
 fi
 
 # Install packages
-rpm-ostree upgrade
-rpm-ostree remove -y \
-  firefox \
-  firefox-langpacks
 rpm-ostree install -y --allow-inactive --idempotent \
   alacritty \
   android-tools \
@@ -88,7 +81,6 @@ rpm-ostree install -y --allow-inactive --idempotent \
   docker-compose-plugin \
   edk2-ovmf \
   fira-code-fonts \
-  firefoxpwa \
   fzf \
   git \
   git-extras \
