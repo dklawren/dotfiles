@@ -158,9 +158,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Perl setup
-# source ~/perl5/perlbrew/etc/bashrc
-# perlbrew use perl-5.40.1@dkl
-# perlbrew switch perl-5.40.1@dkl
+eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
 source "$HOME/.cargo/env"
 
