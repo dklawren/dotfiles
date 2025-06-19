@@ -140,6 +140,9 @@ sudo dnf -y install --skip-broken --skip-unavailable \
 
 sudo dnf clean all
 
+# Pip install
+pip install jrnl
+
 # Tmux plugin manager
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ~/.tmux/plugins/tpm/bin/install_plugins
@@ -150,6 +153,7 @@ git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUST
 curl -sS https://starship.rs/install.sh | sh
 
 # Install perl modules
+cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 cpanm install --quiet --notest \
   AnyEvent \
   App::cpanminus \
@@ -197,6 +201,7 @@ npm install -g typescript typescript-language-server
 # Rust support
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
+cargo install eza
 
 # Install Deno
 curl -fsSL https://deno.land/install.sh | sh
