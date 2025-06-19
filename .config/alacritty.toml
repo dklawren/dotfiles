@@ -1,6 +1,18 @@
 [window]
-opacity = 0.9
-decorations = "none"
+dynamic_padding = true
+padding.x = 5
+padding.y = 5
+opacity = 0.97
+
+[env]
+TERM = "xterm-256color"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[colors]
+draw_bold_text_with_bright_colors = true
 
 [colors.bright]
 black = "#444b6a"
@@ -28,7 +40,21 @@ foreground = "#a9b1d6"
 
 [font]
 size = 12
+offset.x=0
+offset.y=-3
+
+glyph_offset.x=0
+glyph_offset.y=-1
 
 [font.normal]
 family = "FiraCode Nerd Font"
 style = "Regular"
+[font.bold]
+family = "FiraCode Nerd Font"
+style = "ExtraBold"
+[font.italic]
+family = "FiraCode Nerd Font"
+style = "SemiBold Italic"
+[font.bold_italic]
+family = "FiraCode Nerd Font"
+style = "ExtraBold Italic"
