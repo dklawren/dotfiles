@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Lua todo.txt
+alias t="lua $HOME/.local/bin/tlua.lua"
+
 # Dotfile management
 alias config='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
@@ -30,10 +33,12 @@ alias -- -="cd -"
 # Shortcuts
 alias dl="cd ~/Downloads"
 alias h="history"
-alias l.='ls -d .*'
+alias l.='eza -d .*'
+alias ll='eza -la --icons --time-style=long-iso --group-directories-first'
 alias vi='nvim'
 alias tmux="tmux -2"
 alias dmux="ssh -t docker tmux new -A"
+alias cat=bat
 
 # Docker
 alias d=docker
@@ -68,13 +73,13 @@ alias ae='source ./venv/bin/activate'
 alias de='deactivate'
 
 # List all files colorized in long format
-alias l="ls -lF --color"
+alias l="eza -lF --color"
 
 # List all files colorized in long format, including dot files
-alias la="ls -laF --color"
+alias la="eza -laF --color"
 
 # List only directories
-alias lsd="ls -lF --color | grep --color=never '^d'"
+alias lsd="eza -lF --color | grep --color=never '^d'"
 
 # Always use color output for `ls`
 # alias ls="command ls --color -hF"
@@ -137,4 +142,4 @@ alias mv='mv -i'
 alias untar='tar xvf'
 
 # make the dir command work kinda like in windows (long format)
-alias dir='ls --color=auto --format=long'
+alias dir='eza --color=auto -l'
