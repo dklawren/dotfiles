@@ -9,7 +9,7 @@ StandardOutput=journal
 StandardError=journal
 Environment="DENO_DIR=/var/home/dkl/.deno"
 Environment="PATH=/usr/local/bin:/usr/bin:/var/home/dkl/.deno/bin"
-Environment="SB_INDEX_PAGE=Home"
+Environment="SB_INDEX_PAGE=index"
 
 [Install]
 WantedBy=default.target
