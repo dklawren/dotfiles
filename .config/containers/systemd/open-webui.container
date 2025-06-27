@@ -1,0 +1,8 @@
+[Container]
+PublishPort=8080:8080
+Image=ghcr.io/open-webui/open-webui:cuda
+ContainerName=open-webui
+Mount=type=volume,src=open-webui,destination=/app/backend/data
+
+[Service]
+Restart=always

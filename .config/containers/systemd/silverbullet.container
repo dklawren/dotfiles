@@ -1,0 +1,11 @@
+[Container]
+PublishPort=3000:3000
+Image=docker.io/zefhemel/silverbullet:v2
+ContainerName=silverbullet
+Environment=SB_INDEX_PAGE=index
+Environment=SB_USER=dkl:sushiME
+Environment=SB_AUTH_TOKEN=JBhdZQSuF8WbQT
+Mount=type=bind,src=/var/home/dkl/silverbullet,destination=/space
+
+[Service]
+Restart=always
