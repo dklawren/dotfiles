@@ -71,6 +71,8 @@ rpm-ostree install -y --allow-inactive --idempotent \
   alacritty \
   android-tools \
   ansible \
+  blueman \
+  bolt \
   btop \
   cascadia-code-fonts \
   containerd.io \
@@ -79,33 +81,80 @@ rpm-ostree install -y --allow-inactive --idempotent \
   docker-ce \
   docker-ce-cli \
   docker-compose-plugin \
+  dunst \
   edk2-ovmf \
   fira-code-fonts \
+  fprintd-pam \
   fzf \
   git \
   git-extras \
   gnome-boxes \
+  gnome-keyring-pam \
+  gnome-themes-extra \
   gnome-tweaks \
+  grim \
+  gvfs \
+  gvfs-smb \
   htop \
+  hyprland \
+  hyprcursor \
+  hyprutils \
+  imv \
+  kanshi \
+  lxqt-policykit \
+  mpv \
   neovim \
+  network-manager-applet \
+  NetworkManager-l2tp-gnome \
+  NetworkManager-libreswan-gnome \
+  NetworkManager-openconnect-gnome \
+  NetworkManager-openvpn-gnome \
+  NetworkManager-pptp-gnome \
+  NetworkManager-sstp-gnome \
+  NetworkManager-vpnc-gnome \
+  niri \
   nodejs \
   onedrive \
   openssl \
   pandoc \
   pandoc-pdf \
+  pavucontrol \
+  pinentry-gnome3 \
+  playerctl \
   podman-compose \
   polkit \
+  pulseaudio-utils \
   ripgrep \
+  rofi \
   rsms-inter-fonts \
   rsms-inter-vf-fonts \
+  slurp \
   smbios-utils \
+  sway \
+  swaybg \
+  sway-config-fedora \
+  swayidle \
+  swaylock \
   swtpm-tools \
   syncthing \
   sysstat \
+  system-config-printer \
+  thunar-archive-plugin \
   tlp \
   tlp-rdw \
   tmux \
+  tuned-ppd \
+  tuned-switcher \
+  waybar \
+  wev \
   wireplumber \
+  wl-clipboard \
+  wlr-randr \
+  wlsunset \
+  wofi \
+  xarchiver \
+  xdg-desktop-portal-gtk \
+  xdg-desktop-portal-wlr \
   xorg-x11-server-Xwayland \
   zsh \
   zsh-syntax-highlighting
