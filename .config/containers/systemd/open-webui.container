@@ -6,3 +6,6 @@ Mount=type=volume,src=open-webui,destination=/app/backend/data
 
 [Service]
 Restart=always
+
+[Install]
+WantedBy=default.target

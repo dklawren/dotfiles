@@ -9,3 +9,6 @@ Mount=type=bind,src=/var/home/dkl/silverbullet,destination=/space
 
 [Service]
 Restart=always
+
+[Install]
+WantedBy=default.target
