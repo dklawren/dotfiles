@@ -1,233 +1,124 @@
-/* ================================ */
-/*            Common CSS            */
-/* ================================ */
-* {
-  /* `otf-font-awesome` is required to be installed for icons */
-  padding: 0;
-  border-radius: 0;
-  min-height: 0;
-  margin: 0;
-  border: none;
-  text-shadow: none;
-  transition: none;
-  box-shadow: none;
+#waybar {
+    font-family: "Inter", Cantarell, Noto Sans, sans-serif;
+    font-size: 16px;
 }
 
-/* the whole window */
+#window {
+    padding: 0 10px;
+}
+
 window#waybar {
-  background-color: rgba(0, 0, 0, 0.65);
-  color: #fff4d2;
-  padding: 0px 5px;
-  margin: 0;
-}
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    text-shadow: none;
+    transition-duration: 0s;
+    color: rgba(217, 216, 216, 1);
+    background: #1a1b26; 
+} 
 
-.modules-left {
-  padding-left: 5px;
-}
-
-.modules-right {
-  padding-right: 5px;
-}
-
-#custom-rofi,
-#workspaces button,
-#workspaces button:hover,
-#workspaces button.visible,
-#workspaces button.visible:hover,
-#workspaces button.active,
-#workspaces button.active:hover,
-#workspaces button.urgent,
-#window,
-#tray,
-#disk,
-#cpu,
-#temperature,
-#temperature.critical,
-#backlight,
-#custom-memory,
-#pulseaudio,
-#pulseaudio.muted,
-#battery,
-#battery.critical,
-#battery.warning,
-#clock {
-  font-family: JetBrainsMono Nerd Font Propo;
-  font-size: 14px;
-  font-weight: 800;
-  color: #202020;
-  background: #202020;
-  /* box-shadow: -1px 2px 3px black; */
-}
-
-#window,
-#tray,
-#disk,
-#cpu,
-#temperature,
-#temperature.critical,
-#backlight,
-#custom-memory,
-#pulseaudio,
-#pulseaudio.muted,
-#battery,
-#battery.critical,
-#battery.warning,
-#clock {
-  padding-right: 4px;
-  margin: 5px 0px;
-}
-
-#custom-rofi {
-  border: 2px solid #458588;
-  background: #83a598;
-  padding: 0 6px;
-  margin: 5px 0px;
-}
-
-/* ================================ */
-/*       workspaces module          */
-/* ================================ */
 #workspaces {
-  margin: 0px;
+    margin: 0 5px;
 }
 
 #workspaces button {
-  color: #fff4d2;
-  background: #202020;
-  border: 2px solid #fff4d2;
-  min-width: 25px;
-  padding: 0 4px;
-  margin: 5px 3px;
-}
-
-#workspaces button:hover {
-  background: #d3869b;
-  border: 2px solid #b16286;
+    padding: 0 8px;
+    color: #565f89;
+    border: 3px solid rgba(9, 85, 225, 0);
+    border-radius: 10px;
+    min-width: 33px;
 }
 
 #workspaces button.visible {
-  border: 2px solid #689d6a;
-  background: #8ec07c;
+    color: #a9b1d6;
 }
 
-#workspaces button.visible:hover {
-  border: 2px solid #689d6a;
-  background: #8ec07c;
-}
-
-#workspaces button.active {
-  border: 2px solid #689d6a;
-  background: #8ec07c;
-}
-
-#workspaces button.active:hover {
-  border: 2px solid #689d6a;
-  background: #8ec07c;
+#workspaces button.focused {
+    border-top: 3px solid #7aa2f7;
+    border-bottom: 3px solid #7aa2f7;
 }
 
 #workspaces button.urgent {
-  border: 2px solid #cc241d;
-  background: #ea6962;
+    background-color: #a96d1f;
+    color: white;
 }
 
-/* ================================ */
-/*            window                 */
-/* ================================ */
-
-#window {
-  color: #d3869b;
-  border: 2px solid #d3869b;
+#workspaces button:hover {
+    box-shadow: inherit;
+    border-color: #bb9af7;
+    color: #bb9af7;
 }
 
-/* ================================ */
-/*            tray                 */
-/* ================================ */
+/* Repeat style here to ensure properties are overwritten as there's no !important and button:hover above resets the colour */
 
-#tray {
-  padding: 0 6px;
-  background-color: rgba(0, 0, 0, 0.5);
+#workspaces button.focused {
+    color: #7aa2f7;
+}
+#workspaces button.focused:hover {
+    color: #bb9af7;
 }
 
-/* ================================ */
-/*            disk                 */
-/* ================================ */
-
-#disk {
-  color: #ea6962;
-  border: 2px solid #ea6962;
-}
-
-/* ================================ */
-/*            cpu                  */
-/* ================================ */
-#cpu {
-  color: #e78a4e;
-  border: 2px solid #e78a4e;
-}
-
-/* ================================ */
-/*            temp                  */
-/* ================================ */
-#temperature {
-  color: #d8a657;
-  border: 2px solid #d8a657;
-}
-
-#temperature.critical {
-  color: #cc241d;
-  border: 2px solid #cc241d;
-}
-
-/* ================================ */
-/*            backlight             */
-/* ================================ */
-#backlight {
-  color: #f6c657;
-  border: 2px solid #f6c657;
-}
-
-/* ================================ */
-/*            memory                */
-/* ================================ */
-#custom-memory {
-  color: #458588;
-  border: 2px solid #458588;
-}
-
-/* ================================ */
-/*         pulseaudio               */
-/* ================================ */
 #pulseaudio {
-  color: #83a598;
-  border: 2px solid #83a598;
+    /* font-size: 26px; */
 }
 
-#pulseaudio.muted {
-  color: #ea6962;
-  border: 2px solid #ea6962;
+#custom-recorder {
+	font-size: 18px;
+	margin: 2px 7px 0px 7px;
+	color:#ee2e24;
 }
 
-/* ================================ */
-/*            battery               */
-/* ================================ */
-#battery {
-  color: #689d6a;
-  border: 2px solid #689d6a;
+#tray,
+#mode,
+#battery,
+#temperature,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#idle_inhibitor,
+#sway-language,
+#backlight,
+#custom-storage,
+#custom-cpu_speed,
+#custom-powermenu,
+#custom-spotify,
+#custom-weather,
+#custom-mail,
+#custom-media {
+    margin: 0px 0px 0px 10px;
+    padding: 0 5px;
+    /* border-top: 3px solid rgba(217, 216, 216, 0.5); */
+}
+
+/* #clock {
+    margin:     0px 16px 0px 10px;
+    min-width:  140px;
+} */
+
+#battery.warning {
+    color: rgba(255, 210, 4, 1);
 }
 
 #battery.critical {
-  color: #cc241d;
-  border: 2px solid #cc241d;
+    color: rgba(238, 46, 36, 1);
 }
 
-#battery.warning {
-  color: #e78a4e;
-  border: 2px solid #e78a4e;
+#battery.charging {
+    color: rgba(217, 216, 216, 1);
 }
-/* ================================ */
-/*            clock                 */
-/* ================================ */
-#clock {
-  color: #8ec07c;
-  border: 2px solid #8ec07c;
+
+#custom-storage.warning {
+    color: rgba(255, 210, 4, 1);
+}
+
+#custom-storage.critical {
+    color: rgba(238, 46, 36, 1);
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: black;
+    }
 }
