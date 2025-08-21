@@ -65,7 +65,6 @@ sudo dnf -y install --skip-broken --skip-unavailable \
   composer \
   cpanminus \
   ctags \
-  exa \
   expat-devel \
   fd-find \
   fzf \
@@ -134,6 +133,7 @@ sudo dnf -y install --skip-broken --skip-unavailable \
   util-linux-user \
   wl-clipboard \
   xz \
+  zoxide \
   zsh \
   zsh-autosuggestions  \
   zsh-syntax-highlighting
@@ -202,7 +202,7 @@ npm install -g typescript typescript-language-server
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
 cargo install eza
-
+cargo install stylelua
 # Install Deno
 curl -fsSL https://deno.land/install.sh | sh
 
