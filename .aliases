@@ -22,19 +22,16 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 
 # Easier navigation: .., ..., ...., ....., ~ and -
-alias cd="cd -P"
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ~="cd ~" # `cd` is probably faster to type though
-alias -- -="cd -"
+alias ..="z .."
+alias ...="z ../.."
+alias ....="z ../../.."
+alias .....="z ../../../.."
+alias ~="z ~" # `cd` is probably faster to type though
+alias -- -="z -"
 
 # Shortcuts
 alias dl="cd ~/Downloads"
 alias h="history"
-alias l.='eza -d .*'
-alias ll='eza -la --icons --time-style=long-iso --group-directories-first'
 alias vi='nvim'
 alias tmux="tmux -2"
 alias dmux="ssh -t docker tmux new -A"
@@ -77,6 +74,7 @@ alias l="eza -lF --color"
 
 # List all files colorized in long format, including dot files
 alias la="eza -laF --color"
+alias ll='eza -la --icons --time-style=long-iso --group-directories-first'
 
 # List only directories
 alias lsd="eza -lF --color | grep --color=never '^d'"
