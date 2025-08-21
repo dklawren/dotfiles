@@ -3,7 +3,7 @@
     "position": "top",
     "height": 40,
     "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
-    "modules-center": ["clock"],
+    "modules-center": ["clock", "custom/notification"],
     "modules-right": ["custom/recorder", "tray", "pulseaudio", "backlight", "temperature", "cpu", "memory", "battery", "network", "custom/powermenu"],
     "sway/mode": {
         "format": " {}"
@@ -36,7 +36,7 @@
         // "format": "( {} )"
     },
     "clock": {
-        "format": "{:%a %d %b - %H:%M}",
+        "format": "{:%a %d %b - %H:%M}  ",
         "tooltip": false
     },
     "cpu": {
@@ -51,22 +51,42 @@
     },
     "custom/powermenu": {
         "return-type": "json",
-        "exec": "/home/marco/.config/waybar/modules/powermenu.sh",
-        "format": "<span font='Font Awesome 5 Free 9'>{icon}</span>  {}",
+        "exec": "/home/dkl/.config/waybar/modules/powermenu.sh",
+        "format": "{icon}",
         "format-icons": [""],
         "interval": 3600,
         "escape": true,
-        "on-click": "/home/marco/.config/wofi/wofi-power.sh"
+        "on-click": "/home/dkl/.config/wofi/wofi-power.sh"
     },
     "custom/recorder": {
-		"format": "!",
-		"return-type": "json",
-		"interval": 3,
-		"exec": "echo '{\"class\": \"recording\"}'",
-		"exec-if": "pgrep wf-recorder",
+		    "format": "!",
+		    "return-type": "json",
+		    "interval": 3,
+		    "exec": "echo '{\"class\": \"recording\"}'",
+		    "exec-if": "pgrep wf-recorder",
         "tooltip": false,
         "on-click": "killall -s SIGINT wf-recorder"
-	},
+	  },
+    "custom/notification": {
+  	    "tooltip": false,
+  	    "format": "{icon}",
+  	    "format-icons": {
+  		      "notification": "<span foreground='red'><sup></sup></span>",
+  		      "none": "",
+  		      "dnd-notification": "<span foreground='red'><sup></sup></span>",
+  		      "dnd-none": "",
+  		      "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+  		      "inhibited-none": "",
+  		      "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+  		      "dnd-inhibited-none": ""
+  	    },
+  	    "return-type": "json",
+  	    "exec-if": "which swaync-client",
+  	    "exec": "swaync-client -swb",
+  	    "on-click": "swaync-client -t -sw",
+  	    "on-click-right": "swaync-client -d -sw",
+  	    "escape": true
+    },
     "battery": {
         "format": "<span font='Font Awesome 5 Free 11'>{icon}</span> {capacity}%{time}",
         "format-icons": ["", "", "", "", ""],

@@ -14,8 +14,8 @@ window#waybar {
     text-shadow: none;
     transition-duration: 0s;
     color: rgba(217, 216, 216, 1);
-    background: #1a1b26; 
-} 
+    background: #1a1b26;
+}
 
 #workspaces {
     margin: 0 5px;
@@ -34,8 +34,9 @@ window#waybar {
 }
 
 #workspaces button.focused {
-    border-top: 3px solid #7aa2f7;
-    border-bottom: 3px solid #7aa2f7;
+    border: 3px solid #7aa2f7;
+    /* border-top: 3px solid #7aa2f7;
+    border-bottom: 3px solid #7aa2f7; */
 }
 
 #workspaces button.urgent {
