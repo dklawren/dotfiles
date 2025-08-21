@@ -13,10 +13,10 @@ function pmcleanup () {
 }
 
 function dbox-backup () {
-  podman exec fedora-41 sudo dnf clean all
-  podman stop fedora-41
-  podman container commit -p fedora-41 fedora-41-distrobox-dkl:latest
-  podman save fedora-41-distrobox-dkl:latest | gzip > $HOME/devel/fedora-41-distrobox-dkl.tar.gz
+  podman exec fedora-42 sudo dnf clean all
+  podman stop fedora-42
+  podman container commit -p fedora-42 fedora-42-distrobox-dkl:latest
+  podman save fedora-42-distrobox-dkl:latest | gzip > $HOME/devel/fedora-42-distrobox-dkl.tar.gz
 }
 
 function bmo-prod {
@@ -27,4 +27,12 @@ function bmo-prod {
 function bmo-dev-stage {
   gcloud auth login
   gcloud compute ssh --zone "us-west1-a" "bastion-us-west1" --project "moz-fx-bastion-nonprod-global" --tunnel-through-iap
+}
+
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
 }
