@@ -1,9 +1,14 @@
 [window]
 dynamic_padding = true
-padding.x = 5
-padding.y = 5
+padding.x = 10
+padding.y = 10
 opacity = 0.97
 decorations = "none"
+blur = true
+
+[window.dimensions]
+columns = 133
+lines = 40
 
 [env]
 TERM = "xterm-256color"
