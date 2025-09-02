@@ -1,26 +1,36 @@
 return {
-  {
-    'stevearc/conform.nvim',
-    config = function()
-      require("conform").setup({
-        formatters_by_ft = {
-          lua = { "stylua" },
-          python = { "isort", "black" },
-          rust = { "rustfmt", lsp_format = "fallback" },
-          javascript = { "prettierd", "prettier", stop_after_first = true },
-          perl = { "perltidy" },
-        },
-        format_on_save = false,
-      })
-    end,
-    keys = {
-      { '<leader>lf', '<cmd>lua vim.lsp.buf.format()<cr>', desc = 'LSP Format code' }
-    }
-  },
-  {
-    'windwp/nvim-ts-autotag',
-    config = function()
-      require("nvim-ts-autotag").setup()
-    end
-  }
+	"stevearc/conform.nvim",
+	event = { "BufReadPre", "BufNewFile" },
+	config = function()
+		local conform = require("conform")
+
+		conform.setup({
+			formatters_by_ft = {
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				javascriptreact = { "prettier" },
+				typescriptreact = { "prettier" },
+				svelte = { "prettier" },
+				css = { "prettier" },
+				html = { "prettier" },
+				json = { "prettier" },
+				yaml = { "prettier" },
+				markdown = { "prettier" },
+				graphql = { "prettier" },
+				liquid = { "prettier" },
+				lua = { "stylua" },
+				python = { "isort", "black" },
+				perl = { "perltidy" },
+			},
+			format_on_save = false,
+		})
+
+		vim.keymap.set({ "n", "v" }, "<leader>lf", function()
+			conform.format({
+				lsp_fallback = true,
+				async = false,
+				timeout_ms = 1000,
+			})
+		end, { desc = "Format file or range (in visual mode)" })
+	end,
 }

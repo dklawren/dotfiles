@@ -2,7 +2,7 @@
 dynamic_padding = true
 padding.x = 10
 padding.y = 10
-opacity = 0.97
+opacity = 0.94
 decorations = "none"
 blur = true
 
