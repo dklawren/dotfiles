@@ -20,7 +20,7 @@
     symlinks = true
     preloadindex = true
     commitGraph = true
-    pager = delta
+    # pager = delta
 	  fsmonitor = true
 	  untrackedCache = true
 [merge]

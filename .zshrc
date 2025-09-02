@@ -85,20 +85,12 @@ bindkey '^w' backward-kill-word
 bindkey '^r' history-incremental-search-backward
 
 # FZF Keybindings
-source /usr/share/fzf/shell/key-bindings.zsh
-
-# These tasks should only run inside of a container such as toolbox/distrobox
-if [[ -n "$CONTAINER_ID" || -n "$TOOLBOX_PATH" || -n "$WSL_DISTRO_NAME" ]]; then
-  export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
-  if [[ -z "$TMUX" && -z "$VSCODE_INJECTION" ]]; then
-    tmux attach -t default || tmux new -s default && exit
-  fi
-fi
+source /usr/share/fzf/key-bindings.zsh
 
 # Perl setup
 eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
-source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then . "$HOME/google-cloud-sdk/path.bash.inc"; fi

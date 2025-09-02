@@ -36,6 +36,7 @@ alias vi='nvim'
 alias tmux="tmux -2"
 alias dmux="ssh -t docker tmux new -A"
 alias cat=bat
+alias tm="tmux attach -t default || tmux new -s default && exit"
 
 # Docker
 alias d=docker
