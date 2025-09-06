@@ -104,3 +104,8 @@ eval "$(pyenv init --path)"
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
+
+# Omarchy
+source ~/.local/share/omarchy/default/bash/aliases
+source ~/.local/share/omarchy/default/bash/functions
+source ~/.local/share/omarchy/default/bash/envs

@@ -3,3 +3,4 @@
 .tmux/plugins
 .config/nvim*/lazyvim.json
 .local/bin/lazydocker
+.config/dconf/user

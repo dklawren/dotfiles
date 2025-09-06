@@ -14,9 +14,9 @@ return {
       auto_set_filetype = true,
 
       -- dir names for special notes (absolute path or subdir name)
-      dailies = home .. "/Daily",
-      weeklies = home .. "/Weekly",
-      templates = home .. "/Templates",
+      dailies = home .. "/Journal",
+      -- weeklies = home .. "/Weekly",
+      -- templates = home .. "/Templates",
 
       -- image (sub)dir for pasting
       -- dir name (absolute path or subdir name)
@@ -37,11 +37,11 @@ return {
 
       -- template for newly created daily notes (goto_today)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_daily = home .. "/MyLibrary/New Page/Daily Note.md",
+      template_new_daily = home .. "/Library/Custom/Templates/Daily Note.md",
 
       -- template for newly created weekly notes (goto_thisweek)
       -- set to `nil` or do not specify if you do not want a template
-      template_new_weekly = home .. "/MyLibrary/New Page/Weekly Note.md",
+      -- template_new_weekly = home .. "/MyLibrary/New Page/Weekly Note.md",
 
       -- image link style
       -- wiki:     ![[image name]]
