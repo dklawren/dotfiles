@@ -1,0 +1,273 @@
+{
+"slides title": {
+    "prefix": "sli_title",
+    "scope": "markdown",
+    "body": [
+      "```bash",
+      "~~~just intro_toilet ${1:Title}",
+      "",
+      "~~~",
+      "```$0"
+    ],
+    "description": "Insert slides title template"
+},
+
+"slides plantuml": {
+    "prefix": "sli_plant",
+    "scope": "markdown",
+    "body": [
+      "```bash",
+      "~~~just plantuml ${1:diagram-name}",
+      "",
+      "~~~",
+      "```$0"
+    ],
+    "description": "Insert slides plantuml template"
+},
+
+"slides digraph": {
+    "prefix": "sli_digraph",
+    "scope": "markdown",
+    "body": [
+      "```bash",
+      "~~~just digraph ${1:components}",
+      "",
+      "~~~",
+      "```$0"
+    ],
+    "description": "Insert slides digraph template"
+},
+
+"slides freetext": {
+    "prefix": "sli_freetext",
+    "scope": "markdown",
+    "body": [
+      "```bash",
+      "~~~just freetext ${1:Text}",
+      "",
+      "~~~",
+      "```$0"
+    ],
+    "description": "Insert slides freetext template"
+},
+  "Hugo Important Hint":{
+    "prefix": "hint",
+    "scope": "markdown",
+    "body": ["{{< hint \"important\" >}}",
+      "${1:Important hint}",
+      "{{< /hint >}}${0}"],
+    "description": "Hugo Important Hint"
+  },
+  "bold": {
+  "prefix": ["bold", "b"],
+  "body": "**${1:$TM_SELECTED_TEXT}**$0",
+  "description": "Bold selected text"
+},
+"os-release": {
+  "prefix": ["os"],
+  "body": "${VIM:system('cat /etc/os-release')}",
+  "description": "Insert content of /etc/os-release"
+},
+  "Vale Off":{
+    "prefix": "vof",
+    "scope": "markdown",
+    "body": ["<!-- vale off -->${0}"],
+    "description": "Vale Off"
+  },
+  "Vale On":{
+    "prefix": "von",
+    "scope": "markdown",
+    "body": ["<!-- vale on -->${0}"],
+    "description": "Vale On"
+  },
+  "Hugo Expand": {
+    "prefix": "expand",
+    "scope": "markdown",
+    "body": ["{{< expand \"${1}\" >}}",
+      "${2}",
+      "{{< /expand >}}${0}"],
+    "description": "Hugo Expand"
+  },
+  "Link Killercoda": {
+    "prefix": "linkkc",
+    "scope": "markdown",
+    "body": ["[${1:Link text}]({{TRAFFIC_HOST1_${2:PORT}}})${0}"],
+    "description": "Link to Killercoda"
+  },
+  "Details HTML": {
+    "prefix": "det",
+    "scope": "markdown",
+    "body": ["### ${1:TASK_DETAILS}",
+      "",
+      "<details>",
+      "<summary>click to see the answer</summary>",
+      "<code>${2:ANSWER}</code>",
+      "</details>${0}"],
+    "description": "Details HTML snippet"
+  },
+  "Highlight text to make it stand out on the page": {
+    "prefix": "diff",
+    "scope": "markdown",
+    "body": ["```diff",
+      "! ${1:TEXT} !",
+      "```${0}"],
+    "description": "Highlight markdown text as important, it will render differently depending on the diff highlighting tooling"
+  },
+  "Markdown reference href part": {
+    "prefix": "refh",
+    "scope": "markdown",
+    "body": ["<a id=\"${1}\" href=\"$CLIPBOARD\">[[${1}]]</a> : ${3:desc}"],
+    "description": "Insert href reference at the bottom"
+  },
+  "Markdown reference": {
+    "prefix": "ref",
+    "scope": "markdown",
+    "body": ["[[${1}]](#${1})"],
+    "description": "Insert reference to something"
+  },
+  "YAML Code Snippet": {
+    "prefix": "yml",
+    "scope": "markdown",
+    "body": ["```yaml", "${1}", "```", "${0}"],
+    "description": "Inserts YAML code snippet"
+  },
+  "Rust Code Snippet": {
+    "prefix": "rst",
+    "scope": "markdown",
+    "body": ["```rust", "${1}", "```", "${0}"],
+    "description": "Inserts rust code snippet"
+  },
+  "Bash Code Snippet": {
+    "prefix": "bsh",
+    "scope": "markdown",
+    "body": ["```bash", "${1}", "```", "${0}"],
+    "description": "Inserts bash code snippet"
+  },
+  "Slides pre-processing": {
+    "prefix": "slides_pre",
+    "scope": "markdown",
+    "body": ["```bash", "~~~${1:command}", "${0}", "~~~", "```"],
+    "description": "Inserts slides pre-processing snippet"
+  },
+    "Tmux Switch Client Code Snippet": {
+    "prefix": "tmx",
+    "scope": "markdown",
+    "body": ["```bash", "tmux switchc -t ${1}", "```", "${0}"],
+    "description": "Inserts tmux client switch snippet"
+  },
+  "Mark": {
+  "prefix": "mark",
+  "scope": "markdown",
+  "body": ["<Mark color=\"${1|lightgray,red,blue,green|}\">${2:$TM_SELECTED_TEXT}</Mark>"],
+  "description": "Wrap selected text in a Mark tag with color"
+},
+  "Parenthesis []": {
+    "prefix": "par",
+    "scope": "markdown",
+    "body": ["[${1:$TM_SELECTED_TEXT}]"],
+    "description": "Wrap selected in parenthesis"
+  },
+  "Bash Code Snippet with surround": {
+    "prefix": "bshs",
+    "scope": "markdown",
+    "body": ["```bash", "${1:$TM_SELECTED_TEXT}", "```", "${0}"],
+    "description": "Inserts bash code snippet"
+  },
+  "Document Front Matter": {
+    "prefix": "docyaml",
+    "body": [
+      "---",
+      "title: ${1:title}",
+      "sidebar_label: ${2:label}",
+      "tags:",
+      "\t- ${3:tag1}",
+      "\t- ${4:tag1}",
+      "---\n${0}"
+    ],
+    "description": "Front matter snippet for docosaurus docs"
+  },
+
+  "Slides Theme": {
+    "prefix": "theme",
+    "body": ["---", "theme: ~/slides-themes/theme.json", "author: Piotr Zaniewski", "date: MMMM dd, YYYY", "paging: Slide %d / %d", "---"],
+    "description": "Insert header with slides theme"
+  },
+
+  "Insert table": {
+    "prefix": "table",
+    "body": [
+      "| ${1:Column1}  | ${2:Column2}   | ${3:Column3}   |",
+      "|-------------- | -------------- | -------------- |",
+      "| ${4:Item1}    | ${5:Item1}     | ${6:Item1}     |",
+      "${0}"
+    ],
+    "description": "Insert table with 2 rows and 3 columns. First row is heading."
+  },
+
+  "PlantUML Server Proxy": {
+    "scope": "markdown",
+    "prefix": "proxy",
+    "body": "![${1:DiagramName}](http://www.plantuml.com/plantuml/proxy?cache=yes&src=https://raw.githubusercontent.com/Piotr1215/${2:Repository}/master/diagrams/${3:FileName}.puml&fmt=png)$0",
+    "description": "Insert proxy link"
+  },
+  "PlantUML File Embed": {
+    "scope": "markdown",
+    "prefix": "plant",
+    "body": "![${1:DiagramName}](diagrams/rendered/${2:FileName}.png)$0",
+    "description": "Quickly insert a diagram picture"
+  },
+  "Center Text": {
+    "prefix": "caption",
+    "scope": "html, markdown",
+    "body": "<p style=\"text-align: center;\"><small>${1:ImageDescription}</small></p>\n",
+    "description": "Center caption under an image"
+  },
+  "log": {
+    "prefix": ["log"],
+    "body": "console.log(${1:$TM_SELECTED_TEXT});"
+  },
+  "blog": {
+    "scope": "markdown",
+    "prefix": ["blog"],
+    "body": [
+      "---", 
+      "title: Welcome Docusaurus v2",
+      "description: $1", 
+      "tags: [$2, $3]",
+      "image: ./_media/",
+      "hide_table_of_contents: false", 
+      "---",
+      "$0"
+    ]
+  },
+  "text": {
+    "prefix": ["text"],
+    "body": "```text\n${1:$tm_selected_text}\n```"
+  },
+    "copy": {
+    "prefix": ["copy"],
+    "body": "{{copy}}\n"
+  },
+"Exec Code Snippet": {
+  "prefix": "exec",
+  "scope": "markdown",
+  "body": ["```bash", "${1:something}", "```{{exec}}", "${0}"],
+  "description": "Inserts a bash code snippet with {{exec}}"
+},
+  "exec_interrupt": {
+    "prefix": ["execi"],
+    "body": "{{exec interrupt}}\n"
+  },
+  "note": {
+    "prefix": ["note"],
+    "body": "> [!NOTE]\n> ${0}"
+  },
+  "warn": {
+    "prefix": ["warn"],
+    "body": "> [!WARNING]\n> ${0}"
+  },
+  "imp": {
+    "prefix": ["imp"],
+    "body": "> [!IMPORTANT]\n> ${0}"
+  }
+}
