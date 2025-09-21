@@ -7,8 +7,8 @@ return {
         settings = {
           perlnavigator = {
             includePaths = { "./" },
-            perlcriticProfile = "/var/home/dkl/devel/github/mozilla/bmo/.perlcriticrc",
-            perltidyProfile = "/var/home/dkl/devel/github/mozilla/bmo/.perltidyrc",
+            perlcriticProfile = "/home/dkl/devel/github/mozilla/bmo/master/.perlcriticrc",
+            perltidyProfile = "/home/dkl/devel/github/mozilla/bmo/master/.perltidyrc",
           },
         },
       },
