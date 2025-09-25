@@ -68,3 +68,7 @@ curl https://pyenv.run | bash
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
+
+# Extra themes
+omarchy-theme-install https://github.com/abhijeet-swami/omarchy-ayaka-theme
+
