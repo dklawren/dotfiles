@@ -1,5 +1,32 @@
 #!/bin/bash
 
+# Pacman packages
+sudo pacman -Syu \
+  cpanminus \
+  tmux \
+  stow \
+  yazi \
+  flatpak \
+  nodejs \
+  npm
+
+# Initialize flatpak support
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+flatpak install https://gitlab.com/projects261/firefox-nightly-flatpak/-/raw/main/firefox-nightly.flatpakref
+flatpak update --appstream
+flatpak update
+
+# Install flatpak apps
+flatpak install -y --or-update \
+  it.mijorus.gearlever \
+  org.gnome.World.PikaBackup \
+  org.mozilla.Thunderbird \
+  org.mozilla.FirefoxNightly
+
+# Enable Wayland support for Thunderbird
+flatpak override --user --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
+
 # Tmux plugin manager
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ~/.tmux/plugins/tpm/bin/install_plugins
@@ -32,42 +59,12 @@ cpanm install --quiet --notest \
   Perl::Tidy \
   Test::Perl::Critic::Progressive
 
-# Allow use of podman and docker inside the distrobox
-sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman
-sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/docker
-sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/rpm-ostree
-
 # Install node support
-mkdir $HOME/.nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-nvm install node
-nvm use node
 npm install -g neovim
-npm install -g prettier
 npm install -g wormhole
-npm install -g dockerfile-language-server-nodejs
-npm install -g intelephense
-npm install -g vscode-langservers-extracted
-npm install -g yaml-language-server@next
-npm install -g perlnavigator-server
-npm install -g typescript typescript-language-server
-
-# Rust support
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source "$HOME/.cargo/env"
-cargo install eza
-cargo install stylelua
-# Install Deno
-curl -fsSL https://deno.land/install.sh | sh
 
 # Pyenv support
 curl https://pyenv.run | bash
 export PATH="$HOME/.pyenv/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv virtualenv-init -)"
-
-# Lazydocker
-curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
