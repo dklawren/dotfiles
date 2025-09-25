@@ -37,7 +37,6 @@ plugins=(
   systemd
   tmux
   zoxide
-  zsh-autosuggestions
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -90,6 +89,7 @@ source /usr/share/fzf/key-bindings.zsh
 # Perl setup
 eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # The next line updates PATH for the Google Cloud SDK.
@@ -97,8 +97,6 @@ if [ -f "$HOME/google-cloud-sdk/path.bash.inc" ]; then . "$HOME/google-cloud-sdk
 
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/google-cloud-sdk/completion.bash.inc" ]; then . "$HOME/google-cloud-sdk/completion.bash.inc"; fi
-
-. "$HOME/.local/share/../bin/env"
 
 eval "$(pyenv init --path)"
 
