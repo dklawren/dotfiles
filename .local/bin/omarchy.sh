@@ -8,7 +8,11 @@ sudo pacman -Syu \
   yazi \
   flatpak \
   nodejs \
-  npm
+  npm \
+  wget
+
+# Gcloud CLI
+yay google-cloud-cli
 
 # Initialize flatpak support
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -20,20 +24,21 @@ flatpak update
 # Install flatpak apps
 flatpak install -y --or-update \
   it.mijorus.gearlever \
-  org.gnome.World.PikaBackup \
-  org.mozilla.Thunderbird \
-  org.mozilla.FirefoxNightly
-
-# Enable Wayland support for Thunderbird
-flatpak override --user --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
+  org.gnome.World.PikaBackup
 
 # Tmux plugin manager
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-~/.tmux/plugins/tpm/bin/install_plugins
+if [ -n -d "$HOME/.tmux/plugins" ]; then
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+  ~/.tmux/plugins/tpm/bin/install_plugins
+fi
 
 # Oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
+if [ -n -d "$HOME/.oh-my-zsh" ]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
+fi
+
+# Starship
 curl -sS https://starship.rs/install.sh | sh
 
 # Install perl modules
@@ -63,12 +68,19 @@ cpanm install --quiet --notest \
 npm install -g neovim
 npm install -g wormhole
 
-# Pyenv support
-curl https://pyenv.run | bash
-export PATH="$HOME/.pyenv/bin:$PATH"
-eval "$(pyenv init --path)"
-eval "$(pyenv virtualenv-init -)"
-
 # Extra themes
 omarchy-theme-install https://github.com/abhijeet-swami/omarchy-ayaka-theme
 
+if [ -n -d "$HOME/.pyenv"]; then
+  curl https://pyenv.run | bash
+fi
+
+# INstall firefox nightly
+if [ -n -d "$HOME/Applications/firefox" ]; then
+  wget -qO- "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os=linux64&lang=en-US" | tar -Jx -C /home/dkl/Applications
+fi
+
+# Install thunderbird beta
+if [ -n -d "$HOME/Applications/thunderbird" ]; then
+  wget -qO- "https://download.mozilla.org/?product=thunderbird-144.0b1-SSL&os=linux64&lang=en-US" | tar -Jx -C /home/dkl/Applications
+fi
