@@ -1,23 +1,23 @@
 #!/bin/bash
 
 # Pacman packages
-sudo pacman -Syu \
+sudo pacman -Syu --needed \
   cpanminus \
   tmux \
   stow \
   yazi \
   flatpak \
-  nodejs \
   npm \
-  wget
+  wget \
+  zsh \
+  zsh-autosuggestions \
+  zsh-syntax-highlighting
 
 # Gcloud CLI
-yay google-cloud-cli
+yay -S google-cloud-cli
 
 # Initialize flatpak support
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
-flatpak install https://gitlab.com/projects261/firefox-nightly-flatpak/-/raw/main/firefox-nightly.flatpakref
 flatpak update --appstream
 flatpak update
 
@@ -27,21 +27,23 @@ flatpak install -y --or-update \
   org.gnome.World.PikaBackup
 
 # Tmux plugin manager
-if [ -n -d "$HOME/.tmux/plugins" ]; then
+if [ ! -d "$HOME/.tmux/plugins" ]; then
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   ~/.tmux/plugins/tpm/bin/install_plugins
 fi
 
 # Oh-my-zsh
-if [ -n -d "$HOME/.oh-my-zsh" ]; then
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
   git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
 fi
+chsh -s /bin/zsh dkl
 
 # Starship
 curl -sS https://starship.rs/install.sh | sh
 
 # Install perl modules
+export PATH="$PATH:/usr/bin/vendor_perl"
 cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 cpanm install --quiet --notest \
   AnyEvent \
@@ -64,23 +66,29 @@ cpanm install --quiet --notest \
   Perl::Tidy \
   Test::Perl::Critic::Progressive
 
-# Install node support
-npm install -g neovim
-npm install -g wormhole
-
 # Extra themes
 omarchy-theme-install https://github.com/abhijeet-swami/omarchy-ayaka-theme
 
-if [ -n -d "$HOME/.pyenv"]; then
+if [ ! -d "$HOME/.pyenv" ]; then
   curl https://pyenv.run | bash
 fi
 
 # INstall firefox nightly
-if [ -n -d "$HOME/Applications/firefox" ]; then
+mkdir -p "$HOME/Applications"
+if [ ! -d "$HOME/Applications/firefox" ]; then
   wget -qO- "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os=linux64&lang=en-US" | tar -Jx -C /home/dkl/Applications
 fi
 
 # Install thunderbird beta
-if [ -n -d "$HOME/Applications/thunderbird" ]; then
+if [ ! -d "$HOME/Applications/thunderbird" ]; then
   wget -qO- "https://download.mozilla.org/?product=thunderbird-144.0b1-SSL&os=linux64&lang=en-US" | tar -Jx -C /home/dkl/Applications
 fi
+
+# Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+. "$HOME/.config/nvm/nvm.sh"
+nvm install node
+
+# Install node support
+npm install neovim
+npm install wormhole
