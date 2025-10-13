@@ -11,7 +11,9 @@ sudo pacman -Syu --needed \
   wget \
   zsh \
   zsh-autosuggestions \
-  zsh-syntax-highlighting
+  zsh-syntax-highlighting \
+  poetry \
+  pandoc
 
 # Gcloud CLI
 yay -S google-cloud-cli
