@@ -51,3 +51,9 @@ white = '#acb0d0'
 
 [colors.selection]
 background = '#7aa2f7'
+
+[window]
+padding.x = 10
+padding.y = 10
+decorations = "None"
+opacity = 0.9
