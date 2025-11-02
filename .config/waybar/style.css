@@ -1,77 +1,84 @@
-@import "../omarchy/current/theme/waybar.css";
-
 * {
-  color: @foreground;
-
   border: none;
-  border-radius: 0;
-  min-height: 0;
-  font-family: CaskaydiaMono Nerd Font;
-  font-size: 12px;
+  padding: 0 4px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-family: "Cascadia Code NF", monospace;
+  font-size: 14px;
 }
 
 window#waybar {
-  background-color: @background;
+  color: #cdd6f4;
+  background: #1a1b26;
 }
 
-.modules-left {
-  margin-left: 8px;
+#custom-page1, #custom-page2, #custom-page3, #custom-page4, #custom-page5, #custom-page6, #custom-page7, #custom-page8, #custom-page9, #custom-page10 {
+  background: transparent;
+  min-width: 18px;
+	padding-left: 2px;
+	color: #fff;
+}
+#custom-page1.active,
+#custom-page2.active,
+#custom-page3.active,
+#custom-page4.active,
+#custom-page5.active,
+#custom-page6.active,
+#custom-page7.active,
+#custom-page8.active,
+#custom-page9.active,
+#custom-page10.active
+{
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
 }
 
-.modules-right {
-  margin-right: 8px;
+#custom-page1.occupied:not(.active),
+#custom-page2.occupied:not(.active),
+#custom-page3.occupied:not(.active),
+#custom-page4.occupied:not(.active),
+#custom-page5.occupied:not(.active),
+#custom-page6.occupied:not(.active),
+#custom-page7.occupied:not(.active),
+#custom-page8.occupied:not(.active),
+#custom-page9.occupied:not(.active),
+#custom-page10.occupied:not(.active) {
+    color: #42A5F5;
 }
 
-#workspaces button {
-  all: initial;
-  padding: 0 6px;
-  margin: 0 1.5px;
-  min-width: 9px;
+#custom-page1.active.occupied,
+#custom-page2.active.occupied,
+#custom-page3.active.occupied,
+#custom-page4.active.occupied,
+#custom-page5.active.occupied,
+#custom-page6.active.occupied,
+#custom-page7.active.occupied,
+#custom-page8.active.occupied,
+#custom-page9.active.occupied,
+#custom-page10.active.occupied {
+    background: rgba(255,255,255,0.15);
+    color: #42A5F5;
 }
 
-#workspaces button.empty {
-  opacity: 0.5;
+#tray {
+	margin-right: -5;
 }
 
-#tray,
-#cpu,
-#battery,
-#network,
-#bluetooth,
-#pulseaudio,
-#custom-omarchy,
-#custom-screenrecording-indicator,
-#custom-update {
-  min-width: 12px;
-  margin: 0 7.5px;
+#tray * {
+	padding-left: 0px;
+	padding-right: 0px;
 }
 
-#custom-expand-icon {
-  margin-right: 7px;
+#tray menu {
+    padding: 5px 0;
+    margin: 0;
+	border: 1px solid #555;
 }
 
-tooltip {
-  padding: 2px;
+#tray menu menuitem {
+    padding: 4px 12px;
 }
 
-#custom-update {
-  font-size: 10px;
-}
-
-#clock {
-  margin-left: 8.75px;
-}
-
-.hidden {
-  opacity: 0;
-}
-
-#custom-screenrecording-indicator {
-  min-width: 12px;
-  margin-left: 8.75px;
-  font-size: 10px;
-}
-
-#custom-screenrecording-indicator.active {
-  color: #a55555;
+#tray menu menuitem:hover {
+    background: rgba(66,165,245,.25);
 }
