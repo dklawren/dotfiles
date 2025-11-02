@@ -117,9 +117,9 @@ eval "$(pyenv init --path)"
 source <(fzf --zsh)
 
 # Omarchy
-source ~/.local/share/omarchy/default/bash/aliases
-source ~/.local/share/omarchy/default/bash/functions
-source ~/.local/share/omarchy/default/bash/envs
+# source ~/.local/share/omarchy/default/bash/aliases
+# source ~/.local/share/omarchy/default/bash/functions
+# source ~/.local/share/omarchy/default/bash/envs
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
