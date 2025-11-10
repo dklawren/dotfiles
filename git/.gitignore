@@ -1,8 +1,0 @@
-.config/nvim*/lazy-lock.json
-.config/nvim*/pack
-.tmux/plugins
-.config/nvim*/lazyvim.json
-.local/bin/lazydocker
-.config/dconf/user
-.config/omarchy/themes
-.config/omarchy/current
