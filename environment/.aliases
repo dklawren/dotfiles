@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Claude Code
+alias claude="/home/dkl/.claude/local/claude"
+
 # Lua todo.txt
 alias t="lua $HOME/.local/bin/tlua.lua"
 
