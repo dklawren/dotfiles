@@ -1,0 +1,45 @@
+# Install Sway packages
+sudo dnf -y install --skip-broken --skip-unavailable \
+   blueman \
+   bolt \
+   dunst \
+   foot \
+   fprintd-pam \
+   gnome-themes-extra \
+   grim \
+   grimblast \
+   imv \
+   kanshi \
+   lxqt-policykit \
+   mpv \
+   network-manager-applet \
+   NetworkManager-l2tp-gnome \
+   NetworkManager-libreswan-gnome \
+   NetworkManager-openconnect-gnome \
+   NetworkManager-openvpn-gnome \
+   NetworkManager-sstp-gnome \
+   NetworkManager-vpnc-gnome \
+   pavucontrol \
+   pinentry-gnome3 \
+   playerctl \
+   pulseaudio-utils \
+   slurp \
+   sway \
+   swaybg \
+   sway-config-fedora \
+   swayidle \
+   swaylock \
+   SwayNotificationCenter \
+   system-config-printer \
+   tuned-ppd \
+   tuned-switcher \
+   waybar \
+   wev \
+   wl-clipboard \
+   wlogout \
+   wlroots \
+   wlr-randr \
+   wlsunset \
+   wtype \
+   xarchiver \
+   xdg-desktop-portal-wlr
