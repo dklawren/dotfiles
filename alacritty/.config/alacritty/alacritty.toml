@@ -1,12 +1,11 @@
-general.import = [ "~/.config/omarchy/current/theme/alacritty.toml" ]
-
 [env]
 TERM = "xterm-256color"
 
 [window]
-padding.x = 14
-padding.y = 14
+padding.x = 10
+padding.y = 10
 decorations = "None"
+opacity = 0.95
 
 [keyboard]
 bindings = [
@@ -15,48 +14,41 @@ bindings = [
 ]
 
 [font]
-normal = { family = "CaskaydiaMono Nerd Font", style = "Regular" }
-bold = { family = "CaskaydiaMono Nerd Font", style = "Bold" }
-italic = { family = "CaskaydiaMono Nerd Font", style = "Italic" }
+normal = { family = "Cascadia Code NF", style = "Regular" }
+bold = { family = "Cascadia Code NF", style = "Bold" }
+italic = { family = "Cascadia Code NF", style = "Italic" }
 size = 12
 
 [terminal]
-
 [terminal.shell]
 program = "/usr/bin/zsh"
 
-# [colors]
-# [colors.primary]
-# background = '#1a1b26'
-# foreground = '#a9b1d6'
+[colors]
+[colors.primary]
+background = '#1a1b26'
+foreground = '#a9b1d6'
+
+# Normal colors
+[colors.normal]
+black = '#32344a'
+red = '#f7768e'
+green = '#9ece6a'
+yellow = '#e0af68'
+blue = '#7aa2f7'
+magenta = '#ad8ee6'
+cyan = '#449dab'
+white = '#787c99'
 #
-# # Normal colors
-# [colors.normal]
-# black = '#32344a'
-# red = '#f7768e'
-# green = '#9ece6a'
-# yellow = '#e0af68'
-# blue = '#7aa2f7'
-# magenta = '#ad8ee6'
-# cyan = '#449dab'
-# white = '#787c99'
-#
-# # Bright colors
-# [colors.bright]
-# black = '#444b6a'
-# red = '#ff7a93'
-# green = '#b9f27c'
-# yellow = '#ff9e64'
-# blue = '#7da6ff'
-# magenta = '#bb9af7'
-# cyan = '#0db9d7'
-# white = '#acb0d0'
-#
-# [colors.selection]
-# background = '#7aa2f7'
-#
-# [window]
-# padding.x = 10
-# padding.y = 10
-# decorations = "None"
-# opacity = 0.9
+# Bright colors
+[colors.bright]
+black = '#444b6a'
+red = '#ff7a93'
+green = '#b9f27c'
+yellow = '#ff9e64'
+blue = '#7da6ff'
+magenta = '#bb9af7'
+cyan = '#0db9d7'
+white = '#acb0d0'
+
+[colors.selection]
+background = '#7aa2f7'
