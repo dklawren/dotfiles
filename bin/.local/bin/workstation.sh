@@ -168,6 +168,7 @@ sudo dnf -y install --skip-broken --skip-unavailable \
   tlp-rdw \
   tmux \
   util-linux-user \
+  uv \
   xorg-x11-server-Xwayland \
   xz \
   zoxide \

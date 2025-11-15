@@ -100,6 +100,7 @@ sudo dnf -y install --skip-broken --skip-unavailable \
   openssh-server \
   openssl-devel \
   openssl-perl \
+  pandoc \
   patch \
   perl-App-cpanminus \
   php \
@@ -131,9 +132,9 @@ sudo dnf -y install --skip-broken --skip-unavailable \
   tk-devel \
   tmux \
   util-linux-user \
+  uv \
   wl-clipboard \
   xz \
-  zoxide \
   zsh \
   zsh-autosuggestions  \
   zsh-syntax-highlighting

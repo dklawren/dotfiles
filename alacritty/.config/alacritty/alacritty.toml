@@ -38,7 +38,7 @@ blue = '#7aa2f7'
 magenta = '#ad8ee6'
 cyan = '#449dab'
 white = '#787c99'
-#
+
 # Bright colors
 [colors.bright]
 black = '#444b6a'

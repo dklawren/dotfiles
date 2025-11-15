@@ -6,8 +6,12 @@ flatpak install https://gitlab.com/projects261/firefox-nightly-flatpak/-/raw/mai
 flatpak update --appstream
 flatpak update
 
-# Install flatpak apps
-flatpak install -y --or-update \
+# Remove fedora flatpak repo
+flatpak install --reinstall flathub $(flatpak list --app-runtime=org.fedoraproject.Platform --columns=application | tail -n +1 )
+flatpak remote-delete fedora
+
+# Install addition flatpak apps
+flatpak install -y --or-update flathub \
   ca.desrt.dconf-editor \
   com.github.alexkdeveloper.somafm \
   com.github.johnfactotum.Foliate \
@@ -15,6 +19,7 @@ flatpak install -y --or-update \
   com.github.tchx84.Flatseal \
   com.google.Chrome \
   com.jeffser.Alpaca \
+  com.jeffser.Alpaca.Plugins.Ollama \
   com.mattjakeman.ExtensionManager \
   com.slack.Slack \
   com.transmissionbt.Transmission \
@@ -31,16 +36,29 @@ flatpak install -y --or-update \
   me.iepure.devtoolbox \
   org.cockpit_project.CockpitClient \
   org.gnome.Firmware \
-  org.gnome.NautilusPreviewer \
   org.gnome.SimpleScan \
   org.gnome.Solanum \
   org.gnome.World.PikaBackup \
   org.libreoffice.LibreOffice \
   org.mamedev.MAME \
   org.mozilla.firefox \
-  org.mozilla.Thunderbird \
   org.videolan.VLC \
-  us.zoom.Zoom
+  us.zoom.Zoom \
+  dev.geopjr.Tuba \
+  org.gnome.gitlab.cheywood.Pulp \
+  org.localsend.localsend_app \
+  org.gnome.Fractal \
+  it.mijorus.gearlever \
+  de.capypara.FieldMonitor \
+  com.spotify.Client \
+  me.iepure.devtoolbox \
+  io.github.kolunmi.Bazaar
+
+flatpak install -y --or-update flathub-beta org.mozilla.Thunderbird
+flatpak install -y --or-update firefoxnightly-origin org.mozilla.FirefoxNightly
 
 # Enable Wayland support for Thunderbird
-flatpak override --user --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
+sudo flatpak override --system --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
+
+# Themes
+sudo flatpak override --system --filesystem=xdg-data/themes

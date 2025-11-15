@@ -12,8 +12,13 @@ gpgkey=https://download.docker.com/linux/fedora/gpg
 EOM
 fi
 
+rpm-ostree install -y \
+  https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm \
+  https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+
 # Install packages
 rpm-ostree install -y --allow-inactive --idempotent \
+  akmod-nvidia \
   alacritty \
   android-tools \
   ansible \
