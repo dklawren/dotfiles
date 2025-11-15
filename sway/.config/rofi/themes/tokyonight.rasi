@@ -7,10 +7,10 @@
 // define colors etc.
 * {
     bg: #24283b;
-    hv: #9274ca;
-    primary: #C5C8C6;
+    hv: #9274ca; 
+    primary: #C5C8C6; 
     ug: #0B2447;
-    font: "Inter 12";
+    font: "Monospace 11";
     background-color: @bg;
     //dark: @bg;
     border: 0px;
@@ -23,7 +23,7 @@
 // defines different aspects of the window
 window {
     width: 700;
-    /*since line wont work with height, i comment it out
+    /*since line wont work with height, i comment it out 
     if you rather control the size via height
     just comment it out */
     //height: 500;
@@ -32,8 +32,8 @@ window {
     location: center;
     anchor: center;
     transparency: "screenshot";
-    border-color: @transparent;
-    border: 0px;
+    border-color: @primary;   
+    border: 3px;
     border-radius: 6px;
     spacing: 0;
     children: [ mainbox ];
@@ -47,15 +47,17 @@ mainbox {
 inputbar {
     color: @kl;
     padding: 11px;
-    border: 3px 3px 2px 3px;
+    border: 0 0 2px 0;
     border-color: @primary;
-    border-radius: 6px 6px 0px 0px;
 }
 
 message {
     padding: 0;
-    border-color: @primary;
-    border: 0px 1px 1px 1px;
+}
+
+textbox {
+    color: @kl;
+    padding: 10px;
 }
 
 entry, prompt, case-indicator {
@@ -77,9 +79,6 @@ listview {
     padding: 8px;
     lines: 12;
     columns: 1;
-    border: 0px 3px 3px 3px; 
-    border-radius: 0px 0px 6px 6px;
-    border-color: @primary;
     dynamic: false;
 }
 
