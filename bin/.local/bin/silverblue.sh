@@ -68,8 +68,8 @@ systemctl --user --now enable syncthing.service
 systemctl --user --now enable onedrive.service
 
 # tlp
-#sudo cp "$HOME/.local/bin/files/tlp.conf" /etc/tlp.conf
-#sudo systemctl --now enable tlp.service
-#sudo systemctl stop power-profiles-daemon.service
-#sudo systemctl disable power-profiles-daemon.service
-#sudo systemctl mask power-profiles-daemon.service
+sudo cp "$HOME/.local/bin/files/tlp.conf" /etc/tlp.conf
+sudo systemctl --now enable tlp.service
+sudo systemctl stop power-profiles-daemon.service
+sudo systemctl disable power-profiles-daemon.service
+sudo systemctl mask power-profiles-daemon.service

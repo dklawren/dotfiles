@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Claude Code
-alias claude="/home/dkl/.claude/local/claude"
-
 # Lua todo.txt
 alias t="lua $HOME/.local/bin/tlua.lua"
 
@@ -32,6 +29,7 @@ alias ~="z ~" # `cd` is probably faster to type though
 alias -- -="z -"
 
 # Shortcuts
+alias cd=z
 alias dl="cd ~/Downloads"
 alias h="history"
 alias vi='nvim'

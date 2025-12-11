@@ -142,6 +142,6 @@ sudo dnf -y install --skip-broken --skip-unavailable \
 sudo dnf clean all
 
 # Allow use of podman and docker inside the distrobox
-sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman
-sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/docker
-sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/rpm-ostree
+sudo ln -sf /usr/bin/distrobox-host-exec /usr/bin/podman
+sudo ln -sf /usr/bin/distrobox-host-exec /usr/bin/docker
+sudo ln -sf /usr/bin/distrobox-host-exec /usr/bin/rpm-ostree

@@ -2,6 +2,7 @@
   "nvim-orgmode/orgmode",
   event = "VeryLazy",
   ft = { "org" },
+  enabled = false,
   config = function()
     require("orgmode").setup({
       org_agenda_files = "~/silverbullet/OrgMode/**/*",

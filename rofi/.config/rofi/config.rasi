@@ -26,4 +26,5 @@ configuration{
     kb-move-char-forward: "Control+f";
     kb-mode-complete: "Control+o";
 }
-@theme "~/.config/rofi/themes/tokyonight.rasi"
+
+@theme "/usr/share/rofi/themes/Arc-Dark.rasi"
