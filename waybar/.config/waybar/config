@@ -1,0 +1,225 @@
+{
+    "layer": "top",
+    "position": "top",
+    "modules-left": [
+        "hyprland/workspaces",
+        "hyprland/window",
+        "niri/workspaces",
+        "niri/window",
+    ],
+    "modules-right": [
+        "tray",
+        "privacy",
+        "network",
+        "bluetooth",
+        "pulseaudio",
+        "pulseaudio#mic",
+        "battery",
+        "temperature",
+        "cpu",
+        "memory",
+        "disk",
+        "clock"
+    ],
+    "hyprland/workspaces": {
+        // "format": "{name}",
+        "format": "{icon} {windows}",
+        "format-window-separator": " ",
+        "disable-scroll": true,
+        "on-click": "activate",
+        "sort-by-number": true,
+        "window-rewrite-default": " ",
+        "window-rewrite": {
+            "class<firefox>": " ",
+            "class<librewolf>": " ",
+            "class<.*zen.*>": " ",
+            "class<brave-browser>": " ",
+            "class<thunderbird>": "",
+            "alacritty": "",
+            "codium": "",
+            "ferdium": "",
+            "class<signal>": "",
+            "class<steam>": "",
+            "class<org.gnome.TextEditor>": "",
+            "class<nemo>": "",
+            "class<evince>": "",
+            "class<Papers>": "",
+            "class<writer>": "",
+            "class<mpv>": "",
+            "class<.*freetube.*>": " ",
+        },
+    },
+    "niri/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "active": "",
+            "default": ""
+        },
+    },
+    "hyprland/window": {
+        "max-length": 200,
+        "separate-outputs": true
+    },
+    "niri/window": {
+        "format": "{}",
+        "icon": true,
+    },
+    "tray": {
+        "spacing": 10,
+        "show-passive-items": true,
+        "reverse-direction": true,
+    },
+    "hyprland/language": {
+        "format": "{}",
+        "format-en": "us",
+        "format-es": "es",
+    },
+    "privacy": {
+        "icon-spacing": 4,
+        "icon-size": 15,
+        "transition-duration": 250,
+        "modules": [
+            {
+                "type": "screenshare",
+                "tooltip": true,
+                "tooltip-icon-size": 20
+            },
+            {
+                "type": "audio-out",
+                "tooltip": true,
+                "tooltip-icon-size": 20
+            },
+            {
+                "type": "audio-in",
+                "tooltip": true,
+                "tooltip-icon-size": 20
+            }
+        ]
+    },
+    "network": {
+        "format": "{ifname}",
+        "format-wifi": "",
+        "format-ethernet": "",
+        "format-disconnected": "",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "tooltip-format-wifi": " {essid} ({signalStrength}%)",
+        "tooltip-format-ethernet": "{ifname} - {ipaddr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "max-length": 50,
+        "on-click": "nm-connection-editor",
+        "on-click-right": "alacritty -e $SHELL -c 'nmtui'",
+        "interval": 20,
+    },
+    "bluetooth": {
+        "format": "",
+        "format-on": "",
+        "format-connected": "",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias} ({device_battery_percentage}%)"
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}",
+        "format-bluetooth": "{icon} {volume}",
+        "format-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "default": [
+                "",
+                ""
+            ]
+        },
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "pavucontrol"
+    },
+    "pulseaudio#mic": {
+        "format": "{format_source}",
+        "format-source": " {volume}",
+        "format-source-muted": "",
+        "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +5%",
+        "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -5%",
+        "on-click": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+        "on-click-right": "pavucontrol"
+    },
+    "battery": {
+        "bat": "BAT0",
+        "full-at": 100,
+        "states": {
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{icon} {capacity}",
+        "format-plugged": " {capacity}",
+        "format-charging": " {capacity}",
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "format-time": "{H}h:{M}m",
+        "tooltip-format": "{timeTo}"
+    },
+    "temperature": {
+        "critical-threshold": 70,
+        "thermal-zone": 1,
+        "format": " {temperatureC}",
+        "format-critical": " {temperatureC}",
+        "interval": 10,
+        "on-click": "alacritty -e $SHELL -c 'btop --utf-force'",
+    },
+    "cpu": {
+        "format": " {usage}",
+        "interval": 3,
+        "states": {
+            "critical": 80,
+        },
+        "on-click": "alacritty -e $SHELL -c 'btop --utf-force'",
+    },
+    "memory": {
+        "format": " {}",
+        "states": {
+            "critical": 80,
+        },
+        "on-click": "alacritty -e $SHELL -c 'btop --utf-force'",
+        "tooltip-format": "{used:0.1f}GB"
+    },
+    "disk": {
+        "interval": 30,
+        "format": " {percentage_used}",
+        "path": "/",
+        "states": {
+            "critical": 80,
+        },
+        "on-click": "alacritty -e $SHELL -c 'duf && $SHELL'",
+        "tooltip-format": "{used} / {total}"
+    },
+    "clock": {
+        "format": " {:%a %b %d %H:%M}",
+        "on-click": "thunderbird -calendar",
+        "locale": "en_US.UTF-8",
+        "tooltip-format": "{calendar}",
+        "calendar": {
+            "mode": "month",
+            "mode-mon-col": 3,
+            "on-scroll": 1,
+            "on-click-right": "mode",
+            "format": {
+                "months": "<span color='#AB9DF2'><b>{}</b></span>",
+                "weekdays": "<span color='#78DCE8'><b>{}</b></span>",
+                "days": "<span color='#FFFFFF'><b>{}</b></span>",
+                "today": "<span color='#FF6188'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-click-forward": "tz_up",
+            "on-click-backward": "tz_down",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+}
