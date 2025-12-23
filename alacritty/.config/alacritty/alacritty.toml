@@ -14,9 +14,9 @@ bindings = [
 ]
 
 [font]
-normal = { family = "Cascadia Code NF", style = "Regular" }
-bold = { family = "Cascadia Code NF", style = "Bold" }
-italic = { family = "Cascadia Code NF", style = "Italic" }
+normal = { family = "Fira Code Nerd Font Mono", style = "Regular" }
+bold = { family = "Fira Code Nerd Font Mono", style = "Bold" }
+italic = { family = "Fira Code Nerd Font Mono", style = "Italic" }
 size = 12
 
 [terminal]
