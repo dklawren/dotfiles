@@ -12,13 +12,6 @@ return {
           },
         },
       },
-      systemd_ls = {
-        cmd = { 'systemd-lsp' },
-        filetypes = { 'systemd' },
-        root_dir = function() return nil end,
-        single_file_support = true,
-        settings = {},
-      },
     },
   },
 }
