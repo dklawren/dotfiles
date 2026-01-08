@@ -4,5 +4,5 @@ profile {
 
 profile {
   output eDP-1 enable scale 2
-	output DP-5 enable scale 1.66667
+	output DP-6 enable scale 1.66667
 }

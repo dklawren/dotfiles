@@ -3,3 +3,6 @@ nvim/.config/nvim*/pack
 tmux/.tmux/plugins
 nvim/.config/nvim*/lazyvim.json
 bin/.local/bin/lazydocker
+noctalia/.config/noctalia/plugins
+noctalia/.config/noctalia/colorschemes
+bin/.local/bin/claude

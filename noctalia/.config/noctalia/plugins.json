@@ -4,9 +4,18 @@
             "enabled": true,
             "name": "Official Noctalia Plugins",
             "url": "https://github.com/noctalia-dev/noctalia-plugins"
+        },
+        {
+            "enabled": true,
+            "name": "ThatOneCalculator",
+            "url": "https://github.com/thatonecalculator/personal-noctalia-plugins"
         }
     ],
     "states": {
+        "world-clock": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        }
     },
     "version": 1
 }

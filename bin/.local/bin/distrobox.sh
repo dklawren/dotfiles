@@ -30,6 +30,9 @@ sudo dnf -y copr enable atim/lazygit
 # Act CLI for Github Actions
 sudo dnf -y copr enable rubemlrm/act-cli
 
+# Yazi
+sudo dnf copr enable lihaohong/yazi
+
 # Terraform
 sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
 
@@ -135,6 +138,7 @@ sudo dnf -y install --skip-broken --skip-unavailable \
   uv \
   wl-clipboard \
   xz \
+  yazi \
   zsh \
   zsh-autosuggestions  \
   zsh-syntax-highlighting
