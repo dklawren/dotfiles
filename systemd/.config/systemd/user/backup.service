@@ -1,0 +1,6 @@
+[Unit]
+Description=Daily rsync backup (user) 
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/backup.sh

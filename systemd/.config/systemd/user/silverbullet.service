@@ -1,0 +1,28 @@
+[X-Container]
+PublishPort=3000:3000
+Image=ghcr.io/silverbulletmd/silverbullet:v2
+ContainerName=silverbullet
+Environment="SB_USER=dkl:sushiME"
+Environment="PUID=1000"
+Environment="PGID=1000"
+Environment="SB_INDEX_PAGE=Home"
+Environment="SB_AUTH_TOKEN=JBhdZQSuF8WbQT"
+Mount=type=bind,src=/home/dkl/silverbullet,destination=/space
+
+[Unit]
+Wants=podman-user-wait-network-online.service
+After=podman-user-wait-network-online.service
+SourcePath=/var/home/dkl/.config/containers/systemd/silverbullet.container
+RequiresMountsFor=%t/containers
+RequiresMountsFor=/home/dkl/silverbullet
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+KillMode=mixed
+ExecStop=/usr/bin/podman rm -v -f -i silverbullet
+ExecStopPost=-/usr/bin/podman rm -v -f -i silverbullet
+Delegate=yes
+Type=notify
+NotifyAccess=all
+SyslogIdentifier=%N
+ExecStart=/usr/bin/podman run --name silverbullet --replace --rm --cgroups=split --sdnotify=conmon -d --publish 3000:3000 --env SB_USER=dkl:sushiME --mount type=bind,source=/home/dkl/silverbullet,destination=/space ghcr.io/silverbulletmd/silverbullet:v2
