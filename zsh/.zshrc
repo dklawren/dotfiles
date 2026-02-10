@@ -15,7 +15,6 @@ ZSH_THEME=""
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   cpanm
-  deno
   dnf
   docker
   docker-compose
@@ -343,3 +342,4 @@ bindkey -s '^Xgc' 'git commit -m ""\C-b'
 bindkey -s '^Xgp' 'git push origin '
 bindkey -s '^Xgs' 'git status\n'
 bindkey -s '^Xgl' 'git log --oneline -n 10\n'
+export PATH="$HOME/.npm-global/bin:$PATH"
