@@ -1,13 +1,8 @@
 profile {
-  output eDP-1 enable scale 2
+  output "Samsung Display Corp. 0x4202 Unknown" enable scale 2
 }
 
 profile {
-  output eDP-1 enable scale 2
-  output DP-5 enable scale 1.66667
-}
-
-profile {
-  output eDP-1 enable scale 2
-  output DP-6 enable scale 1.66667
+  output "Samsung Display Corp. 0x4202 Unknown" enable scale 2
+  output "Dell Inc. DELL U2723QE FG6XK04" enable scale 1.66667
 }
