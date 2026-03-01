@@ -18,7 +18,8 @@ binds {
     // Mod+S hotkey-overlay-title="Open Control Center" { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
     // Mod+Shift+Comma hotkey-overlay-title="Open Settings" { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "settings" "toggle"; }
 
-    Mod+D hotkey-overlay-title="Open Launcher" { spawn "wofi" "--show" "drun"; }
+    // Mod+D hotkey-overlay-title="Open Launcher" { spawn "wofi" "--show" "drun"; }
+    Mod+D hotkey-overlay-title="Open Launcher" { spawn "fuzzel"; }
 
     // Brightness controls
     // XF86MonBrightnessUp { spawn "qs" "-c" "noctalia-shell" "ipc" "call" "brightness" "increase"; }
