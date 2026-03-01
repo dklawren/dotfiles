@@ -1,134 +1,178 @@
+// Waybar Configuration — Floating Pills Design
 {
-  "reload_style_on_change": true,
-  "layer": "top",
-  "position": "top",
-  "modules-left": ["niri/workspaces"],
-  "modules-center": ["niri/window"],
-  "modules-right": [
-    "tray",
-    "custom/separator",
-    "network",
-    "bluetooth",
-    "custom/separator",
-    "cpu",
-    "memory",
-    "battery",
-    "pulseaudio",
-    "custom/separator",
-    "clock"
-  ],
-  "niri/window": {
-    "format": "{title}",
-    "max-length": 60
-  },
-  "tray": {
-    "icon-size": 16,
-    "spacing": 10
-  },
-  "niri/workspaces": {
-    "on-click": "activate",
-    "disable-scroll": true,
-    "all-outputs": true
-    //   "format": "{icon}",
-    //   "format-icons": {
-    //     "1": "1",
-    //     "2": "2",
-    //     "3": "3",
-    //     "4": "4",
-    //     "5": "5",
-    //     "6": "6",
-    //     "7": "7",
-    //     "8": "8",
-    //     "9": "9",
-    //     "urgent": "",
-    //     "focused": "",
-    //     "default": ""
-    //   },
-    //   "persistent-workspaces": {
-    //     "1": [],
-    //     "2": [],
-    //     "3": [],
-    //     "4": [],
-    //     "5": []
-    //   }
-  },
-  "pulseaudio": {
-    "scroll-step": 5,
-    "max-volume": 150,
-    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-    "on-click-right": "pavucontrol",
-    "markup": "pango",
-    "format": "<span color='#e5c07b'>{icon} </span> <span color='#ffffff'>{volume}%</span>",
-    "format-muted": "<span color='#e5c07b'> </span> muted",
-    "format-icons": {
-      "default": "",
-      "muted": "",
-      "headphones": ""
-    }
-  },
-  "custom/separator": {
-    "exec": "echo '{\"text\":\"|\"}'",
-    "return-type": "json",
-    "format": "<span color='#555'>{text}</span>",
-    "markup": "pango",
-    "interval": 3600
-  },
-  "cpu": {
-    "interval": 1,
-    "markup": "pango",
-    "format": "<span color='#E06C75'> </span> {usage}%"
-  },
-  "memory": {
-    "interval": 2,
-    "markup": "pango",
-    "format": "<span color='#98C379'> </span> {percentage}%"
-  },
-  "disk": {
-    "interval": 30,
-    "path": "/",
-    "markup": "pango",
-    "format": "<span color='#C678DD'>󰋊 </span> {percentage_used}%"
-  },
-  "clock": {
-    "interval": 1,
-    "format": "{:%Y-%m-%d  %H:%M:%S}"
-  },
-  "network": {
-    "interface": ["enp.*", "eth.*"],
-    "interval": 3,
-    "markup": "pango",
-    "format-ethernet": "<span color='#61AFEF'>󰈀 </span> up",
-    "format-wifi": "<span color='#61AFEF'> </span> {essid}",
-    "format-unknown": "<span color='#61AFEF'>󰈂 </span> up",
-    "format-disconnected": "<span color='#E06C75'> </span> down",
-    "on-click": "nm-connection-editor"
-  },
-  "bluetooth": {
-    "interval": 5,
-    "markup": "pango",
-    "format": "<span color='#5C6370'>󰂯 </span>disconnected",
-    "format-off": "<span color='#5C6370'>󰂯 </span>power off",
-    "format-no-controller": "<span color='#5C6370'>󰂯 </span>disabled",
-    "format-connected": "<span color='#61AFEF'>󰂯 </span>connected",
-    "on-click": "blueman-manager"
-  },
-  "battery": {
-    "bat": "BAT0", // Specify your battery identifier
-    "interval": 60, // Update interval in seconds
-    "states": {
-      "warning": 30,
-      "critical": 15
-    },
-    "format": "{icon} {capacity}%", // Display format
-    "format-icons": [
-      "", // 0-20%
-      "", // 21-40%
-      "", // 41-60%
-      "", // 61-80%
-      ""// 81-100%
+    "layer": "top",
+    "position": "top",
+    "height": 44,
+    "spacing": 4,
+    "margin-top": 2,
+    "margin-bottom": 2,
+    "margin-left": 2,
+    "margin-right": 2,
+    "exclusive": true,
+    "modules-left": [
+        "custom/logo",
+        "niri/workspaces",
+        "mpris"
     ],
-    "format-charging": "󰂄 {capacity}%", // Format when charging
-    "format-plugged": " {capacity}%", // Format when plugged in
-    "format-full": " {capacity}%"// Format when full
-  }
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "tray",
+        "backlight",
+        "pulseaudio",
+        "bluetooth",
+        "network",
+        "cpu",
+        "memory",
+        "battery",
+        "custom/power"
+    ],
+    // ── Left ──────────────────────────────────────────────
+    "custom/logo": {
+        "format": "󰣇",
+        "tooltip": false,
+        "on-click": "vicinae toggle"
+    },
+    "niri/workspaces": {
+        "format": "{index}",
+        "on-click": "activate"
+    },
+    // ── Center ───────────────────────────────────────────
+    "clock": {
+        "format": "󰅐  {:%I:%M %p}",
+        "format-alt": "󰃶  {:%A, %B %d}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "year",
+            "mode-mon-col": 3,
+            "weeks-pos": "right",
+            "on-scroll": 1,
+            "format": {
+                "months": "<span color='#cba6f7'><b>{}</b></span>",
+                "days": "<span color='#cdd6f4'>{}</span>",
+                "weeks": "<span color='#94e2d5'><b>W{}</b></span>",
+                "weekdays": "<span color='#f9e2af'><b>{}</b></span>",
+                "today": "<span color='#f38ba8'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click-right": "mode",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
+    },
+    // ── Right ────────────────────────────────────────────
+    "mpris": {
+        "format": "{player_icon}  {title}",
+        "format-paused": "{status_icon}  <i>{title}</i>",
+        "format-stopped": "",
+        "format-disconnected": "",
+        "player-icons": {
+            "default": "󰎆",
+            "spotify": "󰓇",
+            "firefox": "󰈹",
+            "mpv": "󰐹"
+        },
+        "status-icons": {
+            "paused": "󰏤"
+        },
+        "max-length": 40
+    },
+    "backlight": {
+        "format": "{icon}  {percent}%",
+        "format-icons": [
+            "󰃞",
+            "󰃟",
+            "󰃠"
+        ],
+        "on-scroll-up": "brightnessctl set +2%",
+        "on-scroll-down": "brightnessctl set 2%-"
+    },
+    "bluetooth": {
+        "format": "󰂯",
+        "format-connected": "󰂱  {device_alias}",
+        "on-click": "blueman-manager",
+        "on-click-right": "rfkill toggle bluetooth"
+    },
+    "tray": {
+        "icon-size": 15,
+        "spacing": 8
+    },
+    "battery": {
+        "states": {
+            "good": 80,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "󱐋  {capacity}%",
+        "format-plugged": "󰚥  {capacity}%",
+        "format-full": "󱟢  Full",
+        "format-icons": [
+            "󰂎",
+            "󰁺",
+            "󰁻",
+            "󰁼",
+            "󰁽",
+            "󰁾",
+            "󰁿",
+            "󰂀",
+            "󰂁",
+            "󰂂",
+            "󰁹"
+        ],
+        "tooltip-format": "Battery: {capacity}%\nPower: {power:.1f}W\nTime: {timeTo}"
+    },
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-bluetooth": "󰂰  {volume}%",
+        "format-muted": "󰸈  Muted",
+        "format-icons": {
+            "headphone": "󰋋",
+            "hands-free": "󰋎",
+            "headset": "󰋎",
+            "default": [
+                "󰕿",
+                "󰖀",
+                "󰕾"
+            ]
+        },
+        "scroll-step": 5,
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "tooltip-format": "{desc}"
+    },
+    "network": {
+        "format-wifi": "󰖩",
+        "format-ethernet": "󰈀",
+        "format-disconnected": "󰖪",
+        "format-alt": "󰜮  {bandwidthDownBits}  󰜷  {bandwidthUpBits}",
+        "tooltip-format": "{essid}\nInterface: {ifname}\nIP: {ipaddr}/{cidr}\nSignal: {signalStrength}%",
+        "interval": 5,
+        "on-click-right": "nm-connection-editor"
+    },
+    "cpu": {
+        "format": "󰍛  {usage}%",
+        "interval": 2,
+        "tooltip-format": "CPU Usage: {usage}%\n{avg_frequency} GHz",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        }
+    },
+    "memory": {
+        "format": "󰘚  {percentage}%",
+        "interval": 5,
+        "tooltip-format": "RAM: {used:0.1f}G / {total:0.1f}G\nSwap: {swapUsed:0.1f}G / {swapTotal:0.1f}G",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        }
+    },
+    "custom/power": {
+        "format": "󰐥",
+        "tooltip": false,
+        "on-click": "niri msg action quit"
+    }
 }
