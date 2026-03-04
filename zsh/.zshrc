@@ -343,3 +343,5 @@ bindkey -s '^Xgp' 'git push origin '
 bindkey -s '^Xgs' 'git status\n'
 bindkey -s '^Xgl' 'git log --oneline -n 10\n'
 export PATH="$HOME/.npm-global/bin:$PATH"
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
