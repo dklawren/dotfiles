@@ -7,7 +7,7 @@ Environment="PUID=1000"
 Environment="PGID=1000"
 Environment="SB_INDEX_PAGE=Home"
 Environment="SB_AUTH_TOKEN=JBhdZQSuF8WbQT"
-Mount=type=bind,src=/home/dkl/silverbullet,destination=/space
+Mount=type=bind,src=/home/dkl/pkms,destination=/space
 
 [Unit]
 Wants=podman-user-wait-network-online.service
@@ -25,4 +25,4 @@ Delegate=yes
 Type=notify
 NotifyAccess=all
 SyslogIdentifier=%N
-ExecStart=/usr/bin/podman run --name silverbullet --replace --rm --cgroups=split --sdnotify=conmon -d --publish 3000:3000 --env SB_USER=dkl:sushiME --mount type=bind,source=/home/dkl/silverbullet,destination=/space ghcr.io/silverbulletmd/silverbullet:v2
+ExecStart=/usr/bin/podman run --name silverbullet --replace --rm --cgroups=split --sdnotify=conmon -d --publish 3000:3000 --env SB_USER=dkl:sushiME --mount type=bind,source=/home/dkl/pkms,destination=/space ghcr.io/silverbulletmd/silverbullet:v2
