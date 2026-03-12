@@ -1,0 +1,67 @@
+/*
+ * Catppuccin Mocha power menu theme for rofi
+ */
+
+* {
+    bg:      #1e1e2e;
+    mantle:  #181825;
+    surface: #313244;
+    overlay: #6c7086;
+    text:    #cdd6f4;
+    subtext: #bac2de;
+    mauve:   #cba6f7;
+    red:     #f38ba8;
+    green:   #a6e3a1;
+    blue:    #89b4fa;
+    peach:   #fab387;
+    lavender: #b4befe;
+
+    font: "FiraCode Nerd Font Mono 13";
+    background-color: @bg;
+    text-color: @text;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    spacing: 0;
+}
+
+window {
+    width: 220px;
+    location: center;
+    border-radius: 10px;
+    border: 2px;
+    border-color: @lavender;
+    background-color: @mantle;
+    children: [listview];
+}
+
+listview {
+    border: 0px;
+    padding: 8px;
+    margin: 4px;
+    columns: 1;
+    lines: 5;
+    cycle: false;
+}
+
+element {
+    margin: 4px;
+    padding: 14px 8px;
+    background-color: @surface;
+    border-radius: 8px;
+}
+
+element-text {
+    text-color: @subtext;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}
+
+element selected {
+    background-color: @mauve;
+}
+
+element selected element-text {
+    text-color: @bg;
+}

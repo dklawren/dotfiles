@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sway Keybindings Cheat Sheet</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 11px;
+      color: #1e1e2e;
+      background: #fff;
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      color: #1e1e2e;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6c7086;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    .subtitle kbd {
+      background: #cdd6f4;
+      color: #1e1e2e;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: monospace;
+      font-size: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .section {
+      break-inside: avoid;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #fff;
+      background: #7c3aed;
+      padding: 4px 8px;
+      border-radius: 4px 4px 0 0;
+      margin-bottom: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+    }
+
+    tr:nth-child(even) { background: #f5f5f8; }
+    tr:nth-child(odd)  { background: #fff; }
+
+    td {
+      padding: 3px 6px;
+      vertical-align: middle;
+    }
+
+    td:first-child {
+      white-space: nowrap;
+      width: 50%;
+    }
+
+    kbd {
+      display: inline-block;
+      background: #ebe8f7;
+      color: #5b21b6;
+      border: 1px solid #c4b5fd;
+      border-radius: 3px;
+      padding: 1px 4px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 9.5px;
+    }
+
+    @media print {
+      body { padding: 10px; }
+      @page { margin: 1.2cm; size: A4; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Sway Keybindings Cheat Sheet</h1>
+<p class="subtitle"><kbd>Mod</kbd> = Super (Win key)</p>
+
+<div class="grid">
+
+  <div class="section">
+    <h2>Basic Operations</h2>
+    <table>
+      <tr><td><kbd>Mod + Tab</kbd></td><td>Next workspace</td></tr>
+      <tr><td><kbd>Alt + Tab</kbd></td><td>Previous workspace</td></tr>
+      <tr><td><kbd>Mod + Shift + Q</kbd></td><td>Kill focused window</td></tr>
+      <tr><td><kbd>Mod + Shift + R</kbd></td><td>Reload config</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Applications</h2>
+    <table>
+      <tr><td><kbd>Mod + Enter</kbd></td><td>Terminal (Alacritty)</td></tr>
+      <tr><td><kbd>Mod + W</kbd></td><td>Browser (Firefox)</td></tr>
+      <tr><td><kbd>Mod + N</kbd></td><td>File Manager (Thunar)</td></tr>
+      <tr><td><kbd>Mod + Shift + B</kbd></td><td>Bluetooth Manager</td></tr>
+      <tr><td><kbd>Mod + Shift + N</kbd></td><td>Notification center</td></tr>
+      <tr><td><kbd>Mod + Shift + E</kbd></td><td>Power menu</td></tr>
+      <tr><td><kbd>Mod + Shift + X</kbd></td><td>Lock screen</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Launcher (Rofi)</h2>
+    <table>
+      <tr><td><kbd>Mod + D</kbd></td><td>App launcher (drun)</td></tr>
+      <tr><td><kbd>Alt + D</kbd></td><td>Run launcher</td></tr>
+      <tr><td><kbd>Alt + W</kbd></td><td>Window switcher</td></tr>
+    </table>
+
+    <h2 style="margin-top:10px;">Workspaces</h2>
+    <table>
+      <tr><td><kbd>Mod + 1–8</kbd></td><td>Switch to workspace</td></tr>
+      <tr><td><kbd>Mod + Shift + 1–8</kbd></td><td>Move window to workspace</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Focus</h2>
+    <table>
+      <tr><td><kbd>Mod + H / ←</kbd></td><td>Focus left</td></tr>
+      <tr><td><kbd>Mod + J / ↓</kbd></td><td>Focus down</td></tr>
+      <tr><td><kbd>Mod + K / ↑</kbd></td><td>Focus up</td></tr>
+      <tr><td><kbd>Mod + L / →</kbd></td><td>Focus right</td></tr>
+      <tr><td><kbd>Mod + Q</kbd></td><td>Toggle focus tiling/floating</td></tr>
+      <tr><td><kbd>Mod + U</kbd></td><td>Focus parent container</td></tr>
+      <tr><td><kbd>Mod + I</kbd></td><td>Focus child container</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Move Window</h2>
+    <table>
+      <tr><td><kbd>Mod + Shift + H / ←</kbd></td><td>Move left</td></tr>
+      <tr><td><kbd>Mod + Shift + J / ↓</kbd></td><td>Move down</td></tr>
+      <tr><td><kbd>Mod + Shift + K / ↑</kbd></td><td>Move up</td></tr>
+      <tr><td><kbd>Mod + Shift + L / →</kbd></td><td>Move right</td></tr>
+    </table>
+
+    <h2 style="margin-top:10px;">Resize Window</h2>
+    <table>
+      <tr><td><kbd>Mod + Ctrl + H / ←</kbd></td><td>Grow width</td></tr>
+      <tr><td><kbd>Mod + Ctrl + L / →</kbd></td><td>Shrink width</td></tr>
+      <tr><td><kbd>Mod + Ctrl + K / ↑</kbd></td><td>Grow height</td></tr>
+      <tr><td><kbd>Mod + Ctrl + J / ↓</kbd></td><td>Shrink height</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Layout</h2>
+    <table>
+      <tr><td><kbd>Mod + Z</kbd></td><td>Split horizontal</td></tr>
+      <tr><td><kbd>Mod + A</kbd></td><td>Split vertical</td></tr>
+      <tr><td><kbd>Mod + M</kbd></td><td>Toggle fullscreen</td></tr>
+      <tr><td><kbd>Mod + E</kbd></td><td>Tabbed layout</td></tr>
+      <tr><td><kbd>Mod + T</kbd></td><td>Toggle split layout</td></tr>
+      <tr><td><kbd>Mod + Space</kbd></td><td>Toggle tiling/floating</td></tr>
+    </table>
+
+    <h2 style="margin-top:10px;">Screenshots</h2>
+    <table>
+      <tr><td><kbd>Print</kbd></td><td>Screenshot to file</td></tr>
+      <tr><td><kbd>Mod + Print</kbd></td><td>Screenshot selection to file</td></tr>
+      <tr><td><kbd>Shift + Print</kbd></td><td>Screenshot to clipboard</td></tr>
+      <tr><td><kbd>Mod + Shift + Print</kbd></td><td>Selection to clipboard</td></tr>
+    </table>
+
+    <h2 style="margin-top:10px;">Function Keys</h2>
+    <table>
+      <tr><td><kbd>Brightness ↑/↓</kbd></td><td>Brightness ±5%</td></tr>
+      <tr><td><kbd>Volume ↑/↓</kbd></td><td>Volume ±5%</td></tr>
+      <tr><td><kbd>Mute</kbd></td><td>Toggle mute</td></tr>
+      <tr><td><kbd>Play/Pause</kbd></td><td>Toggle playback</td></tr>
+      <tr><td><kbd>Next / Prev</kbd></td><td>Next/previous track</td></tr>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

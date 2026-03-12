@@ -27,4 +27,4 @@ configuration{
     kb-mode-complete: "Control+o";
 }
 
-@theme "/usr/share/rofi/themes/Arc-Dark.rasi"
+@theme "~/.config/rofi/themes/catppuccin.rasi"

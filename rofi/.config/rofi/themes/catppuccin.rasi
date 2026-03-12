@@ -1,0 +1,137 @@
+/*
+ * Catppuccin Mocha colorscheme for rofi
+ */
+
+* {
+    bg:      #1e1e2e;
+    mantle:  #181825;
+    surface: #313244;
+    overlay: #6c7086;
+    text:    #cdd6f4;
+    subtext: #bac2de;
+    blue:    #89b4fa;
+    mauve:   #cba6f7;
+    red:     #f38ba8;
+    green:   #a6e3a1;
+    yellow:  #f9e2af;
+    peach:   #fab387;
+    lavender: #b4befe;
+
+    font: "FiraCode Nerd Font Mono 11";
+    background-color: @bg;
+    border: 0px;
+    transparent: rgba(30,30,46,0);
+}
+
+window {
+    width: 700;
+    orientation: horizontal;
+    location: center;
+    anchor: center;
+    border-color: @lavender;
+    border: 2px;
+    border-radius: 8px;
+    spacing: 0;
+    children: [ mainbox ];
+    background-color: @bg;
+}
+
+mainbox {
+    spacing: 0;
+    children: [ inputbar, message, listview ];
+}
+
+inputbar {
+    color: @blue;
+    padding: 11px;
+    border: 0 0 2px 0;
+    border-color: @surface;
+    background-color: @mantle;
+}
+
+message {
+    padding: 0;
+}
+
+textbox {
+    color: @subtext;
+    padding: 10px;
+}
+
+entry, prompt, case-indicator {
+    text-font: inherit;
+    text-color: inherit;
+}
+
+entry {
+    cursor: pointer;
+}
+
+prompt {
+    margin: 0px 5px 0px 0px;
+}
+
+listview {
+    layout: vertical;
+    padding: 8px;
+    lines: 12;
+    columns: 1;
+    dynamic: false;
+    background-color: @bg;
+}
+
+element {
+    padding: 4px 8px;
+    vertical-align: 1;
+    color: @subtext;
+    font: inherit;
+    border-radius: 4px;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: inherit;
+}
+
+element selected.normal {
+    color: @bg;
+    background-color: @mauve;
+}
+
+element normal active {
+    background-color: @blue;
+    color: @bg;
+}
+
+element-text, element-icon {
+    background-color: inherit;
+    text-color: inherit;
+}
+
+element normal urgent {
+    background-color: @red;
+    color: @bg;
+}
+
+element selected active {
+    background-color: @blue;
+    color: @bg;
+}
+
+button {
+    padding: 6px;
+    color: @subtext;
+    horizontal-align: 0.5;
+    border: 2px 0px 2px 2px;
+    border-radius: 4px 0px 0px 4px;
+    border-color: @surface;
+}
+
+button selected normal {
+    border: 2px 0px 2px 2px;
+    border-color: @mauve;
+}
+
+scrollbar {
+    enabled: true;
+}

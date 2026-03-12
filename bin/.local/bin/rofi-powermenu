@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+SHUTDOWN="󰐥  Shutdown"
+REBOOT="󰜉  Restart"
+LOGOUT="󰍃  Logout"
+LOCK="󰌾  Lock"
+SUSPEND="󰒲  Suspend"
+
+CHOSEN=$(printf "%s\n" "$SHUTDOWN" "$REBOOT" "$LOGOUT" "$LOCK" "$SUSPEND" \
+    | rofi -dmenu -i -p "  Power" \
+        -theme ~/.config/rofi/themes/powermenu.rasi)
+
+case "$CHOSEN" in
+    "$SHUTDOWN") systemctl poweroff ;;
+    "$REBOOT")   systemctl reboot ;;
+    "$LOGOUT")   swaymsg exit ;;
+    "$LOCK")     swaylock ;;
+    "$SUSPEND")  systemctl suspend ;;
+esac
