@@ -1,0 +1,21 @@
+[X-Container]
+PublishPort=5173:5173
+Image=ghcr.io/dongdongbh/mindwtr-app:latest
+ContainerName=Mindwtr
+
+[Unit]
+Wants=podman-user-wait-network-online.service
+After=podman-user-wait-network-online.service
+SourcePath=/var/home/dkl/.config/containers/systemd/mindwtr.container
+RequiresMountsFor=%t/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+KillMode=mixed
+ExecStop=/usr/bin/podman rm -v -f -i mindwtr
+ExecStopPost=-/usr/bin/podman rm -v -f -i mindwtr
+Delegate=yes
+Type=notify
+NotifyAccess=all
+SyslogIdentifier=%N
+ExecStart=/usr/bin/podman run --name mindwtr --replace --rm --cgroups=split --sdnotify=conmon -d --publish 5173:5173 ghcr.io/dongdongbh/mindwtr-app:latest

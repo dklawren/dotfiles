@@ -14,7 +14,7 @@ Wants=podman-user-wait-network-online.service
 After=podman-user-wait-network-online.service
 SourcePath=/var/home/dkl/.config/containers/systemd/silverbullet.container
 RequiresMountsFor=%t/containers
-RequiresMountsFor=/home/dkl/silverbullet
+RequiresMountsFor=/home/dkl/pkms
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
@@ -25,4 +25,4 @@ Delegate=yes
 Type=notify
 NotifyAccess=all
 SyslogIdentifier=%N
-ExecStart=/usr/bin/podman run --name silverbullet --replace --rm --cgroups=split --sdnotify=conmon -d --publish 3000:3000 --env SB_USER=dkl:sushiME --mount type=bind,source=/home/dkl/pkms,destination=/space ghcr.io/silverbulletmd/silverbullet:v2
+ExecStart=/usr/bin/podman run --name silverbullet --replace --rm --cgroups=split --sdnotify=conmon -d --publish 3000:3000 --env SB_USER=dkl:sushiME --env SB_INDEX_PAGE=Home --mount type=bind,source=/home/dkl/pkms,destination=/space ghcr.io/silverbulletmd/silverbullet:v2
