@@ -1,8 +1,8 @@
 profile {
-  output "Samsung Display Corp. 0x4202 Unknown" enable scale 2
+  output "Dell Inc. DELL U2723QE FG6XK04" enable scale 1.66667
 }
 
 profile {
   output "Samsung Display Corp. 0x4202 Unknown" enable scale 2
-  output "Dell Inc. DELL U2723QE FG6XK04" enable scale 1.66667
+  output "Dell Inc. DELL U2723QE FG6XK04" disable
 }
