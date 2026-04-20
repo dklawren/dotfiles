@@ -1,8 +1,17 @@
-profile {
-  output "Dell Inc. DELL U2723QE FG6XK04" enable scale 1.66667
+
+output "Dell Inc. DELL U2723QE FG6XK04" {
+  mode 3840x2160@59.997
+  scale 1.66667
+  alias $EXTERNAL
 }
 
-profile {
-  output "Samsung Display Corp. 0x4202 Unknown" enable scale 2
-  output "Dell Inc. DELL U2723QE FG6XK04" disable
+output "Samsung Display Corp. 0x4202 Unknown" {
+  mode 3840x2400@120.000
+  scale 2
+  alias $INTERNAL
+}
+
+profile desk {
+  output $INTERNAL disable
+  output $EXTERNAL enable
 }
