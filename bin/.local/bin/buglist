@@ -10,16 +10,19 @@ use constant BUGZILLA_URL => 'https://bugzilla.mozilla.org/rest';
 my $dir = shift || '.';
 
 opendir my $dir_fh, $dir || die "can't opendir $dir: $!";
-my @items = grep { /^\d+$/ && -d "$dir/$_" } readdir($dir_fh);
-closedir $dir_fh;
+my @bugs
+  = map { /^(?:[.]bare[.])?(\d+)$/ && -d "$dir/$_" ? $1 : () } readdir $dir_fh;
+closedir $dir_fh || die "can't closedir $dir: $!";
 
-foreach my $item (@items) {
-    my $res =
-      $ua->get( BUGZILLA_URL . "/bug/$item?include_fields=id,summary,status" );
-    my $json = $res->result->json;
-    my $bug  = $json->{bugs}->[0];
-    next if !$bug->{id};
-    print $bug->{id} . " - " . $bug->{status} . " - " . $bug->{summary} . "\n";
+foreach my $bug (@bugs) {
+  my $res = $ua->get(BUGZILLA_URL . "/bug/$bug?include_fields=id,summary,status");
+  my $json = $res->result->json;
+  my $data  = $json->{bugs}->[0];
+  if (!$data->{id}) {
+    print $bug . " - Not found or private\n";
+    next;
+  }
+  print $data->{id} . ' - ' . $data->{status} . ' - ' . $data->{summary} . "\n";
 }
 
 1;
