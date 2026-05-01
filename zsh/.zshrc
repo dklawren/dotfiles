@@ -345,3 +345,10 @@ bindkey -s '^Xgl' 'git log --oneline -n 10\n'
 export PATH="$HOME/.npm-global/bin:$PATH"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+# bun completions
+[ -s "/home/dkl/.bun/_bun" ] && source "/home/dkl/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
