@@ -1,0 +1,10 @@
+[Unit]
+Description=Change Noctalia wallpaper every 30 minutes
+Requires=noctalia-wallpaper.service
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=30min
+
+[Install]
+WantedBy=timers.target

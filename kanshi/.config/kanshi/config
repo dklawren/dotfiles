@@ -1,4 +1,3 @@
-
 output "Dell Inc. DELL U2723QE FG6XK04" {
   mode 3840x2160@59.997
   scale 1.66667
@@ -14,4 +13,8 @@ output "Samsung Display Corp. 0x4202 Unknown" {
 profile desk {
   output $INTERNAL disable
   output $EXTERNAL enable
+}
+
+profile laptop {
+  output $INTERNAL enable 
 }
