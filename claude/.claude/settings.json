@@ -1,3 +1,9 @@
 {
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
+  },
+  "tui": "default",
   "theme": "dark"
 }
