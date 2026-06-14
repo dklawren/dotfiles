@@ -1,0 +1,30 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "plan",
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 8192
+  },
+  "provider": {
+    "ollama": {
+      "name": "Ollama",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "gemma4:e4b-32k": {
+          "name": "gemma4:e4b-32k",
+          "_launch": true,
+          "id": "gemma4:e4b-32k",
+          "tool_call": true,
+          "options": {
+            "temperature": 0.1
+          },
+          "maxTokens": 16384
+        }
+      }
+    }
+  }
+}

@@ -70,3 +70,5 @@ curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/i
 
 # GH dash
 gh extension install dlvhdr/gh-dash
+
+pip install code-review-graph
