@@ -377,3 +377,5 @@ function check_and_spawn_session() {
 # Run the check when the shell starts
 check_and_spawn_session
 
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+
