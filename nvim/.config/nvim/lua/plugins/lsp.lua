@@ -3,15 +3,15 @@ return {
   opts = {
     autoformat = false,
     servers = {
-      perlnavigator = {
-        settings = {
-          perlnavigator = {
-            includePaths = { "./" },
-            perlcriticProfile = "/home/dkl/devel/github/mozilla/bmo/master/.perlcriticrc",
-            perltidyProfile = "/home/dkl/devel/github/mozilla/bmo/master/.perltidyrc",
-          },
-        },
-      },
+      -- perlnavigator = {
+      --   settings = {
+      --     perlnavigator = {
+      --       includePaths = { "./" },
+      --       perlcriticProfile = "/home/dkl/devel/github/mozilla/bmo/master/.perlcriticrc",
+      --       perltidyProfile = "/home/dkl/devel/github/mozilla/bmo/master/.perltidyrc",
+      --     },
+      --   },
+      -- },
     },
   },
 }

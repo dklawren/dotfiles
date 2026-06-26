@@ -50,3 +50,10 @@ require("lazy").setup({
     },
   },
 })
+
+vim.lsp.config["perl-lsp"] = {
+  cmd = { "perl-lsp" },
+  filetypes = { "perl" },
+  root_markers = { "cpanfile", "Makefile.PL", "Build.PL", ".git" },
+}
+vim.lsp.enable("perl-lsp")
