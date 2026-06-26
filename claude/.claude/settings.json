@@ -5,5 +5,10 @@
     "pyright-lsp@claude-plugins-official": true
   },
   "tui": "default",
-  "theme": "dark"
+  "theme": "dark",
+  "statusLine": {
+    "type": "command",
+    "command": "foxtail",
+    "padding": 0
+  }
 }
