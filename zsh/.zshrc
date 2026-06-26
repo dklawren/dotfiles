@@ -1,4 +1,13 @@
 
+# Auto-start tmux: if this is an interactive shell, tmux is installed, and we
+# are not already inside a tmux session, attach to (or create) a session.
+# Using exec replaces this shell with tmux so we don't load the rest of the
+# config twice.
+if [[ -z "$TMUX" ]] && command -v tmux >/dev/null 2>&1 && [[ -o interactive ]] \
+  && [[ -z "$VSCODE_INJECTION" ]]; then
+  exec tmux new-session -A -s main
+fi
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -353,7 +362,6 @@ if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-
 # ===========================================
 # 11. Session Management Checks (tmux/IDE)
 # ===========================================
@@ -378,4 +386,3 @@ function check_and_spawn_session() {
 check_and_spawn_session
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
-
