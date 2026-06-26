@@ -60,6 +60,7 @@ cargo install eza
 cargo install stylelua
 cargo install worktrunk && wt config shell install --yes zsh
 cargo install perl-lsp
+cargo install foxtail
 
 # Pyenv support
 if [ ! -d "$HOME/.pyenv" ]; then

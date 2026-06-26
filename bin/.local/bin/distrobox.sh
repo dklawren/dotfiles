@@ -152,3 +152,6 @@ sudo ln -sf /usr/bin/distrobox-host-exec /usr/bin/podman
 sudo ln -sf /usr/bin/distrobox-host-exec /usr/bin/docker
 sudo ln -sf /usr/bin/distrobox-host-exec /usr/bin/rpm-ostree
 sudo ln -sf /usr/bin/distrobox-host-exec /usr/local/bin/ollama
+
+# Home brew
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
