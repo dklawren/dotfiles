@@ -1,13 +1,3 @@
-
-# Auto-start tmux: if this is an interactive shell, tmux is installed, and we
-# are not already inside a tmux session, attach to (or create) a session.
-# Using exec replaces this shell with tmux so we don't load the rest of the
-# config twice.
-if [[ -z "$TMUX" ]] && command -v tmux >/dev/null 2>&1 && [[ -o interactive ]] \
-  && [[ -z "$VSCODE_INJECTION" ]]; then
-  exec tmux new-session -A -s main
-fi
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
