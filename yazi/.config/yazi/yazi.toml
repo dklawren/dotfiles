@@ -1,6 +1,6 @@
 # A TOML linter such as https://taplo.tamasfe.dev/ can use this schema to validate your config.
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+#:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
 ratio = [1, 3, 4]
@@ -58,7 +58,7 @@ play = [
 [open]
 rules = [
     # Folder
-    { name = "*/", use = ["edit", "open", "reveal"] },
+    { url = "*/", use = ["edit", "open", "reveal"] },
     # Text
     { mime = "text/*", use = ["edit", "reveal"] },
     # Image
@@ -74,7 +74,7 @@ rules = [
     # Empty file
     { mime = "inode/x-empty", use = ["edit", "reveal"] },
     # Fallback
-    { name = "*", use = ["open", "reveal"] },
+    { url = "*", use = ["open", "reveal"] },
 ]
 
 [tasks]
@@ -89,7 +89,7 @@ suppress_preload = false
 
 fetchers = [
     # Mimetype
-    { id = "mime", name = "*", run = "mime", if = "!mime", prio = "high" },
+    { id = "mime", url = "*", run = "mime", if = "!mime", prio = "high", group = "mime" },
 ]
 preloaders = [
     # Image
@@ -104,7 +104,7 @@ preloaders = [
     { mime = "application/vnd.ms-opentype", run = "font" },
 ]
 previewers = [
-    { name = "*/", run = "folder", sync = true },
+    { url = "*/", run = "folder", sync = true },
     # Code
     { mime = "text/*", run = "code" },
     { mime = "*/{xml,javascript,x-wine-extension-ini}", run = "code" },
@@ -126,7 +126,7 @@ previewers = [
     # Empty file
     { mime = "inode/x-empty", run = "empty" },
     # Fallback
-    { name = "*", run = "file" },
+    { url = "*", run = "file" },
 ]
 prepend_previewers = [{ mime = "text/csv", run = "miller" }]
 
