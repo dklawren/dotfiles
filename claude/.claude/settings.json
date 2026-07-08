@@ -1,14 +1,29 @@
 {
-  "enabledPlugins": {
-    "code-review@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true
-  },
-  "tui": "default",
-  "theme": "dark",
   "statusLine": {
     "type": "command",
     "command": "foxtail",
     "padding": 0
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "perl-lsp@claude-code-lsps": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-lsps": {
+      "source": {
+        "source": "github",
+        "repo": "Piebald-AI/claude-code-lsps"
+      }
+    }
+  },
+  "tui": "default",
+  "theme": "dark",
+  "mcpServers": {
+    "moz": {
+      "type": "http",
+      "url": "https://mcp-dev.moz.tools/mcp"
+    }
   }
 }
