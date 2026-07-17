@@ -1,59 +1,45 @@
-[general]
-import = ["~/.config/alacritty/themes/noctalia.toml"]
-
-[env]
-TERM = "xterm-256color"
+# Catppuccin Mocha for Alacritty
 
 [window]
-padding.x = 10
-padding.y = 10
-decorations = "None"
-opacity = 0.95
-
-[keyboard]
-bindings = [
-{ key = "Insert", mods = "Shift", action = "Paste" },
-{ key = "Insert", mods = "Control", action = "Copy" },
-{ key = "Return", mods = "Shift", chars = "\u001B\r" }
-]
+padding = { x = 10, y = 10 }
+opacity = 0.97
+decorations = "none"
 
 [font]
-normal = { family = "FiraCode Nerd Font Mono", style = "Regular" }
-bold = { family = "FiraCode Nerd Font Mono", style = "Bold" }
-italic = { family = "FiraCode Nerd Font Mono", style = "Italic" }
-size = 12
+size = 11.0
+normal = { family = "Cascadia Mono NF", style = "Regular" }
+bold = { family = "Cascadia Mono NF", style = "Bold" }
+italic = { family = "Cascadia Mono NF", style = "Italic" }
 
-# Catppuccin Mocha
 [colors.primary]
-background = '#1e1e2e'
-foreground = '#cdd6f4'
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+dim_foreground = "#7f849c"
 
 [colors.cursor]
-text = '#1e1e2e'
-cursor = '#f5e0dc'
+text = "#1e1e2e"
+cursor = "#f5e0dc"
+
+[colors.normal]
+black   = "#45475a"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#bac2de"
+
+[colors.bright]
+black   = "#585b70"
+red     = "#f38ba8"
+green   = "#a6e3a1"
+yellow  = "#f9e2af"
+blue    = "#89b4fa"
+magenta = "#f5c2e7"
+cyan    = "#94e2d5"
+white   = "#a6adc8"
 
 [colors.selection]
-text = '#1e1e2e'
-background = '#f5e0dc'
-
-# Normal colors
-[colors.normal]
-black   = '#45475a'
-red     = '#f38ba8'
-green   = '#a6e3a1'
-yellow  = '#f9e2af'
-blue    = '#89b4fa'
-magenta = '#f5c2e7'
-cyan    = '#94e2d5'
-white   = '#bac2de'
-
-# Bright colors
-[colors.bright]
-black   = '#585b70'
-red     = '#f38ba8'
-green   = '#a6e3a1'
-yellow  = '#f9e2af'
-blue    = '#89b4fa'
-magenta = '#f5c2e7'
-cyan    = '#94e2d5'
-white   = '#a6adc8'
+text = "#1e1e2e"
+background = "#f5e0dc"
