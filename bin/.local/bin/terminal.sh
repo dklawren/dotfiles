@@ -34,6 +34,7 @@ cpanm install --quiet --notest \
   Log::Log4perl \
   Module::CPANfile \
   Mojolicious \
+  Neovim::Ext \
   Open::This \
   Perl::Critic \
   Perl::Critic::Policy::Documentation::RequirePodLinksIncludeText \

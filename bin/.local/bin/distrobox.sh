@@ -106,6 +106,7 @@ sudo dnf -y install --skip-broken --skip-unavailable \
   pandoc \
   patch \
   perl-App-cpanminus \
+  perl-LWP-Protocol-https \
   php \
   php-curl \
   php-json \
