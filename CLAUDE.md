@@ -4,148 +4,111 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a personal dotfiles repository for a Fedora Linux system using the Niri window manager with Noctalia desktop environment. Configuration files are organized by application/tool and managed using GNU Stow for symlink management.
+Personal dotfiles for Linux, managed with **GNU Stow**. The setup targets
+multiple distros (Fedora and Ubuntu/Debian) and multiple Wayland compositors
+(Niri, Sway, and Hyprland variants), so many configs come in parallel
+alternatives rather than a single canonical stack.
 
-## Repository Structure
+## Stow package model (most important thing to understand)
 
-Configuration files are organized into directories by application:
-- `nvim/` - Multiple Neovim configurations (nvim-custom, nvim-lazyvim, nvim-bare)
-- `niri/` - Niri window manager configuration (KDL format)
-- `noctalia/` - Noctalia desktop environment settings (JSON)
-- `alacritty/` - Terminal emulator configuration
-- `helix/` - Helix editor configuration
-- `yazi/` - File manager configuration
-- `bash/`, `zsh/` - Shell configurations
-- `environment/` - Shared shell environment (.aliases, .functions, .exports, .path, .helpers)
-- `tmux/` - Terminal multiplexer configuration
-- `git/` - Git configuration
-- `bin/` - Local scripts and utilities
-- `containers/` - Podman/systemd container configurations
-- Other directories for desktop-related tools (waybar, rofi, sway, etc.)
+Each top-level directory is a **stow package** whose internal layout mirrors the
+target relative to `$HOME`. For example:
 
-## Dotfile Management
+- `zsh/.zshrc` → `~/.zshrc`
+- `sway/.config/sway/...` → `~/.config/sway/...`
+- `bin/.local/bin/stow-dotfiles` → `~/.local/bin/stow-dotfiles`
 
-This repository uses **GNU Stow** for managing dotfiles:
+Running `stow .` from the repo root symlinks every package into `$HOME`. When
+adding a new config file, place it at the path under a package dir that matches
+where it must land in `$HOME` — do not edit `~/.config/...` directly, edit the
+source here (the live file is a symlink back into this repo).
 
 ```bash
-# Install/link all dotfiles
-stow .
-
-# Sync dotfiles from remote (includes stash, pull, pop, and stow)
-~/.local/bin/stow-dotfiles
-
-# Manual git operations for dotfiles
-git --git-dir=$HOME/.dotfiles --work-tree=$HOME <command>
-# Or use the alias:
-config <command>
+stow .                    # link/relink all packages into $HOME
+stow <package>            # link a single package, e.g. `stow sway`
+~/.local/bin/stow-dotfiles  # git stash + pull origin main + stash pop + stow .
 ```
 
-The `stow-dotfiles` script at `bin/.local/bin/stow-dotfiles` handles syncing with git remote and re-stowing after updates.
+`bin/.local/bin/stow-dotfiles` is the normal sync path; it handles pulling from
+the remote and re-stowing. It aborts stowing if the stash-pop produces merge
+conflicts.
 
-## Key Configuration Locations
+Note: `.aliases` also defines `config='git --git-dir=$HOME/.dotfiles ...'`, a
+*separate* bare-repo mechanism. This stow repo is the source of truth; the
+`config` alias is legacy and unrelated to the files here.
 
-### Shell Environment
-- Main shell configs: `bash/.bashrc`, `zsh/.zshrc`
-- Shared environment files in `environment/`:
-  - `.aliases` - Command aliases (git, docker, podman, navigation shortcuts)
-  - `.functions` - Shell functions (y() for yazi, docker/podman cleanup, etc.)
-  - `.exports` - Environment variable exports
-  - `.path` - PATH modifications
-  - `.helpers` - Helper utilities
+## Shared shell environment
 
-Both bash and zsh source these shared files for consistent environment.
+`bash/.bashrc` and `zsh/.zshrc` both source the files in `environment/` so the
+two shells stay consistent. Edit these rather than the per-shell rc files for
+anything that should apply to both:
 
-### Editors
-**Neovim**: Multiple configurations available via NVIM_APPNAME:
-- `nvim-custom/` - Custom configuration using lazy.nvim plugin manager
-  - Uses Lazy.nvim with plugins organized in `lua/plugins/`
-  - Leader key: Space
-  - Maplocalleader: Backslash
-- `nvim-lazyvim/` - LazyVim distribution (alias: `nvim-lazy`)
-- `nvim-bare/` - Minimal configuration
+- `environment/.aliases` — the live, maintained alias set (git, docker/podman,
+  nvim variants, eza/bat/zoxide shortcuts, navigation)
+- `environment/.exports` — env vars (Wayland/Qt/Moz vars, `EDITOR=nvim`,
+  pyenv/perl paths)
+- `environment/.path` — PATH assembly; **note** it sets
+  `DOCKER_HOST=unix:///run/user/1000/podman/podman.sock` so `docker` talks to
+  podman
+- `environment/.functions` — shell functions (`y()` for yazi cd-on-exit,
+  container cleanup, Mozilla bastion SSH helpers)
+- `environment/.helpers` — older grab-bag; contains **macOS leftovers**
+  (`pbcopy`, `open`) that don't apply on Linux — don't treat it as canonical
 
-**Helix**: Configuration at `helix/.config/helix/config.toml`
-- Theme: dark_plus
-- Keybindings customized for buffer navigation
+Shell stack: oh-my-zsh + starship prompt, zoxide (aliased over `cd`), fzf, `bat`
+(aliased `cat`), `eza` (aliased `ls`/`ll`/`la`).
 
-### Window Manager & Desktop
-**Niri**: Wayland compositor configured via KDL files in `niri/.config/niri/`:
-- `config.kdl` - Main config that includes other files
-- `binds.kdl` - Key bindings
-- `inputs.kdl` - Input device configuration
-- `outputs.kdl` - Monitor configuration
-- `layout.kdl` - Window layout rules
-- `windowrules.kdl` - Per-application window rules
-- `startup.kdl` - Autostart applications
-- `noctalia.kdl` - Noctalia integration
+## Desktop config alternatives
 
-**Noctalia**: Desktop environment configuration in JSON format:
-- `settings.json` - Main settings (bar, dock, widgets, theming)
-- `colors.json` - Color scheme (Material You style with mPrimary, mSecondary, etc.)
-- Extensible via plugins in `noctalia/.config/noctalia/plugins/`
-- Templates enabled for: alacritty, fuzzel, gtk, niri, qt, yazi
+Because the repo spans several compositors, expect overlapping packages. Know
+which one you're editing:
 
-### Terminal
-**Alacritty**: `alacritty/.config/alacritty/alacritty.toml`
-- Font: Fira Code Nerd Font Mono, size 12
-- Shell: zsh
-- Colors: Tokyo Night theme
-- Noctalia theme available but commented out
+- Compositors: `niri/` (KDL), `sway/` (+ `swaylock/`), `fedora-hypr/` &
+  `omarchy-hypr/` (Hyprland variants)
+- Bars: `waybar/`
+- Notifications: `mako/`, `dunst/`
+- Launchers: `fuzzel/`, `rofi/`, `wofi/`
+- Output/display: `kanshi/`
 
-### File Manager
-**Yazi**: Configuration in `yazi/.config/yazi/`
-- Helper function `y()` in `.functions` for directory navigation on exit
+`niri/.config/niri/config.kdl` includes the other KDL files (`binds.kdl`,
+`inputs.kdl`, `outputs.kdl`, `layout.kdl`, `windowrules.kdl`, `startup.kdl`);
+respect that include structure and KDL syntax when editing.
 
-## Development Environment
+## Editors
 
-### Language-specific tools
-- **Node.js**: nvm managed, config at `~/.config/nvm`
-- **Python**: pyenv, virtualenv workflows via aliases (`venv`, `ae`, `de`)
-- **Perl**: local::lib setup, cpanm available
-- **Rust**: Cargo environment sourced
-- **Docker/Podman**: Extensive aliases and cleanup functions
+**Neovim** — multiple configs selected via `NVIM_APPNAME` (aliases in
+`.aliases`): `nvim` (default), `nvim-lazy` (LazyVim), `nvim-kick`, `nvim-chad`,
+`nvim-astro`. Source configs live under `nvim/.config/` (`nvim-custom`,
+`nvim-lazyvim`, `nvim-bare`); generated files like `lazy-lock.json` and `pack/`
+are gitignored.
 
-### Container Management
-Systemd container units in `containers/.config/containers/systemd/`:
-- `open-webui.container`
-- `silverbullet.container`
+**Helix** — `helix/.config/helix/config.toml`.
 
-## Common Workflows
+## Install / provisioning scripts
 
-### Making Configuration Changes
-1. Edit files in this repository
-2. Changes are automatically reflected (files are symlinked via stow)
-3. For Niri: Changes to KDL files require reload or restart
-4. For Noctalia: Settings.json changes are typically hot-reloaded
+Provisioning is script-per-target under `bin/.local/bin/` — pick the one
+matching the machine; there is no single bootstrap entrypoint:
 
-### Syncing Dotfiles
-```bash
-stow-dotfiles  # Pulls from remote, handles conflicts, re-stows
-```
+- `workstation.sh` — Fedora workstation (dnf repos + package install)
+- `ubuntu.sh`, `install-sway-ubuntu.sh` — Ubuntu/Debian
+- `silverblue.sh`, `sericea.sh` — Fedora Atomic variants
+- `omarchy.sh`, `hyprland.sh`, `sway.sh` — desktop-specific setup
+- `terminal.sh` — shell tooling (oh-my-zsh, starship, tmux TPM, perl modules)
+- `distrobox.sh`, `flatpaks.sh`, `flatpak-backup.sh`, `backup.sh` — container /
+  package / backup helpers
 
-### Switching Neovim Configs
-```bash
-nvim          # Default (nvim-custom)
-nvim-lazy     # LazyVim
-nvim-kick     # Kickstart
-nvim-chad     # NvChad
-nvim-astro    # AstroNvim
-```
+## Containers
 
-### Shell Features
-- **oh-my-zsh** with extensive plugins (git, docker, fzf, systemd, etc.)
-- **starship** prompt
-- **zoxide** for directory jumping (aliased as `cd`)
-- **fzf** for fuzzy finding
-- **bat** (aliased as `cat`)
-- **eza** (aliased as `ls`, `ll`, `la`)
+The user runs **podman**, not Docker (see the podman note in the global
+CLAUDE.md). Compose routes through podman; `docker`/`dc` aliases and
+`DOCKER_HOST` all point at the podman socket. `systemd/.config/systemd/` holds
+user-level unit symlinks.
 
-## Important Notes
+## Conventions
 
-- This is a Fedora-specific setup with paths assuming `/var/home/dkl/`
-- Many configs reference `$HOME/.local/bin` for custom scripts
-- Git worktree aliases available via `gwt`
-- Extensive use of modern CLI tools (bat, eza, zoxide, yazi, fzf)
-- Noctalia generates templates for configured applications (alacritty, niri, etc.)
-- When editing Niri config files, respect KDL syntax and the include structure
-- When editing Noctalia configs, settings.json uses a specific schema with versioning
+- These are dotfiles, not an application — there is no build/lint/test suite.
+  "Verifying" a change means reloading the relevant tool (reload the compositor,
+  restart the bar, re-source the shell) rather than running a test command.
+- Paths and package managers are distro-specific; a command in one install
+  script (e.g. `dnf`) won't apply on another target (`apt`). Match the script
+  to the machine.
