@@ -8,13 +8,22 @@
     "code-review@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-    "perl-lsp@claude-code-lsps": true
+    "perl-lsp@claude-code-lsps": true,
+    "yardstick@internal-aidev-plugins": true,
+    "fastly-waf@internal-aidev-plugins": true,
+    "mozdata@internal-aidev-plugins": true
   },
   "extraKnownMarketplaces": {
     "claude-code-lsps": {
       "source": {
         "source": "github",
         "repo": "Piebald-AI/claude-code-lsps"
+      }
+    },
+    "internal-aidev-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "mozilla/internal-aidev-plugins"
       }
     }
   },
