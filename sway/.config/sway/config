@@ -47,6 +47,7 @@ exec mako
 exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 || exec /usr/libexec/polkit-kde-authentication-agent-1
 exec nm-applet --indicator
 exec waybar
+exec kanshi
 exec_always gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Colloid-Dark-Catppuccin-hdpi'
 
