@@ -25,4 +25,3 @@ font=JetBrainsMono Nerd Font
 indicator-radius=100
 indicator-thickness=10
 show-failed-attempts
-ignore-empty-password
