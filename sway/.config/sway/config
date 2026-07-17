@@ -28,12 +28,31 @@ set $peach   #fab387
 
 font pango:Cascadia Mono NF Regular 12
 
+# --- Output identifiers (stable across connector renumbering, e.g. DP-5 -> DP-6) ---
+set $external "Dell Inc. DELL U2723QE FG6XK04"
+set $internal "Samsung Display Corp. 0x4202 Unknown"
+
 # --- Outputs / wallpaper ---
 output * bg $mantle solid_color
-output DP-5 scale 1.66667 position 1920 0
-output eDP-1 scale 2.0 position 0 0
+output $external scale 1.66667 position 1920 0
+output $internal scale 2.0 position 0 0
 output * allow_tearing yes
 output * max_render_time off
+
+# --- Workspace -> output assignment ---
+# Desk setup (both outputs on): 1 & 2 on the laptop, 3+ on the external.
+# The output list is a priority order; sway uses the first connected one, so
+# in laptop-only mode every workspace falls back to the internal panel.
+workspace 1 output $internal $external
+workspace 2 output $internal $external
+workspace 3 output $external $internal
+workspace 4 output $external $internal
+workspace 5 output $external $internal
+workspace 6 output $external $internal
+workspace 7 output $external $internal
+workspace 8 output $external $internal
+workspace 9 output $external $internal
+workspace 10 output $external $internal
 
 # --- Idle / lock ---
 exec swayidle -w \
@@ -62,7 +81,8 @@ bindsym $mod+Return exec $term
 bindsym $mod+Shift+q kill
 bindsym $mod+d exec $launcher
 bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'
+bindsym $mod+Shift+e exec sway-powermenu
+bindsym $mod+Shift+x exec swaylock -f
 
 # Screenshots
 bindsym Print exec grim -g "$(slurp)" - | wl-copy
