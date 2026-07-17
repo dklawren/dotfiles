@@ -1,59 +1,25 @@
-# default theme for Mako notification daemon
-
-# Layout
+# Catppuccin Mocha mako config
+font=Cascadia Mono NF 11
+background-color=#1e1e2eee
+text-color=#cdd6f4
+border-color=#b4befe
+border-size=2
+border-radius=8
+padding=10
+margin=8
+default-timeout=5000
+ignore-timeout=false
 max-visible=5
 layer=overlay
 anchor=top-right
-margin=8
-width=350
-height=100
+width=320
+height=110
+on-notify=exec canberra-gtk-play -i message-new-instant 2>/dev/null || paplay /usr/share/sounds/freedesktop/stereo/message.oga
 
-# Styling (default)
-background-color=#111318
-text-color=#cdd6f4
-border-color=#89b4fa
-border-size=1
-border-radius=10
-padding=15
-
-# Font
-font=Iosevka 12
-
-# Icons
-max-icon-size=48
-icon-path=/usr/share/icons/Adwaita
-
-# Timing
-default-timeout=8000
-ignore-timeout=1
-
-# History (keep notifications for waybar script)
-max-history=50
-
-# Grouping
-group-by=app-name
-
-# Urgency levels
 [urgency=low]
-background-color=#111318
-text-color=#9399b2
-border-color=#6c7086
-default-timeout=4000
+border-color=#585b70
 
-[urgency=normal]
-background-color=#111318
-text-color=#cdd6f4
-border-color=#89b4fa
-default-timeout=8000
-
-[urgency=critical]
-background-color=#111318
-text-color=#cdd6f4
+[urgency=high]
 border-color=#f38ba8
+background-color=#302030ee
 default-timeout=0
-
-[mode=do-not-disturb]
-invisible=1
-
-[mode=do-not-disturb app-name=notify-send]
-invisible=0
