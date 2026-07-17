@@ -11,10 +11,10 @@ output "Samsung Display Corp. 0x4202 Unknown" {
 }
 
 profile desk {
-  output $INTERNAL disable
+  output $INTERNAL enable
   output $EXTERNAL enable
 }
 
 profile laptop {
-  output $INTERNAL enable 
+  output $INTERNAL enable
 }
