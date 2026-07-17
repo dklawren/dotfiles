@@ -28,27 +28,34 @@ echo "==> Updating package lists"
 sudo apt update
 
 PACKAGES=(
+  alacritty
+  brightnessctl
+  fonts-jetbrains-mono
+  fuzzel
+  grim
+  inkscape
+  jq
+  kanshi
+  mako-notifier
+  network-manager-gnome
+  optipng
+  papirus-icon-theme
+  pavucontrol
+  playerctl
+  sassc
+  slurp
+  sound-theme-freedesktop
+  swappy
   sway
   swaybg
   swayidle
   swaylock
   waybar
-  mako-notifier
-  fuzzel
-  alacritty
-  grim
-  slurp
-  swappy
   wl-clipboard
+  xdg-desktop-portal
+  xdg-desktop-portal-gtk
   xdg-desktop-portal-wlr
   xwayland
-  brightnessctl
-  playerctl
-  pavucontrol
-  network-manager-gnome
-  papirus-icon-theme
-  fonts-jetbrains-mono
-  jq
 )
 
 echo "==> Installing packages: ${PACKAGES[*]}"
