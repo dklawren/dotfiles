@@ -17,7 +17,7 @@
 @define-color teal     #94e2d5;
 
 * {
-  font-family: "JetBrainsMono Nerd Font";
+  font-family: "Cascadia Mono NF", "JetBrainsMono Nerd Font";
   font-size: 13px;
   min-height: 0;
 }
@@ -52,6 +52,8 @@ window#waybar {
 #battery,
 #network,
 #pulseaudio,
+#backlight,
+#window,
 #tray,
 #mode {
   padding: 0 10px;
