@@ -71,6 +71,15 @@ if ! sudo apt install -y policykit-1-gnome 2>/dev/null; then
   sudo apt install -y polkit-kde-agent-1
 fi
 
+# --- Backlight brightness permissions ---------------------------------------
+# brightnessctl (bound to the XF86MonBrightness keys in the sway config) writes
+# to /sys/class/backlight/*/brightness, which is only group-writable by "video".
+# The brightnessctl package ships a udev rule granting that access, but the user
+# still has to be a member of the video group for it to take effect. Group
+# membership only applies to new login sessions, so log out/in after this.
+echo "==> Adding $USER to the video group (for brightnessctl backlight control)"
+sudo usermod -aG video "$USER"
+
 # --- Catppuccin-flavored GTK theme (for GTK apps launched from Sway) -------
 # The official catppuccin/gtk repo is archived and no longer maintained.
 # It was built on top of vinceliuice/Colloid-gtk-theme, which IS still
@@ -130,6 +139,7 @@ Name=Sway (Catppuccin)
 Comment=Sway, a tiling Wayland compositor
 Exec=${EXEC_LINE}
 Type=Application
+DesktopNames=sway
 EOF
 
 # --- Unpack config tarball ---------------------------------------------------
@@ -155,3 +165,5 @@ echo "  - mod key is Super (Windows key) by default; see ~/.config/sway/config"
 echo "  - mod+d opens fuzzel (app launcher)"
 echo "  - mod+Return opens alacritty"
 echo "  - mod+Shift+e opens the exit menu"
+echo "  - brightness keys need the 'video' group added above — this only takes"
+echo "    effect after a full logout/login (or reboot)"
