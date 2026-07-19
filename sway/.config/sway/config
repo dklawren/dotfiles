@@ -9,7 +9,7 @@ set $down j
 set $up k
 set $right l
 
-# --- Catppuccin Mocha palette ---
+# Catppuccin Mocha palette
 set $base    #1e1e2e
 set $mantle  #181825
 set $crust   #11111b
@@ -28,18 +28,18 @@ set $peach   #fab387
 
 font pango:Cascadia Mono NF Regular 12
 
-# --- Output identifiers (stable across connector renumbering, e.g. DP-5 -> DP-6) ---
+# Output identifiers (stable across connector renumbering, e.g. DP-5 -> DP-6)
 set $external "Dell Inc. DELL U2723QE FG6XK04"
 set $internal "Samsung Display Corp. 0x4202 Unknown"
 
-# --- Outputs / wallpaper ---
+# Outputs / wallpaper
 output * bg $mantle solid_color
 output $external scale 1.66667 position 1920 0
 output $internal scale 2.0 position 0 0
 output * allow_tearing yes
 output * max_render_time off
 
-# --- Workspace -> output assignment ---
+# Workspace -> output assignment
 # Desk setup (both outputs on): 1 & 2 on the laptop, 3+ on the external.
 # The output list is a priority order; sway uses the first connected one, so
 # in laptop-only mode every workspace falls back to the internal panel.
@@ -54,14 +54,23 @@ workspace 8 output $external $internal
 workspace 9 output $external $internal
 workspace 10 output $external $internal
 
-# --- Idle / lock ---
+# Idle / lock
 exec swayidle -w \
   timeout 300 'swaylock -f' \
   timeout 600 'swaymsg "output * dpms off"' \
     resume 'swaymsg "output * dpms on"' \
   before-sleep 'swaylock -f'
 
-# --- Autostart ---
+# Autostart
+
+# Propagate the Wayland session environment into the D-Bus / systemd --user
+# activation environment. Without this, D-Bus-activated services (notably
+# xdg-desktop-portal and its wlr/gtk backends) start without WAYLAND_DISPLAY
+# and XDG_CURRENT_DESKTOP, fail to register, and GTK apps like waybar block
+# ~25s waiting on org.freedesktop.portal.Desktop before erroring with
+# "StartServiceByName ... Timeout was reached". Mirrors the niri/hypr configs.
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+
 exec mako
 exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 || exec /usr/libexec/polkit-kde-authentication-agent-1
 exec nm-applet --indicator
@@ -70,19 +79,29 @@ exec kanshi
 exec_always gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Colloid-Dark-Catppuccin-hdpi'
 
-# --- Input ---
+# Input
 input type:touchpad {
     tap enabled
     natural_scroll enabled
+    dwt enabled              # Disable while typing
+    scroll_method two_finger
+    middle_emulation enabled
+    click_method clickfinger
 }
 
-# --- Basic bindings ---
+input * {
+    repeat_delay 200
+    repeat_rate 60
+}
+
+# Basic bindings
 bindsym $mod+Return exec $term
 bindsym $mod+Shift+q kill
 bindsym $mod+d exec $launcher
 bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec sway-powermenu
+bindsym $mod+Shift+e exec ~/.config/sway/scripts/sway-powermenu
 bindsym $mod+Shift+x exec swaylock -f
+bindsym $mod+Shift+slash exec ~/.config/sway/scripts/sway-keyhelp
 
 # Screenshots
 bindsym Print exec grim -g "$(slurp)" - | wl-copy
@@ -115,11 +134,19 @@ bindsym $mod+2 workspace number 2
 bindsym $mod+3 workspace number 3
 bindsym $mod+4 workspace number 4
 bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
 bindsym $mod+Shift+1 move container to workspace number 1
 bindsym $mod+Shift+2 move container to workspace number 2
 bindsym $mod+Shift+3 move container to workspace number 3
 bindsym $mod+Shift+4 move container to workspace number 4
 bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
 
 # Layout
 bindsym $mod+s layout stacking
@@ -146,7 +173,7 @@ bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym XF86AudioPlay exec playerctl play-pause
 
-# --- Window colors: class    border   bground  text   indicator  child_border ---
+# Window colors: class    border   bground  text   indicator  child_border
 client.focused          $lavender $base    $text  $mauve   $lavender
 client.focused_inactive $surface1 $base    $text  $overlay0 $surface1
 client.unfocused        $surface0 $mantle  $subtext0 $overlay0 $surface0
@@ -156,5 +183,18 @@ gaps inner 6
 gaps outer 2
 default_border pixel 2
 default_floating_border pixel 2
+
+# Workspace Assignments
+assign [app_id="org.mozilla.thunderbird"] workspace number 1
+assign [app_id="com.slack.Slack"] workspace number 2
+assign [app_id="firefox"] workspace number 3
+assign [app_id="firefox-nightly"] workspace number 3
+assign [app_id="Alacritty"] workspace number 4
+assign [app_id="silverbullet-app.bin"] workspace number 5
+assign [class="Spotify"] workspace number 6
+
+# Floating Windows
+for_window [app_id="org.gnome.Nautilus"] floating enable, resize set width 1000 height 600, move position center
+for_window [class="zoom"] floating enable, resize set width 1000 height 600, move position center
 
 # include /etc/sway/config.d/*

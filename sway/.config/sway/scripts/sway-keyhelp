@@ -1,0 +1,160 @@
+#!/usr/bin/env bash
+# sway-keyhelp — show a searchable cheatsheet of Sway keybindings in fuzzel.
+#
+# Parses `bindsym` lines out of the live Sway config and lists them as two
+# columns: the key combo and a description. Descriptions are looked up in the
+# DESC table below (keyed by the raw key combo as written in the config, e.g.
+# "$mod+1"); anything not in the table falls back to a description derived from
+# the command itself. Bound to $mod+Shift+slash in the sway config.
+#
+# NOTE: descriptions live here, NOT as inline `# comments` in the sway config —
+# sway/i3 only recognise comments at the start of a line, so a trailing comment
+# on a bindsym would be swallowed as literal command arguments (e.g. it would
+# rename workspace "1" to "1 # Switch to workspace 1").
+#
+# `set $var value` definitions are expanded and modifier names are prettified
+# (Mod4 -> Super, Mod1 -> Alt). Bindings nested inside `mode "..." { }` blocks
+# are skipped; the binding that *enters* a mode still shows.
+
+set -euo pipefail
+
+config="${XDG_CONFIG_HOME:-$HOME/.config}/sway/config"
+
+if [[ ! -r "$config" ]]; then
+    notify-send "sway-keyhelp" "Cannot read $config" 2>/dev/null || true
+    exit 1
+fi
+
+# --- Descriptions: "raw key combo<TAB>description" (raw = as written in config)
+DESC=(
+    $'$mod+Return\tOpen a terminal'
+    $'$mod+Shift+q\tClose focused window'
+    $'$mod+d\tOpen app launcher'
+    $'$mod+Shift+c\tReload Sway config'
+    $'$mod+Shift+e\tPower menu (logout / reboot / shutdown)'
+    $'$mod+Shift+x\tLock the screen'
+    $'$mod+Shift+slash\tShow this keybinding cheatsheet'
+    $'Print\tScreenshot a region to clipboard'
+    $'$mod+Print\tScreenshot whole output to clipboard'
+    $'$mod+$left\tFocus window left'
+    $'$mod+$down\tFocus window down'
+    $'$mod+$up\tFocus window up'
+    $'$mod+$right\tFocus window right'
+    $'$mod+Shift+$left\tMove window left'
+    $'$mod+Shift+$down\tMove window down'
+    $'$mod+Shift+$up\tMove window up'
+    $'$mod+Shift+$right\tMove window right'
+    $'$mod+Left\tFocus window left'
+    $'$mod+Down\tFocus window down'
+    $'$mod+Up\tFocus window up'
+    $'$mod+Right\tFocus window right'
+    $'$mod+Shift+Left\tMove window left'
+    $'$mod+Shift+Down\tMove window down'
+    $'$mod+Shift+Up\tMove window up'
+    $'$mod+Shift+Right\tMove window right'
+    $'$mod+s\tStacking layout'
+    $'$mod+w\tTabbed layout'
+    $'$mod+e\tToggle split direction'
+    $'$mod+f\tToggle fullscreen'
+    $'$mod+Shift+space\tToggle floating'
+    $'$mod+r\tEnter resize mode'
+    $'XF86AudioRaiseVolume\tVolume up'
+    $'XF86AudioLowerVolume\tVolume down'
+    $'XF86AudioMute\tToggle mute'
+    $'XF86MonBrightnessUp\tBrightness up'
+    $'XF86MonBrightnessDown\tBrightness down'
+    $'XF86AudioPlay\tPlay / pause media'
+)
+for i in $(seq 1 10); do
+    DESC+=("$(printf '$mod+%s\tSwitch to workspace %s' "$i" "$i")")
+    DESC+=("$(printf '$mod+Shift+%s\tMove window to workspace %s' "$i" "$i")")
+done
+
+formatted="$(
+    awk '
+    # literal (non-regex) string replace of every occurrence of `from` with `to`
+    function replace(str, from, to,   out, p) {
+        while ((p = index(str, from)) > 0) {
+            out = out substr(str, 1, p - 1) to
+            str = substr(str, p + length(from))
+        }
+        return out str
+    }
+    function expand(s,   v) {
+        for (v in vars) s = replace(s, v, vars[v])
+        return s
+    }
+
+    # first input file: the DESC table (raw key <TAB> description)
+    NR == FNR {
+        t = index($0, "\t")
+        if (t > 0) descmap[substr($0, 1, t - 1)] = substr($0, t + 1)
+        next
+    }
+
+    # collect `set $var value` definitions (they all precede the bindsyms)
+    /^set[ \t]+\$/ {
+        key = $2
+        val = $0
+        sub(/^set[ \t]+\$[^ \t]+[ \t]+/, "", val)
+        vars[key] = val
+        next
+    }
+
+    {
+        # track brace depth so bindings inside mode { } blocks are ignored
+        line = $0
+        opens = gsub(/{/, "{", line)
+        closes = gsub(/}/, "}", line)
+    }
+
+    /^[ \t]*bindsym[ \t]/ && depth == 0 {
+        raw = $0
+        sub(/^[ \t]*bindsym[ \t]+/, "", raw)
+
+        # skip any bindsym flags (--release, --locked, ...) before the keys
+        while (raw ~ /^--[^ \t]+[ \t]/) sub(/^--[^ \t]+[ \t]+/, "", raw)
+
+        # first token = key combo, remainder = command
+        keys = raw
+        sub(/[ \t].*$/, "", keys)
+        cmd = raw
+        sub(/^[^ \t]+[ \t]*/, "", cmd)
+
+        # description: table lookup on the raw combo, else derive from command
+        if (keys in descmap) {
+            desc = descmap[keys]
+        } else {
+            desc = cmd
+            sub(/^exec[ \t]+/, "", desc)
+            if (desc ~ /^".*"$/ || desc ~ /^'\''.*'\''$/)
+                desc = substr(desc, 2, length(desc) - 2)
+            desc = expand(desc)
+        }
+
+        keys = expand(keys)
+        keys = replace(keys, "Mod4", "Super")
+        keys = replace(keys, "Mod1", "Alt")
+
+        n++
+        keyarr[n] = keys
+        descarr[n] = desc
+        if (length(keys) > maxlen) maxlen = length(keys)
+    }
+
+    { depth += opens - closes; if (depth < 0) depth = 0 }
+
+    END {
+        for (i = 1; i <= n; i++)
+            printf "%-*s   %s\n", maxlen, keyarr[i], descarr[i]
+    }
+    ' <(printf '%s\n' "${DESC[@]}") "$config"
+)"
+
+printf '%s\n' "$formatted" | fuzzel \
+    --dmenu \
+    --prompt "󰌌  " \
+    --width 72 \
+    --lines 20 \
+    --font "Cascadia Mono NF:size=11" \
+    >/dev/null || true
