@@ -1,0 +1,16 @@
+/* Gruvbox Dark — rofi palette */
+* {
+    bg:      #282828;
+    mantle:  #1d2021;
+    surface: #3c3836;
+    overlay: #665c54;
+    text:    #ebdbb2;
+    subtext: #a89984;
+    blue:    #83a598;
+    mauve:   #d3869b;
+    red:     #fb4934;
+    green:   #b8bb26;
+    yellow:  #fabd2f;
+    peach:   #fe8019;
+    lavender: #83a598;
+}

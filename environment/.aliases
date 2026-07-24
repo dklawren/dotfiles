@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Worktrunk
+alias wts='wt switch'
+alias wtl='wt list'
+alias wtc='wt switch -c'
+
 # Dotfile management
 alias config='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 

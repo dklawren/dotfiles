@@ -1,30 +1,18 @@
-# Sway config — Catppuccin Mocha
+# Sway config
 # Generated starting point; tweak freely. Run `swaymsg reload` after edits.
 
 set $mod Mod4
 set $term alacritty
-set $launcher fuzzel
+set $launcher fuzzel --config $HOME/.config/theme-active/fuzzel.ini
 set $left h
 set $down j
 set $up k
 set $right l
 
-# Catppuccin Mocha palette
-set $base    #1e1e2e
-set $mantle  #181825
-set $crust   #11111b
-set $text    #cdd6f4
-set $subtext0 #a6adc8
-set $surface0 #313244
-set $surface1 #45475a
-set $overlay0 #6c7086
-set $blue    #89b4fa
-set $lavender #b4befe
-set $mauve   #cba6f7
-set $red     #f38ba8
-set $green   #a6e3a1
-set $yellow  #f9e2af
-set $peach   #fab387
+# Color palette — provided by the active theme (see the `theme` package and the
+# `theme-switch` command). Defines $base $mantle $crust $text $subtext0
+# $surface0 $surface1 $overlay0 $blue $lavender $mauve $red $green $yellow $peach.
+include $HOME/.config/theme-active/sway.conf
 
 font pango:Cascadia Mono NF Regular 12
 
@@ -34,6 +22,7 @@ set $internal "Samsung Display Corp. 0x4202 Unknown"
 
 # Outputs / wallpaper
 output * bg $mantle solid_color
+exec_always ~/.config/sway/scripts/sway-random-wallpaper
 output $external scale 1.66667 position 1920 0
 output $internal scale 2.0 position 0 0
 output * allow_tearing yes
@@ -55,11 +44,11 @@ workspace 9 output $external $internal
 workspace 10 output $external $internal
 
 # Idle / lock
-exec swayidle -w \
-  timeout 300 'swaylock -f' \
-  timeout 600 'swaymsg "output * dpms off"' \
-    resume 'swaymsg "output * dpms on"' \
-  before-sleep 'swaylock -f'
+# exec swayidle -w \
+#   timeout 300 'swaylock -f -C $HOME/.config/theme-active/swaylock.conf' \
+#   timeout 600 'swaymsg "output * dpms off"' \
+#     resume 'swaymsg "output * dpms on"' \
+#   before-sleep 'swaylock -f -C $HOME/.config/theme-active/swaylock.conf'
 
 # Autostart
 
@@ -70,14 +59,15 @@ exec swayidle -w \
 # ~25s waiting on org.freedesktop.portal.Desktop before erroring with
 # "StartServiceByName ... Timeout was reached". Mirrors the niri/hypr configs.
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
-
-exec mako
 exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 || exec /usr/libexec/polkit-kde-authentication-agent-1
-exec nm-applet --indicator
-exec waybar
-exec kanshi
 exec_always gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-exec_always gsettings set org.gnome.desktop.interface gtk-theme 'Colloid-Dark-Catppuccin-hdpi'
+exec_always gsettings set org.gnome.desktop.interface gtk-theme "$(cat $HOME/.config/theme-active/gtk 2>/dev/null)"
+
+#exec mako
+#exec nm-applet --indicator
+#exec waybar
+#exec kanshi
+exec noctalia
 
 # Input
 input type:touchpad {
@@ -97,10 +87,10 @@ input * {
 # Basic bindings
 bindsym $mod+Return exec $term
 bindsym $mod+Shift+q kill
-bindsym $mod+d exec $launcher
+# bindsym $mod+d exec $launcher
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec ~/.config/sway/scripts/sway-powermenu
-bindsym $mod+Shift+x exec swaylock -f
+bindsym $mod+Shift+x exec swaylock -f -C $HOME/.config/theme-active/swaylock.conf
 bindsym $mod+Shift+slash exec ~/.config/sway/scripts/sway-keyhelp
 
 # Screenshots
@@ -196,5 +186,16 @@ assign [class="Spotify"] workspace number 6
 # Floating Windows
 for_window [app_id="org.gnome.Nautilus"] floating enable, resize set width 1000 height 600, move position center
 for_window [class="zoom"] floating enable, resize set width 1000 height 600, move position center
+
+# Noctalia
+set $ipc noctalia msg
+bindsym $mod+d exec $ipc panel-toggle launcher
+bindsym $mod+c exec $ipc panel-toggle control-center
+bindsym $mod+comma exec $ipc settings-toggle
+bindsym --locked XF86AudioRaiseVolume exec $ipc volume-up
+bindsym --locked XF86AudioLowerVolume exec $ipc volume-down
+bindsym --locked XF86AudioMute exec $ipc volume-mute
+bindsym --locked XF86MonBrightnessUp exec $ipc brightness-up
+bindsym --locked XF86MonBrightnessDown exec $ipc brightness-down
 
 # include /etc/sway/config.d/*

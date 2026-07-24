@@ -34,5 +34,6 @@
       "type": "http",
       "url": "https://mcp-dev.moz.tools/mcp"
     }
-  }
+  },
+  "skipWorkflowUsageWarning": true
 }

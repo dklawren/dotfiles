@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-WALLPAPER_DIR="${1:-$HOME/Pictures/BingWallpaper}"
+WALLPAPER_DIR="${1:-$HOME/.config/sway/backgrounds}"
 
 WALLPAPER=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | shuf -n 1)
 

@@ -5,7 +5,7 @@
   "spacing": 4,
   "modules-left": ["sway/workspaces", "sway/window", "sway/mode"],
   "modules-center": ["clock"],
-  "modules-right": ["backlight", "pulseaudio", "network", "cpu", "memory", "battery", "tray"],
+  "modules-right": ["idle_inhibitor", "backlight", "pulseaudio", "network", "cpu", "memory", "battery", "tray"],
 
   // "sway/workspaces": {
   //   "disable-scroll": true,
@@ -28,6 +28,15 @@
     "format": "{title}",
     "max-length": 60,
     "tooltip": false
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "󰅶",
+      "deactivated": "󰾬"
+    },
+    "tooltip-format-activated": "Idle inhibitor: on",
+    "tooltip-format-deactivated": "Idle inhibitor: off"
   },
   "clock": {
     "format": "{:%a %d %b  %H:%M}",

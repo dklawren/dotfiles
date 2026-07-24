@@ -6,7 +6,7 @@ REBOOT="󰜉  Restart"
 SHUTDOWN="󰐥  Shutdown"
 
 CHOSEN=$(printf "%s\n" "$LOGOUT" "$SUSPEND" "$REBOOT" "$SHUTDOWN" \
-    | fuzzel --dmenu --prompt "  Power ")
+    | fuzzel --config "$HOME/.config/theme-active/fuzzel.ini" --dmenu --prompt "  Power ")
 
 case "$CHOSEN" in
     "$LOGOUT")   swaymsg exit ;;

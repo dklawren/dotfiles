@@ -37,4 +37,11 @@ if [[ ! -z $unmerged_files ]]; then
 else
    # Run stow to ensure all new dotfiles are linked
    stow .
+
+   # Re-establish the active color theme: recreates the ~/.config/theme-active
+   # symlink and the mako config link (mako isn't stow-managed). Keeps the
+   # current choice if one is set, otherwise defaults to catppuccin-mocha.
+   theme=$(basename "$(readlink -f "$HOME/.config/theme-active" 2>/dev/null)" 2>/dev/null)
+   [ -d "$HOME/.config/themes/$theme" ] || theme="catppuccin-mocha"
+   "$HOME/.local/bin/theme-switch" "$theme" >/dev/null 2>&1 || true
 fi

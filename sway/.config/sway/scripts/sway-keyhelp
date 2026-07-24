@@ -152,6 +152,7 @@ formatted="$(
 )"
 
 printf '%s\n' "$formatted" | fuzzel \
+    --config "$HOME/.config/theme-active/fuzzel.ini" \
     --dmenu \
     --prompt "󰌌  " \
     --width 72 \

@@ -14,10 +14,22 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Colorscheme follows the desktop's active theme (the `theme` stow package /
+-- `theme-switch`). Falls back to catppuccin-mocha if the file is absent.
+local function active_colorscheme()
+  local f = io.open(vim.fn.expand("~/.config/theme-active/nvim-colorscheme"), "r")
+  if not f then
+    return "catppuccin-mocha"
+  end
+  local name = vim.trim(f:read("*l") or "")
+  f:close()
+  return name ~= "" and name or "catppuccin-mocha"
+end
+
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = "catppuccin-mocha" } },
+    { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = active_colorscheme() } },
     -- import/override with your plugins
     { import = "plugins" },
   },

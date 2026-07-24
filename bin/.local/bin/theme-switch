@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# theme-switch — switch the active color scheme across sway, waybar, alacritty,
+# rofi, fuzzel, swaylock, mako, GTK, tmux and (new) neovim instances.
+#
+# Themes live in ~/.config/themes/<name>/ (the `theme` stow package). Switching
+# just repoints the ~/.config/theme-active symlink and reloads each running app.
+# Add a new scheme by dropping a new ~/.config/themes/<name>/ directory with the
+# same set of fragment files — it shows up here automatically.
+set -euo pipefail
+
+CFG="${XDG_CONFIG_HOME:-$HOME/.config}"
+THEMES_DIR="$CFG/themes"
+ACTIVE_LINK="$CFG/theme-active"
+
+current() { [ -L "$ACTIVE_LINK" ] && basename "$(readlink -f "$ACTIVE_LINK")"; }
+
+list() {
+  [ -d "$THEMES_DIR" ] || return 0
+  for d in "$THEMES_DIR"/*/; do [ -d "$d" ] && basename "$d"; done
+}
+
+usage() {
+  echo "Usage: theme-switch [THEME]"
+  echo
+  echo "Available themes:"
+  list | sed 's/^/  /'
+  local cur; cur="$(current || true)"
+  [ -n "${cur:-}" ] && echo && echo "Current: $cur"
+}
+
+# No argument (or -l/--list): show status and exit.
+if [ $# -eq 0 ] || [ "${1:-}" = "-l" ] || [ "${1:-}" = "--list" ]; then
+  usage
+  exit 0
+fi
+
+theme="$1"
+if [ ! -d "$THEMES_DIR/$theme" ]; then
+  echo "Unknown theme: $theme" >&2
+  echo >&2
+  usage >&2
+  exit 1
+fi
+
+# 1. Repoint the active-theme symlink.
+ln -sfn "$THEMES_DIR/$theme" "$ACTIVE_LINK"
+
+# 2. mako has no include directive, so point its config file at the active
+#    theme. Replace a stale stow directory-symlink with a real dir if needed.
+if [ -L "$CFG/mako" ]; then rm -f "$CFG/mako"; fi
+mkdir -p "$CFG/mako"
+ln -sfn "$ACTIVE_LINK/mako.conf" "$CFG/mako/config"
+
+# 3. GTK theme (persisted in dconf; sway also re-applies it on reload).
+if [ -f "$ACTIVE_LINK/gtk" ]; then
+  gtk_theme="$(tr -d '[:space:]' < "$ACTIVE_LINK/gtk")"
+  gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
+fi
+
+# 4. Reload running apps (best-effort — silent if the app isn't running).
+swaymsg reload            >/dev/null 2>&1 || true   # sway colors + gtk exec_always
+killall -SIGUSR2 waybar        2>/dev/null || true  # waybar re-reads config + css
+makoctl reload                 2>/dev/null || true  # mako re-reads its config
+touch "$CFG/alacritty/alacritty.toml" 2>/dev/null || true  # nudge live reload
+
+# tmux: re-source config for every running server.
+if command -v tmux >/dev/null 2>&1 && tmux list-sessions >/dev/null 2>&1; then
+  tmux source-file "$CFG/tmux/tmux.conf" 2>/dev/null || true
+fi
+
+echo "Active theme: $theme"
+echo "  (already-open neovim instances keep their old colorscheme; new ones pick it up.)"

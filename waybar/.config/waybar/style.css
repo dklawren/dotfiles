@@ -1,20 +1,8 @@
-/* Catppuccin Mocha */
-@define-color base     #1e1e2e;
-@define-color mantle   #181825;
-@define-color crust    #11111b;
-@define-color text     #cdd6f4;
-@define-color subtext0 #a6adc8;
-@define-color surface0 #313244;
-@define-color surface1 #45475a;
-@define-color overlay0 #6c7086;
-@define-color blue     #89b4fa;
-@define-color lavender #b4befe;
-@define-color mauve    #cba6f7;
-@define-color red      #f38ba8;
-@define-color green    #a6e3a1;
-@define-color yellow   #f9e2af;
-@define-color peach    #fab387;
-@define-color teal     #94e2d5;
+/* Color palette from the active theme (see the `theme` package / theme-switch).
+   Defines @base @mantle @crust @text @subtext0 @surface0 @surface1 @overlay0
+   @blue @lavender @mauve @red @green @yellow @peach @teal. GTK CSS @import does
+   not expand ~ or env vars, so this path is absolute. */
+@import "/home/dkl/.config/theme-active/waybar.css";
 
 * {
   font-family: "Cascadia Mono NF", "JetBrainsMono Nerd Font";
@@ -55,6 +43,7 @@ window#waybar {
 #backlight,
 #window,
 #tray,
+#idle_inhibitor,
 #mode {
   padding: 0 10px;
   margin: 4px 2px;
@@ -67,6 +56,8 @@ window#waybar {
 #battery.critical { color: @red; }
 #network.disconnected { color: @red; }
 #pulseaudio.muted { color: @overlay0; }
+#idle_inhibitor.activated { color: @yellow; }
+#idle_inhibitor.deactivated { color: @overlay0; }
 
 #clock {
   color: @mauve;
