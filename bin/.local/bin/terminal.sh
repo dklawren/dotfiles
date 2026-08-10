@@ -71,7 +71,8 @@ fi
 # Lazydocker
 curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
 
-# GH dash
+# GH extensions
 gh extension install dlvhdr/gh-dash
+gh extension install github/gh-stack
 
 pip install code-review-graph
