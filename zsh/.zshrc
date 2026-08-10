@@ -376,3 +376,9 @@ function check_and_spawn_session() {
 check_and_spawn_session
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+
+eval "$(opencode completion)"
+
+# Qwen Code PATH block begin
+export PATH='/home/dkl/.local/bin':$PATH
+# Qwen Code PATH block end
