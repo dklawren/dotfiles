@@ -1,42 +1,39 @@
 /*
- * rofi layout — Catppuccin Mocha palette (baked in).
- * Defines bg mantle surface overlay text subtext blue mauve red green yellow
- * peach lavender.
+ * Tokyonight colorscheme for rofi
+ * User: w8ste
  */
-* {
-    bg:      #1e1e2e;
-    mantle:  #181825;
-    surface: #313244;
-    overlay: #6c7086;
-    text:    #cdd6f4;
-    subtext: #bac2de;
-    blue:    #89b4fa;
-    mauve:   #cba6f7;
-    red:     #f38ba8;
-    green:   #a6e3a1;
-    yellow:  #f9e2af;
-    peach:   #fab387;
-    lavender: #b4befe;
-}
 
+
+// define colors etc.
 * {
-    font: "FiraCode Nerd Font Mono 11";
+    bg: #24283b;
+    hv: #9274ca; 
+    primary: #C5C8C6; 
+    ug: #0B2447;
+    font: "Monospace 12";
     background-color: @bg;
+    //dark: @bg;
     border: 0px;
-    transparent: rgba(30,30,46,0);
+    kl: #7aa2f7;
+    black: #000000;
+
+    transparent: rgba(46,52,64,0);
 }
 
+// defines different aspects of the window
 window {
     width: 700;
+    //height: 500;
+
     orientation: horizontal;
     location: center;
     anchor: center;
-    border-color: @lavender;
-    border: 2px;
-    border-radius: 8px;
+    transparency: "screenshot";
+    border-color: @primary;   
+    border: 3px;
+    border-radius: 6px;
     spacing: 0;
     children: [ mainbox ];
-    background-color: @bg;
 }
 
 mainbox {
@@ -45,11 +42,10 @@ mainbox {
 }
 
 inputbar {
-    color: @blue;
+    color: @kl;
     padding: 11px;
     border: 0 0 2px 0;
-    border-color: @surface;
-    background-color: @mantle;
+    border-color: @primary;
 }
 
 message {
@@ -57,7 +53,7 @@ message {
 }
 
 textbox {
-    color: @subtext;
+    color: @kl;
     padding: 10px;
 }
 
@@ -76,19 +72,18 @@ prompt {
 
 listview {
     layout: vertical;
+    //spacing: 5px;
     padding: 8px;
     lines: 12;
     columns: 1;
     dynamic: false;
-    background-color: @bg;
 }
 
 element {
-    padding: 4px 8px;
+    padding: 2px;
     vertical-align: 1;
-    color: @subtext;
+    color: @kl;
     font: inherit;
-    border-radius: 4px;
 }
 
 element-text {
@@ -97,13 +92,13 @@ element-text {
 }
 
 element selected.normal {
-    color: @bg;
-    background-color: @mauve;
+    color: @black;
+    background-color: @hv;
 }
 
 element normal active {
-    background-color: @blue;
-    color: @bg;
+    background-color: @hv;
+    color: @black;
 }
 
 element-text, element-icon {
@@ -112,29 +107,29 @@ element-text, element-icon {
 }
 
 element normal urgent {
-    background-color: @red;
-    color: @bg;
+    background-color: @primary;
 }
 
 element selected active {
-    background-color: @blue;
-    color: @bg;
+    background: @hv;
+    foreground: @bg;
 }
 
 button {
     padding: 6px;
-    color: @subtext;
-    horizontal-align: 0.5;
+    color: @primary;
+    horizonatal-align: 0.5;
+
     border: 2px 0px 2px 2px;
     border-radius: 4px 0px 0px 4px;
-    border-color: @surface;
+    border-color: @primary;
 }
 
 button selected normal {
     border: 2px 0px 2px 2px;
-    border-color: @mauve;
+    border-color: @primary;
 }
 
 scrollbar {
     enabled: true;
-}
+} 

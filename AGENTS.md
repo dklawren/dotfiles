@@ -76,40 +76,19 @@ respect that include structure and KDL syntax when editing.
 
 ## Theming (color schemes)
 
-Color schemes are centralized in the **`theme/`** stow package and switched at
-runtime with **`bin/.local/bin/theme-switch`** (no re-stow needed). Available
-schemes: `catppuccin-mocha` (default) and `gruvbox-dark`.
+**Catppuccin Mocha** is the single color scheme, baked directly into each app's
+config. There is no runtime theme switching and no `theme` stow package.
 
-- Each scheme is a directory `theme/.config/themes/<name>/` holding per-app
-  palette fragments: `sway.conf`, `waybar.css`, `alacritty.toml`, `rofi.rasi`,
-  `mako.conf`, `fuzzel.ini`, `swaylock.conf`, `tmux.conf`, plus `gtk` (GTK theme
-  name) and `nvim-colorscheme` (colorscheme name).
-- `theme-switch <name>` repoints the `~/.config/theme-active` symlink at the
-  chosen scheme and reloads each running app (sway, waybar, mako, alacritty,
-  tmux) + sets the GTK theme via `gsettings`. Run with no args to list schemes
-  and show the current one.
-- Apps consume the active theme by **include/import of a stable path**, so only
-  the symlink target changes on switch:
-  - sway: `include $HOME/.config/theme-active/sway.conf`
-  - waybar: `@import "/home/dkl/.config/theme-active/waybar.css";` (GTK CSS
-    `@import` won't expand `~`/env vars, hence the absolute path)
-  - alacritty: `[general] import = ["~/.config/theme-active/alacritty.toml"]`
-  - rofi: `themes/layout.rasi` `@import`s the active `rofi.rasi` (colors only;
-    layout stays in the rofi package)
-  - fuzzel / swaylock: **no include support** → invoked with
-    `--config $HOME/.config/theme-active/fuzzel.ini` and
-    `-C $HOME/.config/theme-active/swaylock.conf` (see sway config + scripts)
-  - mako: **no include support** → `~/.config/mako/config` is a symlink that
-    `theme-switch` repoints (so mako is NOT stow-managed; the `mako` package no
-    longer ships `config`)
-  - tmux: `tmux.conf` sources the active `tmux.conf` after the plugin manager
-  - nvim: `lua/config/lazy.lua` reads `~/.config/theme-active/nvim-colorscheme`
-- **Adding a scheme:** copy an existing `theme/.config/themes/<name>/` dir, edit
-  the palettes, `stow theme`, then `theme-switch <name>`. It's auto-discovered.
-- `stow-dotfiles` re-establishes `theme-active` (and the mako link) after each
-  re-stow, preserving the current choice or defaulting to `catppuccin-mocha`.
-- Note the absolute `/home/dkl/...` paths in the waybar/rofi imports (those
-  parsers don't expand `~`); update them if the username ever changes.
+- `alacritty/.config/alacritty/alacritty.toml` — inline `[colors.*]` palette
+- `tmux/.config/tmux/tmux.conf` — `catppuccin-tmux` plugin + status config
+- `rofi/.config/rofi/themes/layout.rasi` — `* { ... }` palette variables
+- `waybar/.config/waybar/colors.css` — static color vars
+- `swaylock/.config/swaylock/config` — static colors
+- `fuzzel/.config/fuzzel/fuzzel.ini` — stowed config, used by sway scripts
+- `nvim/.config/nvim/lua/config/lazy.lua` — colorscheme `"catppuccin"` (mocha)
+- `mako` — no config shipped; runs with defaults
+
+To change a color, edit the relevant file directly and reload the app.
 
 ## Editors
 

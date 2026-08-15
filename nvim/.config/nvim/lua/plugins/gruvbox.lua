@@ -1,6 +1,5 @@
--- Gruvbox colorscheme, so `theme-switch gruvbox-dark` (which writes "gruvbox"
--- to ~/.config/theme-active/nvim-colorscheme) has a colorscheme to load.
--- Catppuccin is configured separately in catppuccin.lua.
+-- Gruvbox colorscheme, available on demand. The default (catppuccin, mocha)
+-- is configured separately in catppuccin.lua.
 return {
   "ellisonleao/gruvbox.nvim",
   lazy = false,

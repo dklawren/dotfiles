@@ -1,64 +1,135 @@
-/**
- * ROFI Color theme
- * User: Habib
- * Copyright: JuJu Ashbe !!
-*/
+/*
+ * Tokyonight colorscheme for rofi
+ * User: w8ste
+ */
 
+
+// define colors etc.
 * {
-    dark:#0f0f0f;
-    red:#ea6962;
-    red-alt:#ca3433;
-    orange:#e78a4e;
-    yellow: #d8a657;
-    blue:#7daea3;
-    green:#a9a665;
-    aqua: #89b482;
-    cream:#d4be98;
-    grey:#504945;
-    dark-grey:#181818;
-    transparent:#00000000;
-    highlight:underline bold #ca3433;
+    bg: #24283b;
+    hv: #9274ca; 
+    primary: #C5C8C6; 
+    ug: #0B2447;
+    font: "Monospace 16";
+    background-color: @bg;
+    //dark: @bg;
+    border: 0px;
+    kl: #7aa2f7;
+    black: #000000;
 
-    padding:0;
-    margin:0;
-    border:0;
-    border-radius:0;
-    spacing:0;
-
-    text-color: @dark;
-
-    font:"Roboto Condensed Bold 13";
+    transparent: rgba(46,52,64,0);
 }
 
+// defines different aspects of the window
 window {
-    width: 35%;
+    width: 700;
+    height: 250;
+
+    orientation: horizontal;
     location: center;
-    border-radius:0px;
-    background-color:@dark;
-    children: [listview];
+    anchor: center;
+    transparency: "screenshot";
+    border-color: @primary;   
+    border: 3px;
+    border-radius: 6px;
+    spacing: 0;
+    children: [ mainbox ];
+}
+
+mainbox {
+    spacing: 0;
+    children: [ inputbar, message, listview ];
+}
+
+inputbar {
+    color: @kl;
+    padding: 11px;
+    border: 0 0 2px 0;
+    border-color: @primary;
+}
+
+message {
+    padding: 0;
+}
+
+textbox {
+    color: @kl;
+    padding: 10px;
+}
+
+entry, prompt, case-indicator {
+    text-font: inherit;
+    text-color: inherit;
+}
+
+entry {
+    cursor: pointer;
+}
+
+prompt {
+    margin: 0px 5px 0px 0px;
 }
 
 listview {
-    border:0px;
-    padding:1px;
-    margin:1px;
-    columns:4;
-    lines:1;
-    cycle:false;
+    layout: vertical;
+    //spacing: 5px;
+    padding: 8px;
+    lines: 12;
+    columns: 1;
+    dynamic: false;
 }
 
 element {
-    margin:3px;
-    padding:15px;
-    background-color:@green;
+    padding: 2px;
+    vertical-align: 1;
+    color: @kl;
+    font: inherit;
 }
 
 element-text {
-    text-color:                  inherit;
-    vertical-align:              0.5;
-    horizontal-align:            0.5;
+    background-color: inherit;
+    text-color: inherit;
 }
 
-element selected {
-    background-color: @red;
+element selected.normal {
+    color: @black;
+    background-color: @hv;
 }
+
+element normal active {
+    background-color: @hv;
+    color: @black;
+}
+
+element-text, element-icon {
+    background-color: inherit;
+    text-color: inherit;
+}
+
+element normal urgent {
+    background-color: @primary;
+}
+
+element selected active {
+    background: @hv;
+    foreground: @bg;
+}
+
+button {
+    padding: 6px;
+    color: @primary;
+    horizonatal-align: 0.5;
+
+    border: 2px 0px 2px 2px;
+    border-radius: 4px 0px 0px 4px;
+    border-color: @primary;
+}
+
+button selected normal {
+    border: 2px 0px 2px 2px;
+    border-color: @primary;
+}
+
+scrollbar {
+    enabled: true;
+} 
