@@ -1,83 +1,98 @@
+//-*- mode: jsonc -*-
 {
-  "layer": "top",
-  "position": "top",
-  "height": 32,
-  "spacing": 4,
-  "modules-left": ["sway/workspaces", "sway/window", "sway/mode"],
-  "modules-center": ["clock"],
-  "modules-right": ["idle_inhibitor", "backlight", "pulseaudio", "network", "cpu", "memory", "battery", "tray"],
+    "layer": "top", 
+    "position": "top", 
+    "height": 30, 
+    "spacing": 4, 
 
-  // "sway/workspaces": {
-  //   "disable-scroll": true,
-  //   "all-outputs": true,
-  //   "format": "{icon}",
-  //   "format-icons": {
-  //     "default": "",
-  //     "focused": ""
-  //   }
-  // },
-  "sway/workspaces": {
-    "disable-scroll": true,
-    "all-outputs": true,
-    "format": "{name}"
-  },
-  "sway/mode": {
-    "format": "<span style=\"italic\">{}</span>"
-  },
-  "sway/window": {
-    "format": "{title}",
-    "max-length": 60,
-    "tooltip": false
-  },
-  "idle_inhibitor": {
-    "format": "{icon}",
-    "format-icons": {
-      "activated": "󰅶",
-      "deactivated": "󰾬"
+    // Choose the order of the modules
+    "modules-left": [
+        "sway/workspaces",
+        "custom/sep",
+        "sway/window",
+        "custom/sep"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+
+    "modules-right": [
+	"custom/sep",
+	"battery",
+        "custom/sep",
+        "network",
+        "custom/sep",
+        "cpu",
+        "custom/sep",
+        "memory",
+        "custom/sep",
+        "disk",
+        "custom/sep",
+        "tray"
+	//"clock",
+	//"custom/sep"
+    ],
+
+    // Modules configuration
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "warp-on-scroll": false,
+        "format": "{name}",
+        "persistent-workspaces": {
+            "*" : 9
+        }
     },
-    "tooltip-format-activated": "Idle inhibitor: on",
-    "tooltip-format-deactivated": "Idle inhibitor: off"
-  },
-  "clock": {
-    "format": "{:%a %d %b  %H:%M}",
-    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
-  },
-  "cpu": {
-    "format": " {usage}%",
-    "tooltip": false
-  },
-  "memory": {
-    "format": "󰍛 {}%"
-  },
-  "battery": {
-    "states": { "warning": 30, "critical": 15 },
-    "format": "{icon} {capacity}%",
-    "format-charging": " {capacity}%",
-    "format-icons": ["", "", "", "", ""]
-  },
-  "network": {
-    "format-wifi": " {essid} ({signalStrength}%)",
-    "format-ethernet": " {ifname}",
-    "format-disconnected": "󰲛 disconnected",
-    "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
-  },
-  "backlight": {
-    "format": "{icon} {percent}%",
-    "format-icons": ["󰃚", "󰃛", "󰃜", "󰃝", "󰃞", "󰃟", "󰃠"],
-    "on-scroll-up": "brightnessctl set 5%+",
-    "on-scroll-down": "brightnessctl set 5%-",
-    "tooltip": false
-  },
-  "pulseaudio": {
-    "format": "{icon} {volume}%",
-    "format-muted": "󰝟 muted",
-    "format-icons": {
-      "default": ["", "", ""]
+    "sway/window" : {
+        "max-length": 40,
+        "seperate-outputs": false
     },
-    "on-click": "pavucontrol"
-  },
-  "tray": {
-    "icon-size": 16,
-    "spacing": 8
-  }
+    "tray": {
+        // "icon-size": 21,
+        "spacing": 10
+        // "icons": {
+        //   "blueman": "bluetooth",
+        //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
+        // }
+    },
+    "clock": {
+        "format-alt": "{:%Y-%m-%d}"
+    },
+    "cpu": {
+        "format": "CPU: {usage}%",
+        "tooltip": false
+    },
+    "memory": {
+        "intereval": 30,
+        "format": "Mem: {percentage}%",
+        "tooltip": true,
+        "tooltip-format": "Used: {used}GB / Total: {total}GB",
+    },
+    "disk": {
+        "interval": 60,
+        "path": "/",
+        "format": "Disk: {free}"
+    },
+    "battery": {
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "Bat: {capacity}%",
+        "format-plugged": "{capacity}% plg",
+        "format-alt": "Bat {capacity}%",
+        "format-time": "{H}:{M}"
+    },
+    "network": {
+	"format": "Disconnected",
+        "format-wifi": "WiFi: {essid} ({signalStrength}%)",
+	"format-ethernet": "Eth: {ipaddr}/{cidr}",
+        "format-disconnected": "Disconnected",
+	"interval": 1
+    },
+    "custom/sep": {
+        "format" : "|",
+        "interval" : 0
+    }
 }

@@ -1,201 +1,23 @@
-# Sway config
-# Generated starting point; tweak freely. Run `swaymsg reload` after edits.
+# read `man 5 sway` for a complete reference.
 
-set $mod Mod4
-set $term alacritty
-set $launcher fuzzel --config $HOME/.config/theme-active/fuzzel.ini
-set $left h
-set $down j
-set $up k
-set $right l
+set $config_path "$HOME/.config/sway"
 
-# Color palette — provided by the active theme (see the `theme` package and the
-# `theme-switch` command). Defines $base $mantle $crust $text $subtext0
-# $surface0 $surface1 $overlay0 $blue $lavender $mauve $red $green $yellow $peach.
-include $HOME/.config/theme-active/sway.conf
+include $config_path/variables
+include $config_path/autostarts
+include $config_path/borders_and_gaps
+include $config_path/io
+include $config_path/basic_keybinds
+include $config_path/movement_keybinds
+include $config_path/workspace_keybinds
+include $config_path/resize_keybinds
+include $config_path/layout_keybinds
+include $config_path/bar
+include $config_path/audio_brightness_keybinds
 
-font pango:Cascadia Mono NF Regular 12
+#font pango:MesloLGS Nerd Font 16
+font pango:Iosevka Nerd Font Propo 16
 
-# Output identifiers (stable across connector renumbering, e.g. DP-5 -> DP-6)
-set $external "Dell Inc. DELL U2723QE FG6XK04"
-set $internal "Samsung Display Corp. 0x4202 Unknown"
-
-# Outputs / wallpaper
-output * bg $mantle solid_color
-exec_always ~/.config/sway/scripts/sway-random-wallpaper
-output $external scale 1.66667 position 1920 0
-output $internal scale 2.0 position 0 0
-output * allow_tearing yes
-output * max_render_time off
-
-# Workspace -> output assignment
-# Desk setup (both outputs on): 1 & 2 on the laptop, 3+ on the external.
-# The output list is a priority order; sway uses the first connected one, so
-# in laptop-only mode every workspace falls back to the internal panel.
-workspace 1 output $internal $external
-workspace 2 output $internal $external
-workspace 3 output $external $internal
-workspace 4 output $external $internal
-workspace 5 output $external $internal
-workspace 6 output $external $internal
-workspace 7 output $external $internal
-workspace 8 output $external $internal
-workspace 9 output $external $internal
-workspace 10 output $external $internal
-
-# Idle / lock
-# exec swayidle -w \
-#   timeout 300 'swaylock -f -C $HOME/.config/theme-active/swaylock.conf' \
-#   timeout 600 'swaymsg "output * dpms off"' \
-#     resume 'swaymsg "output * dpms on"' \
-#   before-sleep 'swaylock -f -C $HOME/.config/theme-active/swaylock.conf'
-
-# Autostart
-
-# Propagate the Wayland session environment into the D-Bus / systemd --user
-# activation environment. Without this, D-Bus-activated services (notably
-# xdg-desktop-portal and its wlr/gtk backends) start without WAYLAND_DISPLAY
-# and XDG_CURRENT_DESKTOP, fail to register, and GTK apps like waybar block
-# ~25s waiting on org.freedesktop.portal.Desktop before erroring with
-# "StartServiceByName ... Timeout was reached". Mirrors the niri/hypr configs.
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
-exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 || exec /usr/libexec/polkit-kde-authentication-agent-1
-exec_always gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-exec_always gsettings set org.gnome.desktop.interface gtk-theme "$(cat $HOME/.config/theme-active/gtk 2>/dev/null)"
-
-#exec mako
-#exec nm-applet --indicator
-#exec waybar
-#exec kanshi
-exec noctalia
-
-# Input
-input type:touchpad {
-    tap enabled
-    natural_scroll enabled
-    dwt enabled              # Disable while typing
-    scroll_method two_finger
-    middle_emulation enabled
-    click_method clickfinger
-}
-
-input * {
-    repeat_delay 200
-    repeat_rate 60
-}
-
-# Basic bindings
-bindsym $mod+Return exec $term
-bindsym $mod+Shift+q kill
-# bindsym $mod+d exec $launcher
-bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec ~/.config/sway/scripts/sway-powermenu
-bindsym $mod+Shift+x exec swaylock -f -C $HOME/.config/theme-active/swaylock.conf
-bindsym $mod+Shift+slash exec ~/.config/sway/scripts/sway-keyhelp
-
-# Screenshots
-bindsym Print exec grim -g "$(slurp)" - | wl-copy
-bindsym $mod+Print exec grim - | wl-copy
-
-# Focus / move
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
-
-# Focus with arrow keys
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
-
-# Workspaces
-bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-bindsym $mod+3 workspace number 3
-bindsym $mod+4 workspace number 4
-bindsym $mod+5 workspace number 5
-bindsym $mod+6 workspace number 6
-bindsym $mod+7 workspace number 7
-bindsym $mod+8 workspace number 8
-bindsym $mod+9 workspace number 9
-bindsym $mod+Shift+1 move container to workspace number 1
-bindsym $mod+Shift+2 move container to workspace number 2
-bindsym $mod+Shift+3 move container to workspace number 3
-bindsym $mod+Shift+4 move container to workspace number 4
-bindsym $mod+Shift+5 move container to workspace number 5
-bindsym $mod+Shift+6 move container to workspace number 6
-bindsym $mod+Shift+7 move container to workspace number 7
-bindsym $mod+Shift+8 move container to workspace number 8
-bindsym $mod+Shift+9 move container to workspace number 9
-
-# Layout
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-bindsym $mod+f fullscreen
-bindsym $mod+Shift+space floating toggle
-bindsym $mod+r mode "resize"
-
-mode "resize" {
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-
-# Media / brightness keys
-bindsym XF86AudioRaiseVolume exec 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+'
-bindsym XF86AudioLowerVolume exec 'wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-'
-bindsym XF86AudioMute exec 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle'
-bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-bindsym XF86AudioPlay exec playerctl play-pause
-
-# Window colors: class    border   bground  text   indicator  child_border
-client.focused          $lavender $base    $text  $mauve   $lavender
-client.focused_inactive $surface1 $base    $text  $overlay0 $surface1
-client.unfocused        $surface0 $mantle  $subtext0 $overlay0 $surface0
-client.urgent            $red     $red     $base  $red     $red
-
-gaps inner 6
-gaps outer 2
-default_border pixel 2
-default_floating_border pixel 2
-
-# Workspace Assignments
-assign [app_id="org.mozilla.thunderbird"] workspace number 1
-assign [app_id="com.slack.Slack"] workspace number 2
-assign [app_id="firefox"] workspace number 3
-assign [app_id="firefox-nightly"] workspace number 3
-assign [app_id="Alacritty"] workspace number 4
-assign [app_id="silverbullet-app.bin"] workspace number 5
-assign [class="Spotify"] workspace number 6
-
-# Floating Windows
-for_window [app_id="org.gnome.Nautilus"] floating enable, resize set width 1000 height 600, move position center
-for_window [class="zoom"] floating enable, resize set width 1000 height 600, move position center
-
-# Noctalia
-set $ipc noctalia msg
-bindsym $mod+d exec $ipc panel-toggle launcher
-bindsym $mod+c exec $ipc panel-toggle control-center
-bindsym $mod+comma exec $ipc settings-toggle
-bindsym --locked XF86AudioRaiseVolume exec $ipc volume-up
-bindsym --locked XF86AudioLowerVolume exec $ipc volume-down
-bindsym --locked XF86AudioMute exec $ipc volume-mute
-bindsym --locked XF86MonBrightnessUp exec $ipc brightness-up
-bindsym --locked XF86MonBrightnessDown exec $ipc brightness-down
-
-# include /etc/sway/config.d/*
+#workspace 1 output HDMI-A-1
+#workspace 2 output eDP-1
+#output HDMI-A-1 pos 0 0 res 1920x1080
+#output eDP-1 pos 1920 0 res 1920x1080

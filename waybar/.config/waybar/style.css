@@ -1,65 +1,88 @@
-/* Color palette from the active theme (see the `theme` package / theme-switch).
-   Defines @base @mantle @crust @text @subtext0 @surface0 @surface1 @overlay0
-   @blue @lavender @mauve @red @green @yellow @peach @teal. GTK CSS @import does
-   not expand ~ or env vars, so this path is absolute. */
-@import "/home/dkl/.config/theme-active/waybar.css";
+@import "colors.css";
 
 * {
-  font-family: "Cascadia Mono NF", "JetBrainsMono Nerd Font";
-  font-size: 13px;
-  min-height: 0;
+    font-family: "Iosevka Nerd Font Propo";
+    font-size: 16px;
+    font-weight: Bold;
 }
 
 window#waybar {
-  background-color: @mantle;
-  color: @text;
-  border-bottom: 2px solid @crust;
+    background-color: @bg;
+    color: @fg;
 }
 
 #workspaces button {
-  padding: 0 8px;
-  color: @subtext0;
-  background: transparent;
+    padding: 0 6px;
+    color: @white;
+    background: transparent;
+    border-bottom: 3px solid @bg;
 }
-
 #workspaces button.focused {
-  color: @base;
-  background: @lavender;
-  border-radius: 6px;
+    color: @cyn;
+    border-bottom: 3px solid @mag;
+    border-radius: 0px;
 }
 
 #workspaces button.urgent {
-  color: @base;
-  background: @red;
-  border-radius: 6px;
+    background-color: @red;
+}
+
+button:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #ffffff;
 }
 
 #clock,
+#custom-sep,
+#battery,
 #cpu,
 #memory,
-#battery,
+#disk,
 #network,
-#pulseaudio,
-#backlight,
-#window,
-#tray,
-#idle_inhibitor,
-#mode {
-  padding: 0 10px;
-  margin: 4px 2px;
-  background: @surface0;
-  color: @text;
-  border-radius: 6px;
+#tray {
+    padding: 0 8px;
+    color: @white;
 }
 
-#battery.warning { color: @yellow; }
-#battery.critical { color: @red; }
-#network.disconnected { color: @red; }
-#pulseaudio.muted { color: @overlay0; }
-#idle_inhibitor.activated { color: @yellow; }
-#idle_inhibitor.deactivated { color: @overlay0; }
+#custom-sep {
+    color: @brblk;
+}
 
 #clock {
-  color: @mauve;
-  font-weight: bold;
+    color: @cyn;
+    border-bottom: 4px solid @cyn;
 }
+
+#battery {
+    color: @mag;
+    border-bottom: 4px solid @mag;
+}
+
+#disk {
+    color: @ylw;
+    border-bottom: 4px solid @ylw;
+}
+
+#memory {
+    color: @mag;
+    border-bottom: 4px solid @mag;
+}
+
+#cpu {
+    color: @grn;
+    border-bottom: 4px solid @grn;
+}
+
+#network {
+    color: @blu;
+    border-bottom: 4px solid @blu;
+}
+
+#network.disconnected {
+    background-color: @red;
+}
+
+#tray {
+    background-color: #2980b9;
+}
+

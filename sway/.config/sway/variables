@@ -1,0 +1,32 @@
+# setting the font used by sway(e.g. in title bars)
+font iosevka medium 12
+
+# this is the key used with other keys to control sway. you can change it to your
+# preference.
+# Mod4 means Windows Key
+# Mod1 means Alt key
+set $mod Mod4
+
+# home row direction keys, like vim.
+set $left h
+set $down j
+set $up k
+set $right l
+
+# your preferred terminal emulator.
+set $term alacritty
+
+# your preferred application launcher.
+set $menu rofi -show drun
+
+set $browser firefox-nightly
+# set $browser helium
+
+# powermenu script
+set $powermenu "sh -c '~/.config/rofi/powermenu.sh'"
+
+# wallpaper menu script
+set $wallmenu "sh -c '~/.config/rofi/wallmenu.sh'"
+
+# theme switcher menu script
+set $thememenu "sh -c '~/.config/rofi/thememenu.sh'"

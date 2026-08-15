@@ -1,0 +1,41 @@
+@define-color bg          #1a1b26;
+@define-color bg-dark     #16161e;
+@define-color fg          #a9b1d6;
+@define-color accent      #7aa2f7;
+@define-color alert       #f7768e;
+
+* {
+    font-family: monospace;
+    background-clip: border-box;
+}
+
+.notification-row {
+    outline: none;
+}
+
+.notification {
+    background: @bg;
+    border: 2px solid @accent;
+    border-radius: 8px;
+    color: @fg;
+    margin: 6px;
+    padding: 10px;
+}
+
+.control-center {
+    background: @bg-dark;
+    border: 2px solid @accent;
+    border-radius: 12px;
+    color: @fg;
+    padding: 12px;
+}
+
+.control-center .notification-row:focus,
+.control-center .notification-row:hover {
+    background: #24283b;
+}
+
+.widget-title {
+    color: @accent;
+    font-weight: bold;
+}
