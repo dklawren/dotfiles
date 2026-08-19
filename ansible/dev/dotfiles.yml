@@ -1,0 +1,34 @@
+---
+- name: Clone dotfiles repo
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_dir }}"
+    accept_newhostkey: true
+    clone: true
+    update: false
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Discover stow packages
+  ansible.builtin.find:
+    paths: "{{ dotfiles_dir }}"
+    file_type: directory
+    recurse: false
+  register: _stow_packages
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Stow dotfiles
+  ansible.builtin.command: stow -S -t {{ user_home }} {{ item.path | basename }}
+  args:
+    chdir: "{{ dotfiles_dir }}"
+  loop: "{{ _stow_packages.files }}"
+  when: (item.path | basename) != '.git'
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"

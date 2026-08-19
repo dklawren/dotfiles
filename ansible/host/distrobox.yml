@@ -1,0 +1,14 @@
+---
+- name: Inspect existing distrobox container
+  ansible.builtin.command: podman container inspect {{ distrobox_name }}
+  register: _distrobox_inspect
+  changed_when: false
+  failed_when: false
+
+- name: Create distrobox {{ distrobox_name }}
+  ansible.builtin.command: distrobox create --name {{ distrobox_name }} --image {{ distrobox_image }}
+  when: _distrobox_inspect.rc != 0
+
+- name: Start distrobox {{ distrobox_name }}
+  ansible.builtin.command: podman start {{ distrobox_name }}
+  changed_when: false

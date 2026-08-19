@@ -1,0 +1,57 @@
+---
+- name: Enable lingering for {{ user_name }}
+  ansible.builtin.command: loginctl enable-linger {{ user_name }}
+  changed_when: false
+  become: true
+
+- name: Ubuntu services
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  block:
+    - name: Enable ufw
+      community.general.ufw:
+        state: enabled
+      become: true
+
+    - name: Use local time for RTC
+      ansible.builtin.command: timedatectl set-local-rtc 1
+      changed_when: false
+
+    - name: Enable syncthing user service
+      ansible.builtin.systemd:
+        name: syncthing.service
+        scope: user
+        enabled: true
+        state: started
+        daemon_reload: true
+      become_user: "{{ user_name }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+
+- name: Fedora services
+  when: ansible_facts['distribution'] == 'Fedora'
+  block:
+    - name: Enable docker service
+      ansible.builtin.systemd:
+        name: docker.service
+        enabled: true
+      become: true
+
+    - name: Enable syncthing user service
+      ansible.builtin.systemd:
+        name: syncthing.service
+        scope: user
+        enabled: true
+        daemon_reload: true
+      become_user: "{{ user_name }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+
+    - name: Enable onedrive user service
+      ansible.builtin.systemd:
+        name: onedrive.service
+        scope: user
+        enabled: true
+        daemon_reload: true
+      become_user: "{{ user_name }}"
+      environment:
+        XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"

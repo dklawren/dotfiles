@@ -1,0 +1,85 @@
+---
+user_name: dkl
+user_uid: 1000
+user_home: /home/dkl
+dotfiles_repo: https://github.com/dklawren/dotfiles.git
+dotfiles_dir: "{{ user_home }}/.dotfiles"
+
+distrobox_name: fedora
+distrobox_image: fedora:latest
+
+flatpak_remotes:
+  - name: flathub
+    url: https://flathub.org/repo/flathub.flatpakrepo
+  - name: flathub-beta
+    url: https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+  - name: gnome-nightly
+    url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
+
+flatpak_apps:
+  - ca.desrt.dconf-editor
+  - com.github.d4nj1.tlpui
+  - com.github.johnfactotum.Foliate
+  - com.github.rafostar.Clapper.Enhancers
+  - com.github.tchx84.Flatseal
+  - com.google.Chrome
+  - com.jeffser.Alpaca
+  - com.jeffser.Alpaca.Plugins.Ollama
+  - com.mattjakeman.ExtensionManager
+  - com.slack.Slack
+  - com.spotify.Client
+  - com.todoist.Todoist
+  - com.transmissionbt.Transmission
+  - com.ultimaker.cura
+  - com.usebottles.bottles
+  - de.capypara.FieldMonitor
+  - dev.diegovsky.Riff
+  - dev.geopjr.Tuba
+  - io.github.alainm23.planify
+  - io.github.flattool.Warehouse
+  - io.gitlab.adhami3310.Impression
+  - io.gitlab.librewolf-community
+  - io.missioncenter.MissionCenter
+  - io.podman_desktop.PodmanDesktop
+  - it.mijorus.gearlever
+  - md.obsidian.Obsidian
+  - me.iepure.devtoolbox
+  - org.chromium.Chromium
+  - org.chromium.Chromium.Codecs
+  - org.fedoraproject.MediaWriter
+  - org.gnome.Boxes
+  - org.gnome.Boxes.Extension.OsinfoDb
+  - org.gnome.Firmware
+  - org.gnome.Fractal
+  - org.gnome.gitlab.cheywood.Pulp
+  - org.gnome.SimpleScan
+  - org.gnome.Solanum
+  - org.gnome.World.PikaBackup
+  - org.libreoffice.LibreOffice
+  - org.localsend.localsend_app
+  - org.mozilla.firefox
+  - org.mozilla.thunderbird
+  - org.videolan.VLC
+  - us.zoom.Zoom
+
+gnome_desktop_keybindings:
+  - key: /org/gnome/desktop/wm/keybindings/switch-to-workspace-1
+    value: "['<Super>1']"
+  - key: /org/gnome/desktop/wm/keybindings/switch-to-workspace-2
+    value: "['<Super>2']"
+  - key: /org/gnome/desktop/wm/keybindings/switch-to-workspace-3
+    value: "['<Super>3']"
+  - key: /org/gnome/desktop/wm/keybindings/switch-to-workspace-4
+    value: "['<Super>4']"
+  - key: /org/gnome/desktop/wm/keybindings/switch-to-workspace-5
+    value: "['<Super>5']"
+  - key: /org/gnome/desktop/wm/keybindings/move-to-workspace-1
+    value: "['<Shift><Super>1']"
+  - key: /org/gnome/desktop/wm/keybindings/move-to-workspace-2
+    value: "['<Shift><Super>2']"
+  - key: /org/gnome/desktop/wm/keybindings/move-to-workspace-3
+    value: "['<Shift><Super>3']"
+  - key: /org/gnome/desktop/wm/keybindings/move-to-workspace-4
+    value: "['<Shift><Super>4']"
+  - key: /org/gnome/desktop/wm/keybindings/move-to-workspace-5
+    value: "['<Shift><Super>5']"

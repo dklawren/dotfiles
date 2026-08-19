@@ -1,0 +1,23 @@
+---
+- name: Add flatpak remotes for {{ user_name }}
+  community.general.flatpak_remote:
+    name: "{{ item.name }}"
+    flatpakrepo_url: "{{ item.url }}"
+    state: present
+    method: user
+  loop: "{{ flatpak_remotes + flatpak_remotes_extra | default([]) }}"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+
+- name: Install flatpak apps as {{ user_name }}
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+    remote: flathub
+    method: user
+  loop: "{{ flatpak_apps }}"
+  become_user: "{{ user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"

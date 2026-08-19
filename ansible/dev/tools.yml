@@ -1,0 +1,130 @@
+---
+- name: Install rustup
+  ansible.builtin.shell:
+    cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+    creates: "{{ user_home }}/.cargo/bin/rustup"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install cargo tools
+  ansible.builtin.shell:
+    cmd: |
+      source {{ user_home }}/.cargo/env
+      cargo install --locked {{ item.pkg }}
+      {% if item.pkg == 'worktrunk' %}
+      wt config shell install --yes zsh
+      {% endif %}
+    creates: "{{ user_home }}/.cargo/bin/{{ item.bin }}"
+  loop:
+    - { pkg: zoxide, bin: zoxide }
+    - { pkg: eza, bin: eza }
+    - { pkg: worktrunk, bin: wt }
+    - { pkg: perl-lsp, bin: perl-lsp }
+    - { pkg: foxtail, bin: foxtail }
+    - { pkg: stylua, bin: stylua }
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+    CARGO_HOME: "{{ user_home }}/.cargo"
+
+- name: Install opencode
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://opencode.ai/install | bash
+    creates: "{{ user_home }}/.local/bin/opencode"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install Linuxbrew
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
+    creates: "{{ user_home }}/.linuxbrew/bin/brew"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Clone nvm
+  ansible.builtin.command: git clone --depth 1 --branch v0.40.3 --no-recurse-submodules https://github.com/nvm-sh/nvm.git {{ user_home }}/.nvm
+  become: true
+  become_user: "{{ user_name }}"
+  args:
+    creates: "{{ user_home }}/.nvm/.git"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install node via nvm and global neovim package
+  ansible.builtin.shell:
+    cmd: |
+      export NVM_DIR="{{ user_home }}/.nvm"
+      . "$NVM_DIR/nvm.sh"
+      nvm install node
+      nvm use node
+      npm install -g neovim
+    creates: "{{ user_home }}/.nvm/alias/node"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Check gh auth status
+  ansible.builtin.command: gh auth status
+  register: _gh_auth_status
+  failed_when: false
+  changed_when: false
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: List installed gh extensions
+  ansible.builtin.command: gh extension list
+  register: _gh_exts
+  changed_when: false
+  when: _gh_auth_status.rc == 0
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install gh extensions
+  ansible.builtin.command: gh extension install {{ item }}
+  loop:
+    - dlvhdr/gh-dash
+    - github/gh-stack
+  when: _gh_auth_status.rc == 0 and item not in _gh_exts.stdout
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install pyenv
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://pyenv.run | bash
+    creates: "{{ user_home }}/.pyenv/bin/pyenv"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install lazydocker
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+    creates: "{{ user_home }}/.local/bin/lazydocker"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install code-review-graph via pip
+  ansible.builtin.pip:
+    name: code-review-graph
+    state: present
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"

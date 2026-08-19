@@ -1,0 +1,163 @@
+---
+- name: Speed up DNF
+  ansible.builtin.lineinfile:
+    path: /etc/dnf/dnf.conf
+    line: "{{ item }}"
+    create: true
+  loop:
+    - fastestmirror=1
+    - max_parallel_downloads=10
+    - deltarpm=true
+    - countme=false
+
+- name: Install dnf plugins core
+  ansible.builtin.dnf:
+    name: dnf-plugins-core
+    state: present
+
+- name: Disable fedora-cisco-openh264 repo
+  ansible.builtin.command: dnf config-manager setopt fedora-cisco-openh264.enabled=0
+  changed_when: true
+
+- name: Enable copr repos
+  community.general.copr:
+    name: "{{ item }}"
+    state: enabled
+  loop:
+    - atim/lazygit
+    - rubemlrm/act-cli
+    - lihaohong/yazi
+  environment:
+    HOME: /root
+
+- name: Add Hashicorp repo
+  ansible.builtin.get_url:
+    url: https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+    dest: /etc/yum.repos.d/hashicorp.repo
+    mode: "0644"
+
+- name: Add Google Cloud repo
+  ansible.builtin.copy:
+    dest: /etc/yum.repos.d/google-cloud-sdk.repo
+    content: |
+      [google-cloud-cli]
+      name=Google Cloud CLI
+      baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el8-x86_64
+      enabled=1
+      gpgcheck=1
+      repo_gpgcheck=0
+      gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    mode: "0644"
+
+- name: Install dev packages
+  ansible.builtin.dnf:
+    name:
+      - act-cli
+      - android-tools
+      - ansible
+      - gawk
+      - bat
+      - bind-utils
+      - black
+      - btop
+      - bzip2
+      - cairo-devel
+      - cargo
+      - chafa
+      - cifs-utils
+      - cmake
+      - composer
+      - ctags
+      - expat-devel
+      - fd-find
+      - fzf
+      - gd-devel
+      - gh
+      - git
+      - git-delta
+      - git-extras
+      - git-credential-libsecret
+      - glib
+      - glibc-all-langpacks
+      - golang
+      - google-cloud-sdk-gke-gcloud-auth-plugin
+      - htop
+      - iproute
+      - iputils
+      - jq
+      - kubernetes-client
+      - lazygit
+      - lcms2-devel
+      - libxkbcommon-devel
+      - luarocks
+      - java-25-openjdk
+      - webkit2gtk4.1
+      - man
+      - mercurial
+      - mysql-devel
+      - ncurses-devel
+      - neovim
+      - nodejs
+      - openssh-server
+      - openssl-devel
+      - openssl-perl
+      - pandoc
+      - patch
+      - perl-App-cpanminus
+      - perl-LWP-Protocol-https
+      - php
+      - php-curl
+      - php-json
+      - podman-compose
+      - podman-docker
+      - podman-remote
+      - procps-ng
+      - pylint
+      - python3
+      - python3-flake8
+      - python3-invoke
+      - python3-ipykernel
+      - python3-lsp-server
+      - python3-pip
+      - python3-rstcheck
+      - python3-sphinx
+      - python3-virtualenv
+      - readline-devel
+      - ripgrep
+      - rsync
+      - ruby
+      - ruby-devel
+      - rubygems
+      - sqlite-devel
+      - socat
+      - stow
+      - sysstat
+      - tar
+      - tk-devel
+      - tmux
+      - util-linux
+      - uv
+      - wl-clipboard
+      - xz
+      - yazi
+      - zsh
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+    state: latest
+    skip_broken: true
+
+- name: Symlink host tools into container
+  ansible.builtin.file:
+    src: /usr/bin/distrobox-host-exec
+    dest: "{{ item }}"
+    state: link
+    force: true
+  loop:
+    - /usr/bin/podman
+    - /usr/bin/docker
+    - /usr/bin/rpm-ostree
+    - /usr/local/bin/ollama
+
+- name: Clean DNF cache
+  ansible.builtin.command: dnf clean all
+  changed_when: false

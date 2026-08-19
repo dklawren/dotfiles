@@ -1,0 +1,63 @@
+---
+sudo_group: sudo
+ufw_enable: true
+
+apt_packages:
+  - alacritty
+  - adb
+  - ansible
+  - apt-transport-https
+  - btop
+  - build-essential
+  - ca-certificates
+  - cmake
+  - curl
+  - distrobox
+  - duf
+  - fastboot
+  - fastfetch
+  - ffmpeg
+  - flatpak
+  - fonts-cantarell
+  - fonts-firacode
+  - fonts-inter
+  - fonts-jetbrains-mono
+  - fonts-liberation2
+  - fonts-noto
+  - fonts-noto-cjk
+  - fonts-noto-color-emoji
+  - gcc
+  - git
+  - gnome-software-plugin-flatpak
+  - gnome-tweaks
+  - gnupg
+  - libfuse2t64
+  - linux-headers-generic
+  - make
+  - nala
+  - nano
+  - neovim
+  - nodejs
+  - npm
+  - openjdk-25-jdk
+  - p7zip
+  - perl
+  - podman
+  - preload
+  - python3-pip
+  - rar
+  - sassc
+  - software-properties-common
+  - software-properties-gtk
+  - stow
+  - syncthing
+  - timeshift
+  - tlp
+  - tlp-rdw
+  - ubuntu-restricted-extras
+  - unrar
+  - unzip
+  - wget
+  - wmctrl
+  - zip
+  - zsh

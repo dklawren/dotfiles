@@ -1,0 +1,5 @@
+---
+- name: Install Python for Ansible
+  ansible.builtin.raw: dnf -y install python3 python3-pip
+  register: _bootstrap
+  changed_when: "'Nothing to do' not in _bootstrap.stdout"

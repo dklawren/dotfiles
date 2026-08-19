@@ -1,0 +1,84 @@
+---
+- name: Install oh-my-zsh
+  ansible.builtin.shell:
+    cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    creates: "{{ user_home }}/.oh-my-zsh"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install starship
+  ansible.builtin.shell:
+    cmd: curl -sS https://starship.rs/install.sh | sh -s -- -y
+    creates: "{{ user_home }}/.local/bin/starship"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Clone tpm
+  ansible.builtin.git:
+    repo: https://github.com/tmux-plugins/tpm
+    dest: "{{ user_home }}/.tmux/plugins/tpm"
+    depth: 1
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install tmux plugins
+  ansible.builtin.command: "{{ user_home }}/.tmux/plugins/tpm/bin/install_plugins"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Bootstrap perl local::lib
+  ansible.builtin.shell:
+    cmd: cpanm --local-lib=~/perl5 local::lib
+    creates: "{{ user_home }}/perl5/lib/perl5/local/lib.pm"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+
+- name: Install perl modules
+  ansible.builtin.shell:
+    cmd: cpanm install --quiet --notest --skip-installed {{ item }}
+  loop:
+    - AnyEvent
+    - App::cpanminus
+    - App::cpm
+    - App::perlimports
+    - Carton
+    - Carton::Snapshot
+    - common::sense
+    - Git::Critic
+    - Guard
+    - Log::Log4perl
+    - Module::CPANfile
+    - Mojolicious
+    - Neovim::Ext
+    - Open::This
+    - Perl::Critic
+    - Perl::Critic::Policy::Documentation::RequirePodLinksIncludeText
+    - Perl::Critic::Policy::Freenode::PackageMatchesFilename
+    - Perl::Tidy
+    - Test::Perl::Critic::Progressive
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+    PERL5LIB: "{{ user_home }}/perl5/lib/perl5"
+
+- name: Check current login shell
+  ansible.builtin.command: getent passwd {{ user_name }}
+  register: _passwd_entry
+  changed_when: false
+  become: true
+
+- name: Set zsh as default shell
+  ansible.builtin.command: chsh -s /bin/zsh {{ user_name }}
+  when: "'/bin/zsh' not in _passwd_entry.stdout"
+  become: true

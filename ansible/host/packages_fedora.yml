@@ -1,0 +1,33 @@
+---
+- name: Layer RPM Fusion release RPMs
+  community.general.rpm_ostree_pkg:
+    name:
+      - "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+      - "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+    state: present
+  become: true
+
+- name: Add Docker CE repository
+  ansible.builtin.copy:
+    dest: /etc/yum.repos.d/docker-ce.repo
+    content: |
+      [docker-ce-stable]
+      name=Docker CE Stable - x86_64
+      baseurl=https://download.docker.com/linux/fedora/{{ ansible_facts['distribution_major_version'] }}/x86_64/stable
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://download.docker.com/linux/fedora/gpg
+    mode: "0644"
+  become: true
+
+- name: Layer rpm-ostree packages
+  community.general.rpm_ostree_pkg:
+    name: "{{ rpm_ostree_packages }}"
+    state: present
+    allow_inactive: true
+  become: true
+  register: _rpm_ostree_layer
+
+- name: Record whether new packages were layered
+  ansible.builtin.set_fact:
+    host_rpm_ostree_changed: "{{ _rpm_ostree_layer.changed }}"

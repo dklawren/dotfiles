@@ -1,0 +1,63 @@
+---
+# Provision the host (Ubuntu workstation or Fedora Silverblue), then the
+# `fedora` distrobox dev environment.
+#
+# Run from a checkout of this repo on the target machine:
+#   ansible-playbook ansible/main.yml -K
+#
+# Silverblue: `ansible` must be layered first (rpm-ostree install ansible,
+# reboot). Layering more packages requires a reboot before they are usable.
+
+- name: Provision host
+  hosts: host
+  gather_facts: true
+  tasks:
+    - name: Create user and sudoers
+      ansible.builtin.include_tasks: host/user.yml
+
+    - name: Install host packages
+      ansible.builtin.include_tasks: host/packages.yml
+
+    - name: Configure services
+      ansible.builtin.include_tasks: host/services.yml
+
+    - name: Configure GNOME desktop
+      ansible.builtin.include_tasks: host/gnome.yml
+
+    - name: Install flatpaks
+      ansible.builtin.include_tasks: host/flatpaks.yml
+
+    - name: Ensure distrobox container
+      ansible.builtin.include_tasks: host/distrobox.yml
+
+    - name: Warn about required reboot (Silverblue)
+      ansible.builtin.debug:
+        msg: >
+          New rpm-ostree packages were layered. Reboot before they are
+          available on the host.
+      when:
+        - ansible_facts['distribution'] == 'Fedora'
+        - host_rpm_ostree_changed | default(false) | bool
+
+- name: Provision fedora distrobox dev environment
+  hosts: devbox
+  gather_facts: false
+  # Root tasks in the distrobox must not resolve ~ to the bind-mounted /home/dkl,
+  # or Ansible modules that read ~/.netrc fail on ownership mismatch.
+  environment:
+    HOME: /root
+  tasks:
+    - name: Bootstrap Python
+      ansible.builtin.include_tasks: dev/bootstrap.yml
+
+    - name: Install dev packages
+      ansible.builtin.include_tasks: dev/packages.yml
+
+    - name: Install dev tools
+      ansible.builtin.include_tasks: dev/tools.yml
+
+    - name: Configure shell
+      ansible.builtin.include_tasks: dev/shell.yml
+
+    - name: Stow dotfiles
+      ansible.builtin.include_tasks: dev/dotfiles.yml

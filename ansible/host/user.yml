@@ -1,0 +1,19 @@
+---
+- name: Create user {{ user_name }}
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    uid: "{{ user_uid }}"
+    groups: "{{ 'sudo' if ansible_facts['distribution'] == 'Ubuntu' else 'wheel' }}"
+    append: true
+    create_home: true
+    shell: /bin/bash
+    state: present
+  become: true
+
+- name: Passwordless sudoers for {{ user_name }}
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/10-{{ user_name }}"
+    content: "{{ user_name }} ALL=(ALL) NOPASSWD: ALL\n"
+    mode: "0440"
+    validate: "/usr/sbin/visudo -cf %s"
+  become: true

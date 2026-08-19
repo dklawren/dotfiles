@@ -1,0 +1,44 @@
+---
+sudo_group: wheel
+
+rpm_ostree_packages:
+  - akmod-nvidia
+  - alacritty
+  - android-tools
+  - ansible
+  - btop
+  - cascadia-code-fonts
+  - containerd.io
+  - distrobox
+  - docker-buildx-plugin
+  - docker-ce
+  - docker-ce-cli
+  - docker-compose-plugin
+  - edk2-ovmf
+  - fira-code-fonts
+  - fzf
+  - git
+  - git-extras
+  - gnome-boxes
+  - gnome-tweaks
+  - neovim
+  - nodejs
+  - ollama
+  - onedrive
+  - openssl
+  - pandoc
+  - pandoc-pdf
+  - podman-compose
+  - ripgrep
+  - rsms-inter-fonts
+  - rsms-inter-vf-fonts
+  - smbios-utils
+  - stow
+  - swtpm-tools
+  - syncthing
+  - sysstat
+  - tlp
+  - tlp-rdw
+  - tmux
+  - zsh
+  - zsh-syntax-highlighting

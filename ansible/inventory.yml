@@ -1,0 +1,16 @@
+---
+all:
+  children:
+    host:
+      # Play 1 runs on the local machine regardless of hostname (Ubuntu or Silverblue).
+      vars:
+        ansible_connection: local
+      hosts:
+        localhost:
+    devbox:
+      hosts:
+        fedora:
+          ansible_connection: containers.podman.podman
+          ansible_user: root
+          ansible_become_method: su
+          ansible_python_interpreter: /usr/bin/python3

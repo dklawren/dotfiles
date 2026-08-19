@@ -1,0 +1,10 @@
+---
+- name: Apply GNOME desktop keybindings
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop: "{{ gnome_desktop_keybindings }}"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"

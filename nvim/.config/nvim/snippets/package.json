@@ -1,34 +1,15 @@
 {
-  "name": "Personal Snippets",
+  "name": "custom-snippets",
   "contributes": {
     "snippets": [
       {
-        "language": "perl",
-        "path": "./perl.json"
-      },
-      {
-        "language": "lua",
-        "path": "./lua.json"
-      },
-      {
-        "language": "markdown",
-        "path": "./markdown.json"
-      },
-      {
-        "language": "python",
-        "path": "./python.json"
-      },
-      {
-        "language": "sh",
-        "path": "./sh.json"
-      },
-      {
-        "language": "yaml",
-        "path": "./yaml.json"
-      },
-      {
-        "language": "go",
-        "path": "./go.json"
+        "language": [
+          "typescript",
+          "typescriptreact",
+          "javascriptreact",
+          "javascript"
+        ],
+        "path": "./typescript.json"
       }
     ]
   }
