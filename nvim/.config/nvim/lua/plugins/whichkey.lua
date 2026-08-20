@@ -8,6 +8,7 @@ wk.setup({
 })
 wk.add({
 	{ "<leader><tab>", group = "tabs" },
+	{ "<leader>a", group = "ai" },
 	{ "<leader>c", group = "code" },
 	{ "<leader>d", group = "debug" },
 	{ "<leader>p", group = "pack" },

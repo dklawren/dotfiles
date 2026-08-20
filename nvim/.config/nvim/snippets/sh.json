@@ -1,0 +1,24 @@
+{
+  "Bash Header": {
+    "prefix": "start",
+    "scope": "bash",
+    "body": [
+      "#!/usr/bin/env bash\n",
+      "set -eo pipefail\n",
+      "# Add source and line number wher running in debug mode: __run_with_xtrace.sh $TM_FILENAME",
+      "# Set new line and tab for word splitting",
+      "IFS=\\$'\\n\\t'\n\n"
+    ],
+    "description": "Strict mode for bash script"
+  },
+  "While File Reader": {
+    "prefix": "while_file",
+    "scope": "bash",
+    "body": [
+      "while IFS= read -r line; do \n",
+      "echo \"\\$line\"\n",
+      "done </${0}\n"
+    ],
+    "description": "Read file line by line"
+  }
+}
