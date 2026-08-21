@@ -8,3 +8,4 @@ noctalia/.config/noctalia/colorschemes
 bin/.local/bin/claude
 tmux/.config/tmux/plugins
 *.retry
+.env

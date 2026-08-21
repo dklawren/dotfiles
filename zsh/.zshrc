@@ -37,6 +37,13 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+# Load local .env file (not version controlled)
+if [[ -f ~/.env ]]; then
+  set -a
+  source ~/.env
+  set +a
+fi
+
 # User configuration
 for file in ~/.{aliases,functions,helpers,path,exports}; do
     [[ -r "$file" ]] && [[ -f "$file" ]] && source "$file"

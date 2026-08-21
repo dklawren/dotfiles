@@ -4,6 +4,13 @@
 # alias p='python'
 
 
+# Load local .env file (not version controlled)
+if [[ -f ~/.env ]]; then
+  set -a
+  source ~/.env
+  set +a
+fi
+
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init bash)"; fi
 
 export NVM_DIR="$HOME/.config/nvm"
