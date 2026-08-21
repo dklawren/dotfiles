@@ -12,7 +12,7 @@ bindsym $mod+return exec $term
 bindsym $mod+q kill
 
 # start launcher.
-bindsym $mod+d exec $menu
+# bindsym $mod+d exec $menu
 # start powermenu
 bindsym $mod+shift+Q exec $powermenu
 # start wallpaper menu
@@ -36,5 +36,10 @@ bindsym $mod+m exec swaymsg exit
 # firefox
 bindsym $mod+b exec $browser
 
-bindsym $mod+ exec swaync-client -t -sw
+bindsym $mod+shift+n exec swaync-client -t -sw
 bindsym $mod+shift+b exec blueman-manager
+
+# noctalia
+bindsym $mod+d exec $ipc panel-toggle launcher
+bindsym $mod+s exec $ipc panel-toggle control-center
+bindsym $mod+comma exec $ipc settings-toggle

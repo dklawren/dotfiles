@@ -30,3 +30,6 @@ set $wallmenu "sh -c '~/.config/rofi/wallmenu.sh'"
 
 # theme switcher menu script
 set $thememenu "sh -c '~/.config/rofi/thememenu.sh'"
+
+# noctalia
+set $ipc noctalia msg

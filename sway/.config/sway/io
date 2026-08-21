@@ -9,10 +9,11 @@
 #}
 
 # touchpad conf
-input 1267:12887:ASUE120B:00_04F3:3257_Touchpad {
+input 10182:3938:VEN_27C6:00_27C6:0F62_Touchpad {
 	tap enabled
 	dwt enabled
 	pointer_accel 0.2
+  natural_scroll enabled
 }
 
 # setting a solid background color. if you want to change it to a wallpaper replace the

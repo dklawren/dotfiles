@@ -4,4 +4,4 @@ output * bg ~/.config/sway/wallpaper fill
 exec --no-startup-id dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec --no-startup-id /usr/lib/xdg-desktop-portal-wlr
 exec --no-startup-id /usr/lib/xdg-desktop-portal -r
-exec swaync
+exec noctalia
