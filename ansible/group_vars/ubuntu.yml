@@ -61,3 +61,5 @@ apt_packages:
   - wmctrl
   - zip
   - zsh
+  - vanilla-gnome-default-settings
+  - vanilla-gnome-desktop
