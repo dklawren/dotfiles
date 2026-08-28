@@ -2,6 +2,22 @@
 sudo_group: sudo
 ufw_enable: true
 
+# Snap packages to purge. These are the snaps shipped on a default Ubuntu
+# desktop. Necessary apps (firefox, thunderbird) are reinstalled as flatpaks
+# via the `flatpak_apps` list in group_vars/all.yml.
+snap_packages_to_remove:
+  - firefox
+  - thunderbird
+  - gnome-46-2404
+  - desktop-security-center
+  - gtk-common-themes
+  - core24
+  - mesa-2404
+  - snapd-desktop-integration
+  - prompting-client
+  - bare
+  - snapd
+
 apt_packages:
   - alacritty
   - adb
@@ -29,6 +45,8 @@ apt_packages:
   - gcc
   - git
   - gnome-software-plugin-flatpak
+  - gnome-shell-extension-appindicator
+  - gnome-shell-extension-auto-move-windows
   - gnome-tweaks
   - gnupg
   - libfuse2t64

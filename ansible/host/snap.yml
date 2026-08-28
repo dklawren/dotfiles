@@ -1,0 +1,63 @@
+---
+# Remove snap support from Ubuntu hosts. Snaps that provide desktop apps
+# (firefox, thunderbird) are replaced by their flatpak equivalents in the
+# `flatpak_apps` list (group_vars/all.yml). See the AGENTS.md/ubuntu.sh notes
+# for the full list of default Ubuntu snaps and their replacements.
+
+- name: List installed snaps
+  ansible.builtin.command: snap list
+  register: _snap_list
+  changed_when: false
+  failed_when: false
+  become: true
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Purge installed snap packages
+  ansible.builtin.command:
+    cmd: "snap remove --purge {{ item }}"
+  loop: "{{ snap_packages_to_remove }}"
+  when:
+    - ansible_facts['distribution'] == 'Ubuntu'
+    - _snap_list.rc == 0
+    - item in (_snap_list.stdout_lines | map('split') | map('first') | list)
+  become: true
+
+- name: Remove snapd package
+  ansible.builtin.apt:
+    name: snapd
+    state: absent
+    purge: true
+    autoremove: true
+  become: true
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Unmount snap mount namespace
+  ansible.builtin.command: umount /run/snapd/ns
+  register: _umount_snapns
+  changed_when: _umount_snapns.rc == 0
+  failed_when: _umount_snapns.rc != 0 and 'not mounted' not in _umount_snapns.stderr | lower and 'no mount point specified' not in _umount_snapns.stderr | lower
+  become: true
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Remove snap directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /snap
+    - /var/snap
+    - /var/lib/snapd
+    - /var/cache/snapd
+  become: true
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Pin snapd to prevent reinstall
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/no-snap.pref
+    content: |
+      Package: snapd
+      Pin: release a=*
+      Pin-Priority: -10
+    mode: "0644"
+  become: true
+  when: ansible_facts['distribution'] == 'Ubuntu'

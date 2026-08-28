@@ -20,6 +20,8 @@ rpm_ostree_packages:
   - git
   - git-extras
   - gnome-boxes
+  - gnome-shell-extension-appindicator
+  - gnome-shell-extensions
   - gnome-tweaks
   - neovim
   - nodejs

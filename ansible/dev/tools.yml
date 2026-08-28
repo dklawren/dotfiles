@@ -115,6 +115,7 @@
   ansible.builtin.shell:
     cmd: curl -fsSL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
     creates: "{{ user_home }}/.local/bin/lazydocker"
+    chdir: "{{ user_home }}"
   become: true
   become_user: "{{ user_name }}"
   environment:

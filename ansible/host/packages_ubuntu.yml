@@ -9,3 +9,8 @@
     name: "{{ apt_packages }}"
     state: present
   become: true
+
+# Remove snap and reinstall preinstalled desktop apps (firefox, thunderbird)
+# via flatpak, which are already covered by `flatpak_apps` in all.yml.
+- name: Remove snap support
+  ansible.builtin.include_tasks: snap.yml

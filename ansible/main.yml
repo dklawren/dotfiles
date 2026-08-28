@@ -24,6 +24,9 @@
     - name: Configure GNOME desktop
       ansible.builtin.include_tasks: host/gnome.yml
 
+    - name: Install and enable GNOME Shell extensions
+      ansible.builtin.include_tasks: host/gnome_extensions.yml
+
     - name: Install flatpaks
       ansible.builtin.include_tasks: host/flatpaks.yml
 
@@ -42,10 +45,10 @@
 - name: Provision fedora distrobox dev environment
   hosts: devbox
   gather_facts: false
-  # Root tasks in the distrobox must not resolve ~ to the bind-mounted /home/dkl,
-  # or Ansible modules that read ~/.netrc fail on ownership mismatch.
-  environment:
-    HOME: /root
+  # Individual tasks set HOME explicitly: user-level tasks use user_home while
+  # root-level tasks (e.g. in packages.yml) run with the podman default /root,
+  # so root modules that read ~/.netrc resolve to /root rather than the
+  # bind-mounted /home/dkl (avoids ownership mismatch).
   tasks:
     - name: Bootstrap Python
       ansible.builtin.include_tasks: dev/bootstrap.yml

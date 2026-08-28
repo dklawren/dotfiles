@@ -62,6 +62,39 @@ flatpak_apps:
   - org.videolan.VLC
   - us.zoom.Zoom
 
+# GNOME Shell extensions installed from extensions.gnome.org (EGO). These are
+# the extensions installed as plain user extensions on the current workstation;
+# extensions that ship in distro packages (AppIndicator, Auto Move Windows) are
+# provided via the per-distro package lists instead. The playbook resolves the
+# latest version compatible with the target GNOME shell at run time.
+gnome_extensions_ego:
+  - AlphabeticalAppGrid@stuarthayhurst
+  - BingWallpaper@ineffable-gmail.com
+  - blur-my-shell@aunetx
+  - caffeine@patapon.info
+  - clipboard-indicator@tudmotu.com
+  - dash-to-dock@micxgx.gmail.com
+  - impatience@gfxmonk.net
+  - nightthemeswitcher@romainvigier.fr
+  - search-light@icedman.github.com
+  - space-bar@luchrioh
+
+# Full set of extensions to enable (EGO-installed plus package-provided), used
+# to persist org.gnome.shell enabled-extensions so they survive a restart.
+gnome_extensions_enabled:
+  - AlphabeticalAppGrid@stuarthayhurst
+  - appindicatorsupport@rgcjonas.gmail.com
+  - auto-move-windows@gnome-shell-extensions.gcampax.github.com
+  - BingWallpaper@ineffable-gmail.com
+  - blur-my-shell@aunetx
+  - caffeine@patapon.info
+  - clipboard-indicator@tudmotu.com
+  - dash-to-dock@micxgx.gmail.com
+  - impatience@gfxmonk.net
+  - nightthemeswitcher@romainvigier.fr
+  - search-light@icedman.github.com
+  - space-bar@luchrioh
+
 gnome_desktop_keybindings:
   - key: /org/gnome/desktop/wm/keybindings/switch-to-workspace-1
     value: "['<Super>1']"

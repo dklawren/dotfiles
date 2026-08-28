@@ -1,0 +1,97 @@
+---
+# Install and enable GNOME Shell extensions on both Ubuntu and Fedora
+# (distro-agnostic). User extensions are pulled from extensions.gnome.org at
+# a version compatible with the target GNOME shell; extensions that ship in
+# distro packages (AppIndicator, Auto Move Windows) are installed via the
+# per-distro package lists and here just enabled.
+#
+# Requires a live GNOME session so `gnome-shell --version` and
+# `gnome-extensions` are useable. Enablement is also persisted via the
+# org.gnome.shell enabled-extensions dconf key so it survives a logout.
+
+- name: Determine GNOME shell version
+  ansible.builtin.command: gnome-shell --version
+  register: _gnome_shell_version
+  changed_when: false
+  failed_when: false
+
+- name: Extract GNOME shell major version
+  ansible.builtin.set_fact:
+    gnome_shell_version: >-
+      {{ _gnome_shell_version.stdout | regex_replace('.*GNOME Shell ([0-9]+).*', '\1') }}
+  when: _gnome_shell_version.rc == 0
+
+# A GNOME shell version is only known when a live session is present; without
+# it, the EGO lookups below are skipped and only dconf enablement runs.
+
+- name: Resolve compatible download URLs from extensions.gnome.org
+  ansible.builtin.uri:
+    url: "https://extensions.gnome.org/extension-info/?uuid={{ item | urlencode }}&shell_version={{ gnome_shell_version }}"
+    return_content: true
+    headers:
+      User-Agent: "Mozilla/5.0 (X11; Linux x86_64)"
+  register: _ego
+  loop: "{{ gnome_extensions_ego }}"
+  when: gnome_shell_version is defined and gnome_shell_version | length > 0
+
+- name: Create temp download directory
+  ansible.builtin.file:
+    path: /tmp/gnome-ext
+    state: directory
+    mode: "0755"
+  when: gnome_shell_version is defined and gnome_shell_version | length > 0
+
+- name: Download extension archives
+  ansible.builtin.get_url:
+    url: "https://extensions.gnome.org{{ item.json['download_url'] }}"
+    dest: "/tmp/gnome-ext/{{ item.item }}.zip"
+    mode: "0644"
+  loop: "{{ _ego.results | default([]) }}"
+  when:
+    - gnome_shell_version is defined and gnome_shell_version | length > 0
+    - item.json is defined
+    - item.json['download_url'] is string and item.json['download_url'] | length > 0
+
+- name: Ensure extensions directory exists
+  ansible.builtin.file:
+    path: "/home/{{ user_name }}/.local/share/gnome-shell/extensions"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+
+- name: Install extensions from download
+  ansible.builtin.command:
+    cmd: "gnome-extensions install --force /tmp/gnome-ext/{{ item.item }}.zip"
+  loop: "{{ _ego.results | default([]) }}"
+  when:
+    - gnome_shell_version is defined and gnome_shell_version | length > 0
+    - item.json is defined
+    - item.json['download_url'] is string and item.json['download_url'] | length > 0
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+
+- name: Persist enabled extensions in dconf
+  community.general.dconf:
+    key: /org/gnome/shell/enabled-extensions
+    value: "{{ gnome_extensions_enabled }}"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+
+- name: Enable each extension against the live session
+  ansible.builtin.command:
+    cmd: "gnome-extensions enable {{ item }}"
+  loop: "{{ gnome_extensions_enabled }}"
+  failed_when: false
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+
+- name: Clean up downloaded archives
+  ansible.builtin.file:
+    path: /tmp/gnome-ext
+    state: absent
