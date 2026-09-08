@@ -5,5 +5,41 @@
     "auto": true,
     "prune": true,
     "reserved": 8192
-  }
+  },
+  "mcp": {
+    "silverbullet": {
+      "type": "remote",
+      "url": "http://127.0.0.1:3999/.mcp",
+      "enabled": true
+    },
+    "todoist": {
+      "type": "remote",
+      "url": "https://ai.todoist.net/mcp",
+      "enabled": true
+    }
+  },
+  // "model": "gemma4",
+  // "providers": {
+  //   "ollama": {
+  //     "name": "Ollama Server",
+  //     "package": "@opencode-ai/ai/providers/openai-compatible",
+  //     "settings": {
+  //       "baseURL": "http://127.0.0.1:1234/v1"
+  //     },
+  //     "models": {
+  //       "coder": {
+  //         "modelID": "gemma4",
+  //         "capabilities": {
+  //           "tools": true,
+  //           "input": ["text"],
+  //           "output": ["text"]
+  //         },
+  //         "limit": {
+  //           "context": 65536,
+  //           "output": 8192
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }
