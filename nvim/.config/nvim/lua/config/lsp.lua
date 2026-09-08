@@ -205,6 +205,9 @@ if vim.g.lsp_on_demands then
 end
 
 -- Format on save implementation
+-- Autoformat-on-save is opt-in: off by default, enable with :FormatEnable or <leader>uf
+vim.g.disable_autoformat = true
+
 vim.api.nvim_create_user_command("FormatDisable", function(opts)
 	if opts.bang then
 		vim.b.disable_autoformat = true
@@ -220,7 +223,7 @@ vim.api.nvim_create_user_command("FormatEnable", function()
 	vim.notify("Autoformat enabled", vim.log.levels.INFO)
 end, { desc = "Re-enable autoformat-on-save" })
 
-local auto_format = true
+local auto_format = false
 
 vim.keymap.set("n", "<leader>uf", function()
 	auto_format = not auto_format
