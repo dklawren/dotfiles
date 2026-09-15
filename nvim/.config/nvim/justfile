@@ -26,6 +26,9 @@ lint:
 test-format:
 	@bash tests/format_test.sh
 
+test-mcursor:
+	@bash tests/mcursor_test.sh
+
 fmt:
 	@echo "Formatting Lua files..."
 	@stylua .

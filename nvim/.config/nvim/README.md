@@ -43,6 +43,7 @@
 | Diagnostics       | `config/diagnostics.lua` | Custom diagnostic display config                                                                   |
 | Pack UI           | `config/pack.lua`        | Browser for `vim.pack` plugin registry                                                             |
 | Jump              | `config/jump.lua`        | Minimal 2-char search with label jump                                                              |
+| Multicursor       | `config/mcursor.lua`     | Column-align native multicursors (`:h multicursor`), keymap `g<Space>`                              |
 | UI overrides      | `config/ui2.lua`         | Floating windows, cmdline                                                                          |
 
 I also wrote a series of articles about my [Neovim config](https://tduyng.com/tags/neovim/)

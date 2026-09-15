@@ -1,5 +1,5 @@
 -- Native Catppuccin Configuration (Neovim 0.12+)
-vim.g.catppuccin_flavour = "mocha"
+vim.g.catppuccin_flavour = "macchiato"
 
 -- 1. Custom Palette Definition (Gruvbox-like feel)
 local palettes = {
