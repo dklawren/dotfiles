@@ -20,9 +20,11 @@
     symlinks = true
     preloadindex = true
     commitGraph = true
-    # pager = delta
+    pager = delta
 	  fsmonitor = true
-	  untrackedCache = true
+    untrackedCache = true
+[interactive]
+	  diffFilter = delta --color-only
 [merge]
     tool = vimdiff
 	  conflictstyle = zdiff3
