@@ -22,3 +22,13 @@ approved-commands = [
 approved-commands = [
     "cp -pr {{ primary_worktree_path }}/{CLAUDE.md,.code-review-graph} {{ worktree_path }}/ && code-review-graph update",
 ]
+
+[projects."github.com/mozilla-conduit/phabricator-private"]
+approved-commands = [
+    "cp -pr {{ primary_worktree_path }}/{CLAUDE.md,.code-review-graph} {{ worktree_path }}/ && code-review-graph update",
+]
+
+[projects."github.com/mozilla/bmo-private"]
+approved-commands = [
+    "cp -pr {{ primary_worktree_path }}/{CLAUDE.md,.code-review-graph} {{ worktree_path }}/ && code-review-graph update",
+]
