@@ -18,28 +18,16 @@
       "enabled": true
     }
   },
-  // "model": "gemma4",
-  // "providers": {
-  //   "ollama": {
-  //     "name": "Ollama Server",
-  //     "package": "@opencode-ai/ai/providers/openai-compatible",
-  //     "settings": {
-  //       "baseURL": "http://127.0.0.1:1234/v1"
-  //     },
-  //     "models": {
-  //       "coder": {
-  //         "modelID": "gemma4",
-  //         "capabilities": {
-  //           "tools": true,
-  //           "input": ["text"],
-  //           "output": ["text"]
-  //         },
-  //         "limit": {
-  //           "context": 65536,
-  //           "output": 8192
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  "provider": {
+    "ollama": {
+      "api": "openai",
+      "baseURL": "http://localhost:1234/v1",
+      "models": {
+        "qwen3:8b": {
+          "max_tokens": 8192,
+          "context_length": 32768
+        }
+      }
+    }
+  }
 }
