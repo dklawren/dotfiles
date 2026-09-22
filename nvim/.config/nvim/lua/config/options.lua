@@ -139,3 +139,7 @@ vim.filetype.add({
 		[".*%.code%-snippets"] = "json",
 	},
 })
+
+-- Spellcheck
+opt.spell = true
+opt.spelllang = "en_us"

@@ -1,6 +1,6 @@
 -- ui2: native Neovim 0.12+ message/cmdline redesign
 -- provides pager as a buffer+window.
-vim.opt.messagesopt:append("timeout:4000,maxheight:50")
+-- vim.opt.messagesopt:append("timeout:4000,maxheight:50")
 
 -- default options
 require("vim._core.ui2").enable({
