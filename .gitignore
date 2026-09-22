@@ -9,3 +9,4 @@ bin/.local/bin/claude
 tmux/.config/tmux/plugins
 *.retry
 .env
+nvim/.config/nvim/nvim-pack-lock.json

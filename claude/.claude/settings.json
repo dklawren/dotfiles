@@ -1,39 +1,124 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "foxtail",
-    "padding": 0
-  },
   "enabledPlugins": {
-    "code-review@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "perl-lsp@claude-code-lsps": true,
-    "yardstick@internal-aidev-plugins": true,
+    "adhd-output-style@claude-settings": true,
+    "eli5@claude-community": true,
     "fastly-waf@internal-aidev-plugins": true,
-    "mozdata@internal-aidev-plugins": true
+    "github-dev@claude-settings": true,
+    "humanize@claude-settings": true,
+    "i-have-adhd@i-have-adhd": true,
+    "paad@paad": true,
+    "simplify@claude-settings": true
   },
   "extraKnownMarketplaces": {
-    "claude-code-lsps": {
+    "claude-community": {
       "source": {
-        "source": "github",
-        "repo": "Piebald-AI/claude-code-lsps"
+        "repo": "anthropics/claude-plugins-community",
+        "source": "github"
+      }
+    },
+    "claude-settings": {
+      "source": {
+        "repo": "fcakyon/claude-codex-settings",
+        "source": "github"
+      }
+    },
+    "i-have-adhd": {
+      "source": {
+        "repo": "ayghri/i-have-adhd",
+        "source": "github"
       }
     },
     "internal-aidev-plugins": {
       "source": {
-        "source": "github",
-        "repo": "mozilla/internal-aidev-plugins"
+        "repo": "mozilla/internal-aidev-plugins",
+        "source": "github"
+      }
+    },
+    "paad": {
+      "source": {
+        "repo": "Ovid/paad",
+        "source": "github"
       }
     }
   },
-  "tui": "default",
-  "theme": "dark",
-  "mcpServers": {
-    "moz": {
-      "type": "http",
-      "url": "https://mcp-dev.moz.tools/mcp"
-    }
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "workmux set-window-status waiting",
+            "type": "command"
+          }
+        ],
+        "matcher": "permission_prompt|elicitation_dialog"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "workmux set-window-status working",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-activate.js\"",
+            "statusMessage": "Loading caveman mode...",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "workmux register-agent",
+            "type": "command"
+          }
+        ],
+        "matcher": "startup|resume|clear|fork"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "workmux set-window-status done",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-mode-tracker.js\"",
+            "statusMessage": "Tracking caveman mode...",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "workmux set-window-status working",
+            "type": "command"
+          }
+        ]
+      }
+    ]
   },
-  "skipWorkflowUsageWarning": true
+  "skipWorkflowUsageWarning": true,
+  "statusLine": {
+    "command": "foxtail",
+    "padding": 0,
+    "type": "command"
+  }
 }

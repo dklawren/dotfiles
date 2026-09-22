@@ -1,0 +1,19 @@
+# ~/.claude symlinks to this directory, so it holds all of Claude Code's
+# runtime state. Only hand-authored config is tracked.
+
+# Secrets: listed explicitly so they stay ignored even if the allowlist changes
+.claude/.credentials.json
+.claude/settings.local.json
+.claude/history.jsonl
+.claude/shell-snapshots/
+.claude/session-env/
+
+# Ignore everything else except the allowlist below
+.claude/*
+!.claude/CLAUDE.md
+!.claude/settings.json
+!.claude/skills/
+!.claude/agents/
+!.claude/commands/
+!.claude/output-styles/
+!.claude/keybindings.json
