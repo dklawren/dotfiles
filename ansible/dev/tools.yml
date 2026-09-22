@@ -24,6 +24,7 @@
     - { pkg: perl-lsp, bin: perl-lsp }
     - { pkg: foxtail, bin: foxtail }
     - { pkg: stylua, bin: stylua }
+    - { pkg: lazyrsync, bin: lazyrsync }
   become: true
   become_user: "{{ user_name }}"
   environment:
