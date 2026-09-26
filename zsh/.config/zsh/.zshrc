@@ -35,3 +35,6 @@ if [[ -r "$HOME/.local/share/deja/init.zsh" ]]; then
 else
   eval "$(deja init zsh)"
 fi
+
+# opencode
+export PATH=/home/dkl/.opencode/bin:$PATH
