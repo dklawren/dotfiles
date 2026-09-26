@@ -30,6 +30,7 @@
     return_content: true
     headers:
       User-Agent: "Mozilla/5.0 (X11; Linux x86_64)"
+    use_netrc: false
   register: _ego
   loop: "{{ gnome_extensions_ego }}"
   when: gnome_shell_version is defined and gnome_shell_version | length > 0
@@ -46,6 +47,7 @@
     url: "https://extensions.gnome.org{{ item.json['download_url'] }}"
     dest: "/tmp/gnome-ext/{{ item.item }}.zip"
     mode: "0644"
+    use_netrc: false
   loop: "{{ _ego.results | default([]) }}"
   when:
     - gnome_shell_version is defined and gnome_shell_version | length > 0

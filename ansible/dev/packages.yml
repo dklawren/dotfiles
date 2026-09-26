@@ -35,6 +35,7 @@
     url: https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
     dest: /etc/yum.repos.d/hashicorp.repo
     mode: "0644"
+    use_netrc: false
 
 - name: Add Google Cloud repo
   ansible.builtin.copy:

@@ -45,10 +45,12 @@
 - name: Provision fedora distrobox dev environment
   hosts: devbox
   gather_facts: false
-  # Individual tasks set HOME explicitly: user-level tasks use user_home while
-  # root-level tasks (e.g. in packages.yml) run with the podman default /root,
-  # so root modules that read ~/.netrc resolve to /root rather than the
-  # bind-mounted /home/dkl (avoids ownership mismatch).
+  # Individual tasks set HOME explicitly: user-level tasks use user_home, while
+  # root-level tasks that need it set HOME: /root. Modules inherit HOME=/home/dkl
+  # from the distrobox container even when running as root, so a root task that
+  # downloads a URL would otherwise have Python's netrc parser read
+  # /home/dkl/.netrc as root and reject it on the uid check; those tasks pass
+  # use_netrc: false for public URLs instead of relying on the file.
   tasks:
     - name: Bootstrap Python
       ansible.builtin.include_tasks: dev/bootstrap.yml

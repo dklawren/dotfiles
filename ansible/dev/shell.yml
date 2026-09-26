@@ -20,7 +20,7 @@
 - name: Install Deja
   ansible.builtin.shell:
     cmd: curl -fsSL https://raw.githubusercontent.com/Giammarco-Ferranti/deja/main/install.sh | sh
-  creates: "{{ user_home }}/.local/bin/deja"
+    creates: "{{ user_home }}/.local/bin/deja"
   become: true
   become_user: "{{ user_name }}"
   environment:
