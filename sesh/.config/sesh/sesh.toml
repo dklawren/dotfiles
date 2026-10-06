@@ -1,0 +1,39 @@
+# sesh configuration
+# See: https://github.com/joshmedeski/sesh
+
+# default session
+[default_session]
+# The default session will be used if no session is specified
+# and the directory is not in the config
+
+# display a preview
+preview = true
+
+# list of commands to run when the session is created
+startup_command = "nvim -c ':Telescope oldfiles'"
+
+# list of windows to create when the session is created
+[[default_session.windows]]
+name = "main"
+layout = "main-vertical"
+
+# Example: per-project configuration
+# [[session]]
+# name = "sesh"
+# path = "~/projects/sesh"
+# preview_command = "eza --all --git --icons --color=always"
+# startup_command = "nvim -c ':Telescope find_files'"
+# 
+# [[session.windows]]
+# name = "editor"
+# layout = "main-vertical"
+# 
+# [[session.windows]]
+# name = "terminal"
+# layout = "horizontal"
+
+# Wildcard example
+# [[session]]
+# name = "*"
+# path = "*"
+# preview_command = "eza --all --git --icons --color=always"
