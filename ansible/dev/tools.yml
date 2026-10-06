@@ -20,7 +20,7 @@
   loop:
     - { pkg: zoxide, bin: zoxide }
     - { pkg: eza, bin: eza }
-    - { pkg: worktrunk, bin: wt }
+    - { pkg: workmux, bin: workmux }
     - { pkg: perl-lsp, bin: perl-lsp }
     - { pkg: foxtail, bin: foxtail }
     - { pkg: stylua, bin: stylua }
