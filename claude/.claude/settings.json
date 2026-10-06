@@ -1,4 +1,83 @@
 {
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt|elicitation_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "workmux set-window-status waiting"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "workmux set-window-status working"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-activate.js\"",
+            "timeout": 5,
+            "statusMessage": "Loading caveman mode..."
+          }
+        ]
+      },
+      {
+        "matcher": "startup|resume|clear|fork",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "workmux register-agent"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "workmux set-window-status done"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-mode-tracker.js\"",
+            "timeout": 5,
+            "statusMessage": "Tracking caveman mode..."
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "workmux set-window-status working"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "foxtail",
+    "padding": 0
+  },
   "enabledPlugins": {
     "adhd-output-style@claude-settings": true,
     "eli5@claude-community": true,
@@ -12,113 +91,66 @@
   "extraKnownMarketplaces": {
     "claude-community": {
       "source": {
-        "repo": "anthropics/claude-plugins-community",
-        "source": "github"
+        "source": "github",
+        "repo": "anthropics/claude-plugins-community"
       }
     },
     "claude-settings": {
       "source": {
-        "repo": "fcakyon/claude-codex-settings",
-        "source": "github"
+        "source": "github",
+        "repo": "fcakyon/claude-codex-settings"
       }
     },
     "i-have-adhd": {
       "source": {
-        "repo": "ayghri/i-have-adhd",
-        "source": "github"
+        "source": "github",
+        "repo": "ayghri/i-have-adhd"
       }
     },
     "internal-aidev-plugins": {
       "source": {
-        "repo": "mozilla/internal-aidev-plugins",
-        "source": "github"
+        "source": "github",
+        "repo": "mozilla/internal-aidev-plugins"
       }
     },
     "paad": {
       "source": {
-        "repo": "Ovid/paad",
-        "source": "github"
+        "source": "github",
+        "repo": "Ovid/paad"
       }
     }
   },
-  "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "command": "workmux set-window-status waiting",
-            "type": "command"
-          }
-        ],
-        "matcher": "permission_prompt|elicitation_dialog"
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "workmux set-window-status working",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-activate.js\"",
-            "statusMessage": "Loading caveman mode...",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "workmux register-agent",
-            "type": "command"
-          }
-        ],
-        "matcher": "startup|resume|clear|fork"
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "workmux set-window-status done",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-mode-tracker.js\"",
-            "statusMessage": "Tracking caveman mode...",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "workmux set-window-status working",
-            "type": "command"
-          }
-        ]
-      }
+  "skipWorkflowUsageWarning": true,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: Public — mozilla-conduit/phabricator (confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: Default branch unknown (origin/HEAD unset); protected branch: `master` (no rulesets listed, per gh)",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine or CI runner with open internet",
+      "**Source control**: The trusted repo (mozilla-conduit/phabricator, public) and its origin remote only — no additional orgs configured",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: `conf/keys/device.pub`, `conf/keys/device.key`, `conf/keys/device.id` (gitignored device credential files); `resources/sql/**/*accountsecret*`, `*passphrasecredential*`, `*repocredentials*` migration files (handle credential-related schema, not live secrets) — share only with audiences cleared at the [named+specifics] bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (Mozilla's Phabricator fork, Mozilla-specific extensions under `moz-extensions/`)",
+      "**Trusted repo**: /home/dkl/devel/github/mozilla/phabricator/master (origin: https://github.com/mozilla-conduit/phabricator, public) — since this repo is public, only this repo's own work is appropriate to push here; confidential/secret material is never cleared into it by visibility alone",
+      "**Org-specific CLIs**: None configured — project uses `invoke` (test/build/liberate), `docker compose` / `podman-compose` (per user's personal CLAUDE.md, podman is substituted for Docker locally), and `code-review-graph` MCP tool (also seen in shell history, 21×)",
+      "routine under moz-extensions/ prefix: editing/building Mozilla extension code (reviewhelper, differential, conduit, lando, bugzilla, auth, feed, email, logging, motd) is this user's normal workflow in this repo"
     ]
   },
-  "skipWorkflowUsageWarning": true,
-  "statusLine": {
-    "command": "foxtail",
-    "padding": 0,
-    "type": "command"
+  "permissions": {
+    "defaultMode": "auto"
   }
 }
