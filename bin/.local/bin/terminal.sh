@@ -59,7 +59,7 @@ source "$HOME/.cargo/env"
 cargo install zoxide
 cargo install eza
 cargo install stylelua
-cargo install worktrunk && wt config shell install --yes zsh
+cargo install workmux && workmux setup
 cargo install perl-lsp
 cargo install foxtail
 

@@ -15,3 +15,4 @@ export PATH="$HOME/.pyenv/bin:$PATH"
 export PATH="/usr/bin/vendor_perl:$PATH"
 export PATH="/home/dkl/.opencode/bin:$PATH"
 export DOCKER_HOST=unix:///run/user/1000/podman/podman.sock
+export PATH=/home/dkl/.opencode/bin:$PATH
