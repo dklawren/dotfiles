@@ -1,5 +1,5 @@
 # config directories
-export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/.ripgreprc"
+# export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/.ripgreprc"
 
 # deja overrides
 export DEJA_ACCEPT_KEY=␌

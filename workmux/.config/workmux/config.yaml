@@ -1,0 +1,20 @@
+# workmux global config. Stows to ~/.config/workmux/config.yaml
+# Full reference: `workmux config reference`
+
+nerdfont: true
+
+# Agent for <agent> panes. Replaces worktrunk. `opencode` also auto-detects.
+agent: claude
+
+# One commit per worktree on `workmux merge` (matches the old worktrunk
+# merge.squash = true). Options: merge, rebase, squash.
+merge_strategy: squash
+
+# Clean up the worktree, window and branch after merging.
+merge_keep: false
+
+sidebar:
+  position: left
+  width: 40
+  layout: tiles
+  dim_stale: true

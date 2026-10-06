@@ -36,5 +36,32 @@ else
   eval "$(deja init zsh)"
 fi
 
-# opencode
-export PATH=/home/dkl/.opencode/bin:$PATH
+# Zoxide
+eval "$(zoxide init zsh)"
+
+# ===========================================
+# 11. Session Management Checks (tmux/IDE)
+# ===========================================
+function check_and_spawn_session() {
+    # Only act in interactive shells; skip scripts, SSH-exec, etc.
+    [[ $- == *i* ]] || return
+    # Need tmux available to do anything useful.
+    command -v tmux >/dev/null 2>&1 || return
+    # Already inside tmux: nothing to do.
+    [[ -n "$TMUX" ]] && return
+
+    # Skip inside VS Code / embedded IDE terminals.
+    case "$TERM_PROGRAM" in vscode) return ;; esac
+    [[ -n "$VSCODE_INJECTION" ]] && return
+
+    # Attach to an existing 'main' session, creating it if needed, and
+    # replace this shell so we actually land inside tmux.
+    exec tmux new-session -A -s main
+}
+
+# Run the check when the shell starts
+check_and_spawn_session
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+
+eval "$(opencode completion)"
