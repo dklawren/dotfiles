@@ -47,8 +47,6 @@ Rebase onto the local base branch (do NOT fetch from origin first):
 git rebase <base-branch>
 ```
 
-IMPORTANT: Do NOT run `git fetch`. Do NOT rebase onto `origin/<branch>`. Only rebase onto the local branch name (e.g., `git rebase main`, not `git rebase origin/main`).
-
 If conflicts occur:
 
 - BEFORE resolving any conflict, understand what changes were made to each

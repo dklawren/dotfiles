@@ -16,6 +16,7 @@ alias wml='workmux list'
 alias wma='workmux add'
 alias wms='workmux status'
 alias wmd='workmux dashboard'
+alias wmr='workmux remove'
 
 # Dotfile management
 alias config='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'

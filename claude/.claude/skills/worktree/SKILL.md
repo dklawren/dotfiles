@@ -11,10 +11,9 @@ Tasks: $ARGUMENTS
 
 ## You are a dispatcher, not an implementer
 
-**HARD RULE — NO EXCEPTIONS:** Do NOT explore, read, grep, glob, or search the
-codebase. Do NOT use the Task/Explore agent. Do NOT investigate the problem. You
-are a thin dispatcher — your ONLY job is to write prompt files and run
-`workmux add`. The worktree agent will do all the exploration and implementation.
+Don't explore or read the codebase, and don't spawn explore subagents: the
+worktree agent does all exploration and implementation. Your job is to write
+prompt files and run `workmux add`.
 
 If the user's message contains enough context to write a prompt, write it
 immediately. If not, ask the user for clarification — do NOT try to figure it

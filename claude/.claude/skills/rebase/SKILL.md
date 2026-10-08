@@ -24,7 +24,9 @@ Steps:
 
 1. Check for local changes with `git status --porcelain`:
    - If the working tree has staged, unstaged, or untracked changes, stash them
-     with `git stash push --include-untracked -m "workmux rebase"`.
+     with `git stash push --include-untracked -m "workmux-rebase-<branch>-<timestamp>"`,
+     then record the entry's SHA from `git stash list --format='%H %gs'`. The stash
+     stack is shared with other worktrees and sessions.
    - Remember whether this command created a stash. Existing stash entries must
      remain untouched.
    - If stashing fails, stop before fetching or rebasing.
@@ -42,9 +44,11 @@ Steps:
 4. Run: `git rebase <target>`
 5. If conflicts occur, handle them carefully (see below)
 6. Continue until rebase is complete
-7. If step 1 created a stash, restore it with `git stash pop --index`:
+7. If step 1 created a stash, restore it with `git stash apply --index <sha>`:
    - Restore the stash only after the rebase succeeds.
-   - If restoration conflicts, preserve the stash, report the conflicts, and
+   - If the apply is clean, drop the entry: re-find its current `stash@{n}` by
+     its tag in `git stash list`, then `git stash drop stash@{n}`.
+   - If restoration conflicts, keep the stash, report the conflicts, and
      leave the affected files for manual resolution.
 
 Handling conflicts:

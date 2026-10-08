@@ -349,4 +349,25 @@ sidebar:
   position: left
   width: 40
   layout: tiles
-  dim_stale: true# workmux project configuration
+  dim_stale: true
+
+dashboard:
+  close_on_jump: true
+
+mode: session
+windows:
+  - name: worktree
+    panes:
+      - command: <agent>
+      - split: horizontal
+        focus: true
+  - name: dashboard
+    panes:
+      - command: "workmux dashboard -t worktrees"
+#   - name: zsh
+#     panes:
+#       - focus: true
+#   - name: <agent>
+#     panes:
+#       - focus: false
+#         command: <agent>
