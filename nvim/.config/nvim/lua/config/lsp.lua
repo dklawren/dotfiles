@@ -30,6 +30,7 @@ vim.keymap.set("n", "gD", function() vim.lsp.buf.declaration({ on_list = on_list
 vim.keymap.set("n", "gR", function() vim.lsp.buf.references(nil, { on_list = on_list }) end, { desc = "References" })
 vim.keymap.set("n", "gI", function() vim.lsp.buf.implementation({ on_list = on_list }) end, { desc = "Goto Implementation" })
 vim.keymap.set("n", "gy", function() vim.lsp.buf.type_definition({ on_list = on_list }) end, { desc = "Goto Type Definition" })
+vim.keymap.set("n", "grt", vim.lsp.buf.type_definition, { desc = "Goto Type Definition" })
 vim.keymap.set("n", "<leader>ss", function() vim.lsp.buf.document_symbol({ on_list = on_list }) end, { desc = "LSP Symbols" })
 -- stylua: ignore end
 
@@ -39,23 +40,19 @@ vim.keymap.set("n", "<leader>ss", function() vim.lsp.buf.document_symbol({ on_li
 -- then vtsls re-indents the result with tsserver's own style: the file ends up in
 -- neither style. Servers that format as a side job never win here, and when no
 -- dedicated formatter is attached the buffer is left untouched.
-local format_never = { vtsls = true, ts_ls = true, eslint = true, oxlint = true, tailwindcss = true }
-local format_priority = { "oxfmt", "biome", "stylua", "ruff", "taplo" }
+local format_never = { vtsls = true, ts_ls = true, eslint = true, oxlint = true }
+local format_rank = { oxfmt = 1, biome = 2, stylua = 3, taplo = 4 }
 
 ---@param bufnr integer
 ---@return vim.lsp.Client?
 local function formatter(bufnr)
-	local clients = vim.tbl_filter(function(c)
-		return not format_never[c.name]
-	end, vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/formatting" }))
-	for _, name in ipairs(format_priority) do
-		for _, c in ipairs(clients) do
-			if c.name == name then
-				return c
-			end
+	local best
+	for _, c in ipairs(vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/formatting" })) do
+		if not format_never[c.name] and (not best or (format_rank[c.name] or 9) < (format_rank[best.name] or 9)) then
+			best = c
 		end
 	end
-	return clients[1]
+	return best
 end
 
 local default_keymaps = {
@@ -79,20 +76,6 @@ local default_keymaps = {
 	{ keys = "<leader>cr", func = vim.lsp.buf.rename, desc = "Code Rename" },
 	{ keys = "<leader>k", func = vim.lsp.buf.hover, desc = "Hover Documentation", has = "hoverProvider" },
 	{ keys = "K", func = vim.lsp.buf.hover, desc = "Hover (alt)", has = "hoverProvider" },
-	{
-		keys = "gd",
-		func = function()
-			vim.lsp.buf.definition({ on_list = on_list })
-		end,
-		desc = "Goto Definition",
-		has = "definitionProvider",
-	},
-	{
-		keys = "grt",
-		func = vim.lsp.buf.type_definition,
-		desc = "Goto Type Definition",
-		has = "typeDefinitionProvider",
-	},
 	{ keys = "grx", func = vim.lsp.codelens.run, desc = "Run Codelens", has = "codeLensProvider" },
 	{ keys = "<leader>cw", func = vim.lsp.buf.workspace_diagnostics, desc = "Workspace Diagnostics" },
 	{
@@ -125,19 +108,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			if client:supports_method("textDocument/inlayHint") then
 				vim.lsp.inlay_hint.enable(true, { bufnr = buf })
 
+				-- Hints are in the way of the text being written, so they go for
+				-- the length of an insert session.
 				if not vim.b[buf].inlay_hints_autocmd_set then
-					vim.api.nvim_create_autocmd("InsertEnter", {
-						buffer = buf,
-						callback = function()
-							vim.lsp.inlay_hint.enable(false, { bufnr = buf })
-						end,
-					})
-					vim.api.nvim_create_autocmd("InsertLeave", {
-						buffer = buf,
-						callback = function()
-							vim.lsp.inlay_hint.enable(true, { bufnr = buf })
-						end,
-					})
+					for _, mode in ipairs({ "InsertEnter", "InsertLeave" }) do
+						vim.api.nvim_create_autocmd(mode, {
+							buffer = buf,
+							callback = function()
+								vim.lsp.inlay_hint.enable(mode == "InsertLeave", { bufnr = buf })
+							end,
+						})
+					end
 					vim.b[buf].inlay_hints_autocmd_set = true
 				end
 			end
@@ -154,15 +135,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				})
 			end
 
+			vim.b[buf].lsp_keymaps_set = vim.b[buf].lsp_keymaps_set or {}
 			for _, km in ipairs(default_keymaps) do
-				-- Only bind if there's no `has` requirement, or the server supports it
-				if not km.has or client.server_capabilities[km.has] then
-					vim.keymap.set(
-						km.mode or "n",
-						km.keys,
-						km.func,
-						{ buffer = buf, desc = "LSP: " .. km.desc, nowait = km.nowait }
-					)
+				-- Only bind if there's no `has` requirement, or the server supports it.
+				-- A buffer can attach several clients, so keep one binding per key.
+				if (not km.has or client.server_capabilities[km.has]) and not vim.b[buf].lsp_keymaps_set[km.keys] then
+					vim.keymap.set("n", km.keys, km.func, { buffer = buf, desc = "LSP: " .. km.desc })
+					vim.b[buf].lsp_keymaps_set[km.keys] = true
 				end
 			end
 		end
@@ -179,7 +158,6 @@ vim.lsp.enable({
 	"lua_ls",
 	"gopls",
 	"rust_analyzer",
-	"zls",
 	"cssls",
 	"html",
 	"jsonls",
@@ -190,12 +168,8 @@ vim.lsp.enable({
 	"oxfmt",
 	"stylua",
 	"taplo",
-	"ruff",
-	"pyright",
-	"tailwindcss",
 	"nil_ls",
 	"graphql",
-	"perllsp",
 })
 
 -- Load Lsp on-demand, e.g: eslint is disable by default
@@ -205,9 +179,6 @@ if vim.g.lsp_on_demands then
 end
 
 -- Format on save implementation
--- Autoformat-on-save is opt-in: off by default, enable with :FormatEnable or <leader>uf
-vim.g.disable_autoformat = true
-
 vim.api.nvim_create_user_command("FormatDisable", function(opts)
 	if opts.bang then
 		vim.b.disable_autoformat = true
@@ -223,14 +194,11 @@ vim.api.nvim_create_user_command("FormatEnable", function()
 	vim.notify("Autoformat enabled", vim.log.levels.INFO)
 end, { desc = "Re-enable autoformat-on-save" })
 
-local auto_format = false
-
 vim.keymap.set("n", "<leader>uf", function()
-	auto_format = not auto_format
-	if auto_format then
-		vim.cmd("FormatEnable")
-	else
+	if vim.g.disable_autoformat then
 		vim.cmd("FormatDisable")
+	else
+		vim.cmd("FormatEnable")
 	end
 end, { desc = "Toggle Autoformat" })
 
@@ -238,8 +206,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	group = augroup("autoformat"),
 	callback = function(args)
 		local bufnr = args.buf
-		local ignore_filetypes = { "sql" }
-		if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
+		if vim.bo[bufnr].filetype == "sql" then
 			return
 		end
 		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
@@ -260,17 +227,3 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		})
 	end,
 })
-
--- Perl LSP
-vim.api.nvim_set_hl(0, "@lsp.type.macro.perl", { link = "Keyword" }) -- has, with, extends
-vim.api.nvim_set_hl(0, "@lsp.type.property.perl", { link = "Identifier" }) -- hash keys
-vim.api.nvim_set_hl(0, "@lsp.type.namespace.perl", { link = "Type" }) -- Foo::Bar
-vim.api.nvim_set_hl(0, "@lsp.type.parameter.perl", { link = "Special" }) -- sub params
-vim.api.nvim_set_hl(0, "@lsp.type.keyword.perl", { link = "Constant" }) -- $self/$class
-vim.api.nvim_set_hl(0, "@lsp.mod.scalar.perl", { fg = "#61afef" }) -- $ blue
-vim.api.nvim_set_hl(0, "@lsp.mod.array.perl", { fg = "#c678dd" }) -- @ purple
-vim.api.nvim_set_hl(0, "@lsp.mod.hash.perl", { fg = "#e5c07b" }) -- % gold
-vim.api.nvim_set_hl(0, "@lsp.mod.modification.perl", { fg = "#e06c75" }) -- writes in red
-vim.api.nvim_set_hl(0, "@lsp.mod.declaration.perl", { bold = true })
-vim.api.nvim_set_hl(0, "@lsp.mod.readonly.perl", { italic = true })
-vim.api.nvim_set_hl(0, "@lsp.mod.defaultLibrary.perl", { italic = true }) -- imported function

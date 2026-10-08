@@ -39,6 +39,7 @@ return {
 	root_dir = function(bufnr, on_dir)
 		local fname = vim.api.nvim_buf_get_name(bufnr)
 		if fname == "" then
+			on_dir(nil)
 			return
 		end
 		local marker = vim.fs.find(CONFIG_FILES, { path = fname, upward = true, stop = vim.uv.os_homedir() })[1]

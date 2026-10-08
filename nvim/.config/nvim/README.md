@@ -1,15 +1,15 @@
 # My Neovim config
 
-> Fast, IDE-grade Neovim setup with 14 plugins using native `vim.pack` (no plugin manager needed)
+> Fast, IDE-grade Neovim setup with 13 plugins using native `vim.pack` (no plugin manager needed)
 
 ![Neovim](https://img.shields.io/badge/NeoVim-0.13+-57A143?style=flat-square&logo=neovim)
-![Plugins](https://img.shields.io/badge/plugins-14-orange?style=flat-square)
-![Startup](https://img.shields.io/badge/startup-<50ms-blue?style=flat-square)
+![Plugins](https://img.shields.io/badge/plugins-13-orange?style=flat-square)
 
-- Sub-50ms startup using native `vim.pack` (no lazy.nvim/packer overhead)
+- Uses native `vim.pack` (no lazy.nvim/packer overhead)
 - Custom UI components (statusline, tabline, session manager) without extra plugins
 - 15+ LSP servers pre-configured with format-on-save
 - Session persistence that restores your workspace as VSCode
+- One long lived nvim per project, hopping between them in one terminal
 
 ## Core Plugins
 
@@ -25,7 +25,6 @@
 | nvim-treesitter          | Syntax highlighting, code folding, indentation                            |
 | nvim-web-devicons        | File type icons                                                           |
 | oil.nvim                 | File explorer                                                             |
-| render-markdown.nvim     | Rich markdown rendering in the buffer (browser preview with cli mdserve)  |
 | vdiff.nvim               | Side-by-side diff viewer, merge conflict resolution, gitlab/github review |
 | which-key.nvim           | Command palette & keybind helper                                          |
 | yanky.nvim               | Yank ring with cycling, history picker, put highlighting                  |
@@ -38,13 +37,23 @@
 | Auto-pairs        | `config/pairs.lua`       | Insert-mode auto-close for brackets, and smart backspace                                           |
 | Statusline        | `config/statusline.lua`  | Git branch/diff, LSP diagnostics, word count for markdown                                          |
 | Tabline           | `config/tabline.lua`     | Smart buffer management with devicons                                                              |
-| Session manager   | `config/session.lua`     | Per-directory auto-save/restore                                                                    |
+| Session manager   | `config/session.lua`     | Per-directory auto-save/restore, `:Session <dir>` to switch workspace                       |
 | LSP utilities     | `config/lsp.lua`         | Unified 15+ server setup with format-on-save, inlay hints                                          |
 | Diagnostics       | `config/diagnostics.lua` | Custom diagnostic display config                                                                   |
 | Pack UI           | `config/pack.lua`        | Browser for `vim.pack` plugin registry                                                             |
 | Jump              | `config/jump.lua`        | Minimal 2-char search with label jump                                                              |
-| Multicursor       | `config/mcursor.lua`     | Column-align native multicursors (`:h multicursor`), keymap `g<Space>`                              |
-| UI overrides      | `config/ui2.lua`         | Floating windows, cmdline                                                                          |
+| Multicursor       | `config/mcursor.lua`     | Column-align native multicursors (`:h multicursor`), keymap `g<Space>`                             |
+| UI overrides      | `config/ui2.lua`         | Native `ui2` message layer, with a pager that fills the window                                     |
+| Markdown render   | `config/markdown.lua`    | In-buffer markdown rendering (headings, code, lists, tables, callouts), image preview, mdserve     |
+
+## What the runtime already does
+
+The config asks nvim for what nvim has, so the code stays small:
+
+- `'autoread'` has its own file watchers, so nothing calls `:checktime` on focus.
+- `ui2` is enabled with one change, a pager that fills the window. Every other `messagesopt` item and height is already the default.
+- `config/options.lua` holds only what differs from a `nvim --clean` start, and each plugin setup only what its plugin does not default (oil, fff, gitsigns, blink, codeme).
+- `vim.fs.mkdir({parents})`, `nvim_set_hl`, `vim.iter`, `vim.list_slice` and the optional trailing `opts` of the 0.13 API contract replace hand-rolled versions of themselves.
 
 I also wrote a series of articles about my [Neovim config](https://tduyng.com/tags/neovim/)
 
@@ -73,7 +82,14 @@ Validate the config before committing:
 just validate  # Run all checks (loads config in headless nvim + checks formatting)
 just check     # Test config loads without errors
 just fmt       # Format all Lua files with StyLua
+just test      # Run every suite in tests/ and luacheck over lua/
 ```
+
+`just test` is the gate: one file in `tests/` per feature, each driven through the real config.
+
+Every 0.13 feature this config leans on, and the ones it does not, is written
+up in [docs/native-0.13.md](docs/native-0.13.md) with the measurement that
+settled it.
 
 ## Quick Start
 
@@ -166,8 +182,8 @@ Debug (DAP)
 
 Diagnostics
   <leader>cd        Line diagnostics
-  <leader>sd        Document diagnostics (picker)
-  <leader>cD        Workspace diagnostics (picker)
+  <leader>sd        Document diagnostics (picker, filterable)
+  <leader>cD        Workspace diagnostics (picker, filterable)
   ]d / [d           Next/Prev diagnostic
   ]e / [e           Next/Prev error
   ]w / [w           Next/Prev warning
@@ -186,11 +202,9 @@ Markdown
   <leader>mp        Markdown preview (mdserve)
 
 Sessions
-  <leader>qs        Load session (cwd)
-  <leader>ql        Load last session
-  <leader>qS        Select session
-  <leader>qd        Stop session saving
-  <leader>qr        Delete current session
+  <leader>qs        Load the session of this directory
+  <leader>qr        Delete the session of this directory
+  :Session [dir]    Load a directory's session, the current one by default
 
 Pack (vim.pack)
   <leader>pp        Pack UI

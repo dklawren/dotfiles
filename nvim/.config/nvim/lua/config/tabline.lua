@@ -1,4 +1,5 @@
 local M = {}
+local npcall = require("config.compat")
 
 local SEP = "" -- separator glyph at buffer boundary
 local CLOSE = "" -- close icon shown on active buffer
@@ -9,12 +10,21 @@ local OVERFLOW_RIGHT = "»"
 local _tab_cache = nil -- cached rendered string
 local _tab_cache_key = nil -- cache key: bufnr + columns + buffer-list signature
 
+---The last line rendered, under the key that says what it was rendered from.
+---@param key string
+---@param line string
+local function remember(key, line)
+	_tab_cache, _tab_cache_key = line, key
+	return line
+end
+
 local _tab_invalidate_events = {
 	"BufAdd",
 	"BufDelete",
 	"BufWipeout",
 	"BufFilePost", -- buffer renamed
 	"BufWritePost", -- save clears the modified flag
+	"FileType", -- filetypes can change buflisted
 	"TextChanged", -- normal-mode edit sets modified flag
 	"TextChangedI", -- insert-mode edit sets modified flag
 	"VimResized", -- terminal resize changes layout
@@ -40,18 +50,19 @@ end
 -- nvim-web-devicons to the runtimepath.
 local devicons
 
-local function get_icon(filename, name)
-	if not name or name == "" then
+---The icon for a file and a space after it, or "" when there is none.
+---@param name string
+local function icon_for(name)
+	if name == "" then
 		return ""
 	end
 	if not devicons then
-		local ok, mod = pcall(require, "nvim-web-devicons")
-		if not ok then
+		devicons = npcall(require, "nvim-web-devicons")
+		if not devicons then
 			return ""
 		end
-		devicons = mod
 	end
-	local icon = devicons.get_icon(filename, vim.fn.fnamemodify(name, ":e"), { default = true })
+	local icon = devicons.get_icon(vim.fn.fnamemodify(name, ":t"), vim.fn.fnamemodify(name, ":e"), { default = true })
 	return icon and (icon .. " ") or ""
 end
 
@@ -61,48 +72,28 @@ local function get_display_name(path)
 		return NO_NAME
 	end
 	local parts = vim.split(path, "/", { plain = true })
-	if #parts == 1 then
-		return parts[1] -- Just filename if no parent
-	elseif #parts == 2 then
-		return parts[#parts - 1] .. "/" .. parts[#parts] -- parent/filename
-	else
-		-- Return "grandparent/parent/filename" (last 3 parts)
-		return parts[#parts - 2] .. "/" .. parts[#parts - 1] .. "/" .. parts[#parts]
-	end
+	return table.concat(vim.list_slice(parts, math.max(#parts - 2, 1)), "/")
 end
 
 -- Render a single buffer chunk
 local function render_buf(bufnr, current)
-	if not vim.api.nvim_buf_is_loaded(bufnr) then
-		return ""
-	end
+	-- A session restores the buffers it listed but did not show with `badd`,
+	-- and those stay unloaded until something puts them in a window. An
+	-- unloaded buffer has everything this needs -- a name, a modified flag --
+	-- so skipping them here is what kept the tabline from showing a whole
+	-- session's files.
 	if not vim.bo[bufnr].buflisted then
 		return ""
 	end
 
 	local name = vim.api.nvim_buf_get_name(bufnr)
-	local display_name = get_display_name(name)
-	local filename = (name ~= "" and vim.fn.fnamemodify(name, ":t")) or NO_NAME
-	local icon = get_icon(filename, name)
-	local content = icon .. display_name
-
-	if bufnr == current then
-		return table.concat({
-			"%#MyBufActive# ",
-			content,
-			" %#MyBufClose#",
-			CLOSE,
-			" %#MyBufSeparator#",
-			SEP,
-		})
-	else
-		return table.concat({
-			"%#MyBufInactive# ",
-			content,
-			"  %#MyBufSeparator#",
-			SEP,
-		})
-	end
+	local content = icon_for(name) .. get_display_name(name)
+	local active = bufnr == current
+	return ("%%#%s# %s%s%%#MyBufSeparator#"):format(
+		active and "MyBufActive" or "MyBufInactive",
+		content,
+		active and (" %#MyBufClose#" .. CLOSE .. " ") or "  "
+	) .. SEP
 end
 
 -- Strip statusline highlight groups (%#...#) to measure real display width
@@ -111,7 +102,7 @@ local function display_width(s)
 	return vim.api.nvim_strwidth(stripped)
 end
 
-function _G.tabline()
+function M.build()
 	local current = vim.api.nvim_get_current_buf()
 	local columns = vim.o.columns
 
@@ -138,9 +129,7 @@ function _G.tabline()
 	end
 
 	if #chunks == 0 then
-		_tab_cache = ""
-		_tab_cache_key = key
-		return ""
+		return remember(key, "")
 	end
 
 	local widths = {}
@@ -152,10 +141,7 @@ function _G.tabline()
 
 	-- Fast path: everything fits
 	if total <= columns then
-		local line = table.concat(chunks):gsub(vim.pesc(SEP) .. "$", "")
-		_tab_cache = line
-		_tab_cache_key = key
-		return line
+		return remember(key, table.concat(chunks):gsub(vim.pesc(SEP) .. "$", ""))
 	end
 
 	-- Sliding window: keep the active buffer visible, then expand outward
@@ -207,46 +193,16 @@ function _G.tabline()
 		table.insert(visible, "%#MyBufInactive# " .. OVERFLOW_RIGHT .. " " .. right_count .. " ")
 	end
 
-	local line = table.concat(visible):gsub(vim.pesc(SEP) .. "$", "")
-	_tab_cache = line
-	_tab_cache_key = key
-	return line
+	return remember(key, table.concat(visible):gsub(vim.pesc(SEP) .. "$", ""))
 end
 
-function M.setup()
-	M.set_highlights()
+M.set_highlights()
+vim.api.nvim_create_autocmd("ColorScheme", {
+	group = vim.api.nvim_create_augroup("MyTabline", { clear = true }),
+	callback = M.set_highlights,
+})
 
-	vim.api.nvim_create_augroup("MyTabline", { clear = true })
-	vim.api.nvim_create_autocmd("ColorScheme", {
-		group = "MyTabline",
-		callback = M.set_highlights,
-	})
-
-	vim.opt.showtabline = 2
-	vim.opt.tabline = "%!v:lua.tabline()"
-end
-
--- Close all buffers to the left/right of the current one
-vim.keymap.set("n", "<leader>bl", function()
-	local cur = vim.api.nvim_get_current_buf()
-	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted and buf < cur then
-			pcall(vim.api.nvim_buf_delete, buf, { force = true })
-		end
-	end
-end, { desc = "Close all left buffers" })
-
-vim.keymap.set("n", "<leader>br", function()
-	local cur = vim.api.nvim_get_current_buf()
-	local bufs = vim.api.nvim_list_bufs()
-	for i = #bufs, 1, -1 do
-		local buf = bufs[i]
-		if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buflisted and buf > cur then
-			pcall(vim.api.nvim_buf_delete, buf, { force = true })
-		end
-	end
-end, { desc = "Close all right buffers" })
-
-M.setup()
+vim.opt.showtabline = 2
+vim.o.tabline = "%!v:lua.require('config.tabline').build()"
 
 return M

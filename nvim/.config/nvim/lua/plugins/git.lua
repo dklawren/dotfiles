@@ -3,32 +3,24 @@ vim.pack.add({
 	"https://gitlab.com/tduyng/vdiff.nvim",
 })
 
--- Setup gitsigns.nvim
+-- Setup gitsigns.nvim. The signs gitsigns already defaults to are left out.
 require("gitsigns").setup({
 	signs = {
 		add = { text = "▎" },
 		change = { text = "▎" },
 		delete = { text = "" },
 		topdelete = { text = "" },
-		changedelete = { text = "~" },
-		untracked = { text = "┆" },
 	},
 	signs_staged = {
 		add = { text = "▎" },
 		change = { text = "▎" },
 		delete = { text = "" },
 		topdelete = { text = "" },
-		changedelete = { text = "~" },
-		untracked = { text = "┆" },
 	},
 	current_line_blame = true,
 	current_line_blame_opts = {
 		virt_text = true,
-		virt_text_pos = "eol",
 		delay = 800,
-		ignore_whitespace = false,
-		virt_text_priority = 100,
-		use_focus = true,
 	},
 	current_line_blame_formatter = "<author>, <author_time:%R> - <summary> (<abbrev_sha>)",
 	on_attach = function(buffer)
@@ -38,21 +30,19 @@ require("gitsigns").setup({
 			vim.keymap.set(mode, lhs, rhs, { buffer = buffer, desc = desc })
 		end
 
-		map("n", "]h", function()
-			if vim.wo.diff then
-				vim.cmd.normal({ "]c", bang = true })
-			else
-				gs.nav_hunk("next")
+		---A hunk in a buffer that has one, a difference in a diff window.
+		local function hop(diff_key, direction)
+			return function()
+				if vim.wo.diff then
+					vim.cmd.normal({ diff_key, bang = true })
+				else
+					gs.nav_hunk(direction)
+				end
 			end
-		end, "Next Hunk")
+		end
 
-		map("n", "[h", function()
-			if vim.wo.diff then
-				vim.cmd.normal({ "[c", bang = true })
-			else
-				gs.nav_hunk("prev")
-			end
-		end, "Prev Hunk")
+		map("n", "]h", hop("]c", "next"), "Next Hunk")
+		map("n", "[h", hop("[c", "prev"), "Prev Hunk")
 
 		map("n", "]H", function()
 			gs.nav_hunk("last")

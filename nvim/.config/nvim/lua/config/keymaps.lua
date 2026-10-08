@@ -1,5 +1,5 @@
 local map = vim.keymap.set
-local opts = { noremap = true, silent = true }
+local opts = { silent = true }
 
 -- Better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
@@ -83,19 +83,18 @@ map("x", ">", ">gv")
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 
 -- location list
+-- :lopen raises E42 when there is no list to open, and a message beats a
+-- traceback thrown out of a keymap
 map("n", "<leader>xl", function()
-	local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
-	if not success and err then
-		vim.notify(err, vim.log.levels.ERROR)
+	if #vim.fn.getloclist(0) == 0 then
+		return vim.notify("No location list", vim.log.levels.INFO)
 	end
+	vim.cmd(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and "lclose" or "lopen")
 end, { desc = "Location List" })
 
 -- quickfix list
 map("n", "<leader>xq", function()
-	local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
-	if not success and err then
-		vim.notify(err, vim.log.levels.ERROR)
-	end
+	vim.cmd(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and "cclose" or "copen")
 end, { desc = "Quickfix List" })
 
 map("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
@@ -154,14 +153,11 @@ map("n", "zj", "zcjzOzz", { desc = "Close current fold when open. Always open ne
 -- Close current fold when open. Always open previous fold.
 map("n", "zk", "zckzOzz", { desc = "Close current fold when open. Always open previous fold." })
 
--- Better paste
-map("x", "p", '"_dP', opts)
-
 -- Copy whole file content to clipboard with C-c
 map("n", "<C-c>", ":%y+<CR>", opts)
 
 -- Select all text in buffer with Alt-a
-map("n", "<A-a>", "ggVG", { noremap = true, silent = true, desc = "Select all" })
+map("n", "<A-a>", "ggVG", { silent = true, desc = "Select all" })
 
 -- Toggle wrap
 map("n", "<leader>tw", "<cmd>set wrap!<CR>", { desc = "Toggle Wrap", silent = true })
@@ -171,21 +167,17 @@ map("n", "<leader>us", function()
 	vim.notify((vim.o.spell and "Enabled" or "Disabled") .. " spell")
 end, { desc = "Toggle Spell" })
 
--- `restart!` skips :restart's own session round-trip; we do it ourselves.
-map("n", "<leader>R", function()
-	local session = vim.fn.stdpath("state") .. "/restart_session.vim"
-	vim.cmd("mksession! " .. vim.fn.fnameescape(session))
-	vim.cmd("restart! source " .. vim.fn.fnameescape(session))
-end, { desc = "Restart Neovim" })
+-- `:restart` carries the layout itself, written with the 'sessionoptions' the
+-- session layer sets, so the project comes back as it was closed.
+map("n", "<leader>R", "<cmd>restart<cr>", { desc = "Restart Neovim" })
 
 -- delete marks (use m + character for a mark)
 map("n", "dm", function()
 	local mark = vim.fn.getcharstr()
 	-- Esc, or anything that is not a mark name, would make :delmarks throw.
-	if not mark:match("^[a-zA-Z0-9'`\"%[%]<>%.%^]$") then
-		return
+	if mark:match("^[a-zA-Z0-9'`\"%[%]<>%.%^]$") then
+		vim.cmd("delmarks " .. mark)
 	end
-	vim.cmd("delmarks " .. mark)
 end, { desc = "Delete mark" })
 
 -- Command history
@@ -193,9 +185,11 @@ map("n", "<leader>:", "q:", { desc = "Command History" })
 map("n", "<leader>sc", "q:", { desc = "Command History" })
 
 -- Terminal
+-- :terminal opens in the current directory, which is where nvim started, not
+-- the root of the file's project
 map("n", "<leader>fT", "<cmd>terminal<cr>", { desc = "Terminal (cwd)" })
-map("n", "<leader>ft", "<cmd>terminal<cr>", { desc = "Terminal (Root Dir)" })
-map("n", "<C-:>", "<cmd>terminal<cr>", { desc = "Terminal (Root Dir)" })
+map("n", "<leader>ft", "<cmd>terminal<cr>", { desc = "Terminal (cwd)" })
+map("n", "<C-:>", "<cmd>terminal<cr>", { desc = "Terminal (cwd)" })
 
 -- Scratch
 map("n", "<leader>.", "<cmd>enew<cr>", { desc = "New Scratch Buffer" })
@@ -237,13 +231,10 @@ map("n", "<leader>lp", "<cmd>lprevious<cr>", { desc = "Previous Location" })
 map("n", "<leader>lo", "<cmd>lopen<cr>", { desc = "Open Location" })
 map("n", "<leader>lc", "<cmd>lclose<cr>", { desc = "Close Location" })
 
--- Spell checking
-map("n", "]s", function()
-	vim.cmd("normal! ]s")
-end, { desc = "Next Spell Error" })
-map("n", "[s", function()
-	vim.cmd("normal! [s")
-end, { desc = "Previous Spell Error" })
+-- Spell checking. `]` is a prefix, so a mapping to `]s` would recurse: go
+-- through `normal!` to run the built-in instead.
+map("n", "]s", "<cmd>normal! ]s<cr>", { desc = "Next Spell Error" })
+map("n", "[s", "<cmd>normal! [s<cr>", { desc = "Previous Spell Error" })
 
 -- Fix Spell checking
 map("n", "z0", "1z=", { desc = "Fix word under cursor" })

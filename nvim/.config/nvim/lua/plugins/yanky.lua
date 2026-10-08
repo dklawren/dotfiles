@@ -28,6 +28,7 @@ local function pick()
 	picker.open(history, {
 		title = "Yank History",
 		skip_single = false,
+		filter = true,
 		format = function(item, i)
 			local first_line = vim.split(item.regcontents or "", "\n")[1] or ""
 			local type_label = item.regtype == "V" and "line" or item.regtype == "\22" and "block" or "char"
@@ -38,7 +39,7 @@ local function pick()
 		end,
 		on_confirm = function(item)
 			vim.fn.setreg('"', item.regcontents, item.regtype)
-			if vim.tbl_contains(vim.opt.clipboard:get(), "unnamedplus") then
+			if vim.o.clipboard:find("unnamedplus", 1, true) then
 				vim.fn.setreg("+", item.regcontents, item.regtype)
 			end
 			vim.schedule(function()

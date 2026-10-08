@@ -1,10 +1,11 @@
+local npcall = require("config.compat")
 -- vim.pack keymaps  (<leader>p = pack)
 vim.keymap.set("n", "<leader>pp", "<cmd>Pack<cr>", { desc = "Pack UI" })
 vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<cr>", { desc = "Pack Update All" })
 vim.keymap.set("n", "<leader>pd", function()
 	vim.ui.input({ prompt = "Plugin name to delete: " }, function(input)
 		if input and input ~= "" then
-			pcall(vim.pack.del, { input })
+			npcall(vim.pack.del, { input })
 		end
 	end)
 end, { desc = "Pack Delete" })

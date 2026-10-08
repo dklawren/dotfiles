@@ -1,39 +1,23 @@
+local npcall = require("config.compat")
 local function augroup(name)
 	return vim.api.nvim_create_augroup("user_" .. name, { clear = true })
 end
 
-local _checktime_timer = nil
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-	group = augroup("checktime"),
-	callback = function()
-		if _checktime_timer then
-			_checktime_timer:stop()
-			_checktime_timer:close()
-			_checktime_timer = nil
-		end
-		_checktime_timer = vim.defer_fn(function()
-			_checktime_timer = nil
-			if vim.o.buftype ~= "nofile" then
-				vim.cmd("checktime")
-			end
-		end, 200) -- 200ms debounce
-	end,
-})
-
-local _resize_timer = nil
-vim.api.nvim_create_autocmd({ "VimResized" }, {
+-- 'autoread' gets its own file watchers, so a file changed outside nvim is read
+-- back without a :checktime on focus.
+local resize_timer
+vim.api.nvim_create_autocmd("VimResized", {
 	group = augroup("resize_splits"),
 	callback = function()
-		if _resize_timer then
-			_resize_timer:stop()
-			_resize_timer:close()
-			_resize_timer = nil
+		if resize_timer then
+			resize_timer:stop()
+			resize_timer:close()
 		end
-		local current_tab = vim.fn.tabpagenr()
-		_resize_timer = vim.defer_fn(function()
-			_resize_timer = nil
+		local tab = vim.fn.tabpagenr()
+		resize_timer = vim.defer_fn(function()
+			resize_timer = nil
 			vim.cmd("tabdo wincmd =")
-			vim.cmd("tabnext " .. current_tab)
+			vim.cmd("tabnext " .. tab)
 		end, 100)
 	end,
 })
@@ -42,16 +26,14 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 vim.api.nvim_create_autocmd("BufReadPost", {
 	group = augroup("last_loc"),
 	callback = function(event)
-		local exclude = { "gitcommit" }
 		local buf = event.buf
-		if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].lazyvim_last_loc then
+		if vim.bo[buf].filetype == "gitcommit" or vim.b[buf].lazyvim_last_loc then
 			return
 		end
 		vim.b[buf].lazyvim_last_loc = true
 		local mark = vim.api.nvim_buf_get_mark(buf, '"')
-		local lcount = vim.api.nvim_buf_line_count(buf)
-		if mark[1] > 0 and mark[1] <= lcount then
-			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+		if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(buf) then
+			npcall(vim.api.nvim_win_set_cursor, 0, mark)
 		end
 	end,
 })
@@ -94,31 +76,27 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
 	group = augroup("close_with_q"),
 	pattern = {
-		"PlenaryTestPopup",
 		"checkhealth",
-		"dbout",
 		"gitsigns-blame",
 		"grug-far",
 		"help",
-		"lspinfo",
-		"neotest-output",
-		"neotest-output-panel",
-		"neotest-summary",
-		"notify",
 		"oil",
 		"qf",
-		"spectre_panel",
 		"startuptime",
 		"terminal",
-		"tsplayground",
 	},
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
 		vim.schedule(function()
+			-- The buffer is gone by the time this runs when the session hop
+			-- closed it in between, and a keymap on it then raises E920.
+			if not vim.api.nvim_buf_is_valid(event.buf) then
+				return
+			end
 			vim.keymap.set("n", "q", function()
 				local ok = pcall(vim.cmd.close)
 				if not ok then
-					pcall(vim.api.nvim_buf_delete, event.buf, { force = true })
+					npcall(vim.api.nvim_buf_delete, event.buf, { force = true })
 				end
 			end, {
 				buffer = event.buf,
@@ -142,18 +120,18 @@ vim.api.nvim_create_autocmd("TermClose", {
 	end,
 })
 
--- wrap text filetypes (spell disabled by default, toggle manually with :set spell / :set spelllang=...)
+-- Wrap the text filetypes. Spell is left off: toggle it with :set spell, and
+-- pick a language with :set spelllang=fr or :set spelllang=en.
 vim.api.nvim_create_autocmd("FileType", {
 	group = augroup("wrap_spell"),
 	pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
 	callback = function()
 		vim.opt_local.wrap = true
-		-- vim.opt_local.spell = true -- toggle manually: :set spell | :set nospell | :set spelllang=fr | :set spelllang=en
 	end,
 })
 
 -- Fix conceallevel for json files
-vim.api.nvim_create_autocmd({ "FileType" }, {
+vim.api.nvim_create_autocmd("FileType", {
 	group = augroup("json_conceal"),
 	pattern = { "json", "jsonc", "json5" },
 	callback = function()
@@ -162,7 +140,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 -- Auto create dir when saving a file, in case some intermediate directory does not exist
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+vim.api.nvim_create_autocmd("BufWritePre", {
 	group = augroup("auto_create_dir"),
 	callback = function(event)
 		if event.match:match("^%w%w+:[\\/][\\/]") then

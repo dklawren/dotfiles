@@ -52,18 +52,15 @@ local rules = vim
 	:totable()
 
 local function patterns_for(name)
-	local base = vim.fs.basename(name)
-	return vim
-		.iter(rules)
-		:filter(function(rule)
-			return vim.iter(rule.matchers):any(function(m)
-				return m:match(base) ~= nil
-			end)
-		end)
-		:map(function(rule)
-			return rule.pattern
-		end)
-		:totable()
+	local base, out = vim.fs.basename(name), {}
+	for _, rule in ipairs(rules) do
+		if vim.iter(rule.matchers):any(function(m)
+			return m:match(base) ~= nil
+		end) then
+			out[#out + 1] = rule.pattern
+		end
+	end
+	return out
 end
 
 -- Build the overlay string: `cloak_length` chars of `cloak_char` (or the full
@@ -77,7 +74,12 @@ end
 
 local enabled = true
 
+local pending = {}
+
 local function apply(bufnr)
+	if not vim.api.nvim_buf_is_valid(bufnr) then
+		return
+	end
 	vim.api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
 	if not enabled then
 		return
@@ -100,9 +102,38 @@ local function apply(bufnr)
 	end
 end
 
-vim.api.nvim_create_autocmd({ "BufWinEnter", "BufReadPost", "BufEnter", "TextChanged", "TextChangedI" }, {
+local function schedule(bufnr)
+	local timer = pending[bufnr]
+	if timer then
+		timer:stop()
+		timer:close()
+	end
+	pending[bufnr] = vim.defer_fn(function()
+		pending[bufnr] = nil
+		apply(bufnr)
+	end, 150)
+end
+
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufReadPost", "BufEnter" }, {
 	callback = function(ev)
 		apply(ev.buf)
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+	callback = function(ev)
+		schedule(ev.buf)
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+	callback = function(ev)
+		local timer = pending[ev.buf]
+		if timer then
+			timer:stop()
+			timer:close()
+			pending[ev.buf] = nil
+		end
 	end,
 })
 

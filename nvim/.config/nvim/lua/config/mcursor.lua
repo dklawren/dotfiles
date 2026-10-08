@@ -1,5 +1,18 @@
--- Column alignment for native multicursor (`:h multicursor`). Cursors dropped on
--- ragged lines sit at different columns, so anything typed lands ragged too.
+-- Native multicursor (0.13, `:h multicursor`) already does the heavy lifting.
+-- Cheatsheet:
+--   Q              toggle a cursor at the primary
+--   *1Q            cursor at every match of the last search (or /pat<CR>1Q)
+--   {Visual}Q      cursor at each selected line's column
+--   {Visual}1Q     cursor at each match within the selection
+--   ]C / [C        jump to next/previous cursor (leaves one behind)
+--   q=             follow mode: motions replay at every cursor (1q= on, 2q= off)
+--   CTRL-L         clear all cursors
+--   gQ             restore the previous set of cursors
+--   g CTRL-A       insert ascending numbers at each cursor
+--   <C-LeftMouse>  toggle a cursor at the click
+
+-- Column alignment. Cursors dropped on ragged lines sit at different columns,
+-- so anything typed lands ragged too.
 local NS = vim.api.nvim_create_namespace("nvim.multicursor")
 local PRIMARY_NS = vim.api.nvim_create_namespace("config.mcursor.primary")
 
@@ -8,7 +21,7 @@ local M = {}
 --- Pads with spaces so the n-th cursor of every line shares a column.
 function M.align()
 	local buf = vim.api.nvim_get_current_buf()
-	local marks = vim.api.nvim_buf_get_extmarks(buf, NS, 0, -1, {})
+	local marks = vim.api.nvim_buf_get_extmarks(buf, NS, 0, -1)
 	if #marks == 0 then
 		return
 	end
@@ -43,7 +56,7 @@ function M.align()
 	end
 
 	local pcursor = vim.api.nvim_win_get_cursor(0)
-	local pmark = vim.api.nvim_buf_set_extmark(buf, PRIMARY_NS, pcursor[1] - 1, pcursor[2], {})
+	local pmark = vim.api.nvim_buf_set_extmark(buf, PRIMARY_NS, pcursor[1] - 1, pcursor[2])
 
 	-- Right to left: each insertion shifts the cursors after it.
 	for row, cols in pairs(rows) do
@@ -55,11 +68,28 @@ function M.align()
 		end
 	end
 
-	local moved = vim.api.nvim_buf_get_extmark_by_id(buf, PRIMARY_NS, pmark, {})
+	local moved = vim.api.nvim_buf_get_extmark_by_id(buf, PRIMARY_NS, pmark)
 	vim.api.nvim_buf_clear_namespace(buf, PRIMARY_NS, 0, -1)
 	vim.api.nvim_win_set_cursor(0, { moved[1] + 1, moved[2] })
 end
 
 vim.keymap.set("n", "g<Space>", M.align, { desc = "Align multicursors into a column" })
+
+-- q-{motion} replays one motion at every cursor, then disables follow-mode
+-- (q= is a toggle; one-shot is the common case).
+local function follow_once()
+	vim.cmd("normal! 1q=")
+	vim.api.nvim_create_autocmd("CmdAtom", {
+		callback = function(ev)
+			if ev.data.lhs == "q-" then
+				return -- Skip the mapping itself.
+			end
+			vim.cmd("normal! 2q=")
+			return true -- Delete the handler.
+		end,
+	})
+end
+
+vim.keymap.set("n", "q-", follow_once, { desc = "Multicursor: replay next motion at every cursor" })
 
 return M

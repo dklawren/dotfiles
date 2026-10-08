@@ -1,44 +1,9 @@
 -- Native Catppuccin Configuration (Neovim 0.12+)
 vim.g.catppuccin_flavour = "macchiato"
 
--- 1. Custom Palette Definition (Gruvbox-like feel)
-local palettes = {
-	macchiato = {
-		rosewater = "#ea6962",
-		flamingo = "#ea6962",
-		red = "#ea6962",
-		maroon = "#ea6962",
-		pink = "#d3869b",
-		mauve = "#d3869b",
-		peach = "#e78a4e",
-		yellow = "#d8a657",
-		green = "#a9b665",
-		teal = "#89b482",
-		sky = "#89b482",
-		sapphire = "#89b482",
-		blue = "#7daea3",
-		lavender = "#7daea3",
-		text = "#ebdbb2",
-		subtext2 = "#d5c4a1",
-		subtext1 = "#d5c4a1",
-		subtext0 = "#bdae93",
-		overlay2 = "#a89984",
-		overlay1 = "#928374",
-		overlay0 = "#595959",
-		surface2 = "#4d4d4d",
-		surface1 = "#404040",
-		surface0 = "#292929",
-		base = "#1d2021",
-		mantle = "#191b1c",
-		crust = "#141617",
-		none = "NONE",
-	},
-}
+local colors = require("config.palette")
 
 local function apply_custom_highlights()
-	local flavor = vim.g.catppuccin_flavour or "macchiato"
-	local colors = palettes[flavor] or palettes.macchiato
-
 	-- [1] Core UI & Transparency
 	local transparent_groups = {
 		"Normal",
@@ -63,7 +28,6 @@ local function apply_custom_highlights()
 		FloatBorder = { bg = colors.base, fg = colors.surface0 },
 		NormalFloat = { fg = colors.text, bg = colors.base },
 		LineNr = { fg = colors.overlay0 },
-		LspInfoBorder = { link = "FloatBorder" },
 		Pmenu = { bg = colors.mantle, fg = colors.text },
 		PmenuSel = { bg = colors.surface0, fg = colors.text },
 		Question = { fg = colors.blue },
@@ -86,63 +50,19 @@ local function apply_custom_highlights()
 		WhichKeyFloat = { bg = colors.mantle },
 		WhichKeyValue = { fg = colors.overlay1 },
 
-		-- [4] Plugin: Telescope
-		TelescopeNormal = { link = "NormalFloat" },
-		TelescopeBorder = { link = "FloatBorder" },
-		TelescopePreviewBorder = { bg = colors.crust, fg = colors.crust },
-		TelescopePreviewNormal = { bg = colors.crust },
-		TelescopePreviewTitle = { fg = colors.crust, bg = colors.crust },
-		TelescopePromptBorder = { bg = colors.surface0, fg = colors.surface0 },
-		TelescopePromptCounter = { fg = colors.mauve, bold = true },
-		TelescopePromptNormal = { bg = colors.surface0 },
-		TelescopePromptPrefix = { bg = colors.surface0 },
-		TelescopePromptTitle = { fg = colors.surface0, bg = colors.surface0 },
-		TelescopeResultsBorder = { bg = colors.mantle, fg = colors.mantle },
-		TelescopeResultsNormal = { bg = colors.mantle },
-		TelescopeResultsTitle = { fg = colors.mantle, bg = colors.mantle },
-		TelescopeSelection = { bg = colors.surface0 },
-
-		-- [5] Plugin: NeoTree
-		NeoTreeDirectoryIcon = { fg = colors.subtext1 },
-		NeoTreeDirectoryName = { fg = colors.subtext1 },
-		NeoTreeFloatBorder = { link = "TelescopeResultsBorder" },
-		NeoTreeGitConflict = { fg = colors.red },
-		NeoTreeGitDeleted = { fg = colors.red },
-		NeoTreeGitIgnored = { fg = colors.overlay0 },
-		NeoTreeGitModified = { fg = colors.peach },
-		NeoTreeGitStaged = { fg = colors.green },
-		NeoTreeGitUnstaged = { fg = colors.red },
-		NeoTreeGitUntracked = { fg = colors.green },
-		NeoTreeIndent = { fg = colors.surface1 },
-		NeoTreeNormal = { bg = colors.mantle, fg = colors.text },
-		NeoTreeNormalNC = { bg = colors.mantle, fg = colors.text },
-		NeoTreeRootName = { fg = colors.subtext1, bold = true },
-		NeoTreeTabActive = { fg = colors.text, bg = colors.mantle },
-		NeoTreeTabInactive = { fg = colors.surface2, bg = colors.crust },
-		NeoTreeTabSeparatorActive = { fg = colors.mantle, bg = colors.mantle },
-		NeoTreeTabSeparatorInactive = { fg = colors.crust, bg = colors.crust },
-		NeoTreeWinSeparator = { fg = colors.base, bg = colors.base },
-
-		-- [6] Plugin: Other Integrations
-		FidgetTask = { fg = colors.subtext2 },
-		FidgetTitle = { fg = colors.peach, bold = true },
-		IblIndent = { fg = colors.surface0 },
-		IblScope = { fg = colors.overlay0 },
+		-- [4] Plugin: Other Integrations
 		GitSignsChange = { fg = colors.peach },
 		GitSignsAdd = { fg = colors.green },
 		GitSignsDelete = { fg = colors.red },
 		BlinkCmpLabelMatch = { fg = colors.blue, bold = true },
-		FlashMatch = { bg = colors.mauve, fg = colors.base },
-		FlashLabel = { bg = colors.peach, fg = colors.base, bold = true },
-		NoiceLspProgressTitle = { fg = colors.peach, bold = true },
 		YankyYanked = { bg = colors.surface2 },
 
-		-- [7] Debugger (DAP)
+		-- [5] Debugger (DAP)
 		DapBreakpoint = { fg = colors.red },
 		DapStopped = { fg = colors.green },
 		DapLogPoint = { fg = colors.yellow },
 
-		-- [8] Diagnostics
+		-- [6] Diagnostics
 		DiagnosticError = { fg = colors.red },
 		DiagnosticWarn = { fg = colors.yellow },
 		DiagnosticInfo = { fg = colors.sky },
@@ -153,7 +73,7 @@ local function apply_custom_highlights()
 		DiagnosticUnderlineHint = { sp = colors.teal, undercurl = true },
 		DiagnosticUnnecessary = { fg = colors.overlay0, undercurl = true },
 
-		-- [9] Syntax Overrides (General)
+		-- [7] Syntax Overrides (General)
 		Identifier = { fg = colors.text },
 		Boolean = { fg = colors.mauve },
 		Number = { fg = colors.mauve },
@@ -191,7 +111,7 @@ local function apply_custom_highlights()
 		SpellLocal = { undercurl = false },
 		SpellRare = { undercurl = false },
 
-		-- [10] Treesitter & LSP Highlighting (Comprehensive)
+		-- [8] Treesitter & LSP Highlighting (Comprehensive)
 		["@variable"] = { fg = colors.text },
 		["@variable.builtin"] = { fg = colors.red },
 		["@variable.parameter"] = { fg = colors.text },

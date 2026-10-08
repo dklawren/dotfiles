@@ -5,14 +5,17 @@ check:
 	#!/usr/bin/env bash
 	set -euo pipefail
 	echo "🔍 Validating Neovim config (including plugins)..."
-	OUTPUT=$(nvim --headless -c "lua vim.print('NVIM_CONFIG_OK')" -c "quitall!" 2>&1) || true
-	if echo "$OUTPUT" | grep -q "NVIM_CONFIG_OK" && ! echo "$OUTPUT" | grep -qE "(Error|E[0-9]+:|Failed)"; then
-		echo "✅ Config and plugins are valid"
-	else
+	if ! OUTPUT=$(nvim --headless -c "lua vim.print('NVIM_CONFIG_OK')" -c "quitall!" 2>&1); then
 		echo "❌ Config has errors:"
 		echo "$OUTPUT"
 		exit 1
 	fi
+	if [[ "$OUTPUT" != *NVIM_CONFIG_OK* ]] || grep -qE "(Error|E[0-9]+:|Failed)" <<<"$OUTPUT"; then
+		echo "❌ Config has errors:"
+		echo "$OUTPUT"
+		exit 1
+	fi
+	echo "✅ Config and plugins are valid"
 
 # Lint Lua with lua-language-server, using this repo's .luarc.json.
 # VIMRUNTIME is exported because .luarc.json refers to it; nvim sets it for the
@@ -26,8 +29,82 @@ lint:
 test-format:
 	@bash tests/format_test.sh
 
+test-session:
+	@bash tests/session_test.sh
+
 test-mcursor:
 	@bash tests/mcursor_test.sh
+
+test-pairs:
+	@bash tests/pairs_test.sh
+
+test-pack:
+	@bash tests/pack_test.sh
+
+test-statusline:
+	@bash tests/statusline_test.sh
+
+test-draw:
+	@bash tests/draw_test.sh
+
+test-cloak:
+	@bash tests/cloak_test.sh
+
+test-jump:
+	@bash tests/jump_test.sh
+
+test-codeaction:
+	@bash tests/codeaction_test.sh
+
+test-filetype:
+	@bash tests/filetype_test.sh
+
+test-plugins:
+	@bash tests/plugins_test.sh
+
+test-buffer:
+	@bash tests/buffer_test.sh
+
+test-markdown:
+	@bash tests/markdown_test.sh
+
+test-picker:
+	@bash tests/picker_test.sh
+
+test-fold:
+	@bash tests/fold_test.sh
+
+test-blink:
+	@bash tests/blink_test.sh
+
+test-scroll:
+	@bash tests/scroll_test.sh
+
+# Every suite in tests/, and the static readings, in one command.
+#
+# The per-suite targets above are for working on one thing. This is the one to
+# run before committing, because a suite that is not in the list is a suite that
+# is not a gate: picker_test.sh had 227 checks and no target here at all, so
+# nothing a developer ran would have told them whether it still passed.
+#
+# lint-lua is separate from `lint` on purpose. `lint` is lua-language-server
+# over everything, which takes about a minute and cannot be scoped. lint-lua is
+# luacheck over lua/ in a fraction of a second, and it catches the class of
+# mistake no behaviour test can see: a name used in a function before the local
+# that holds it is declared is a global, and a global that happens to be nil
+# formats into a string as the text "nil" rather than complaining.
+test: test-session test-picker test-markdown test-buffer test-mcursor test-pairs test-pack test-statusline test-cloak test-jump test-codeaction test-filetype test-plugins test-fold test-format test-blink test-scroll test-draw lint-lua
+	@echo "✅ All suites passed"
+
+# Skipped, not failed, when luacheck is not installed: a machine without it has
+# no opinion, and reporting a failure for a tool that is absent would train
+# people to ignore this.
+lint-lua:
+	@if command -v luacheck >/dev/null 2>&1; then \
+		luacheck lua/ --globals vim --no-color --no-max-line-length --ignore 4; \
+	else \
+		echo "luacheck not installed, skipping"; \
+	fi
 
 fmt:
 	@echo "Formatting Lua files..."
@@ -39,4 +116,4 @@ fmt-check:
 	@stylua --check .
 	@echo "✅ Formatting valid!"
 
-validate: check fmt-check lint
+validate: check fmt-check lint test

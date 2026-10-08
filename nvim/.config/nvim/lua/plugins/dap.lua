@@ -123,5 +123,5 @@ vim.keymap.set("n", "<leader>ds", function() init_dap(); require("dap").session(
 vim.keymap.set("n", "<leader>dt", function() init_dap(); require("dap").terminate() end,                { desc = "Terminate" })
 vim.keymap.set("n", "<leader>dh", function() init_dap(); require("dap-view").hover() end,               { desc = "DAP Hover" })
 vim.keymap.set("n", "<leader>du", function() init_dap(); vim.cmd("DapViewToggle") end,                  { desc = "DAP View Toggle" })
-vim.keymap.set("x", "<leader>dw", function() vim.cmd("DapViewWatch") end,                               { desc = "DAP Watch Selection" })
+vim.keymap.set("x", "<leader>dw", function() init_dap(); vim.cmd("DapViewWatch") end,                     { desc = "DAP Watch Selection" })
 -- stylua: ignore end

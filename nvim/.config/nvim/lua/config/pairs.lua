@@ -32,18 +32,20 @@ local code_ft = {
 	json = 1,
 }
 
+---The syntax node under the cursor, or nil where there is no parser.
+local function node_at()
+	local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+	local ok, node = pcall(vim.treesitter.get_node, { pos = { row - 1, col } })
+	return ok and node or nil
+end
+
 local function in_code_context()
 	local ft = vim.bo.filetype
 	if ft ~= "markdown" then
 		return code_ft[ft] ~= nil
 	end
 	-- markdown: only pair inside fenced code blocks
-	local ok = pcall(require, "nvim-treesitter.parsers")
-	if not ok then
-		return false
-	end
-	local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-	local node = vim.treesitter.get_node({ pos = { row - 1, col } })
+	local node = node_at()
 	while node do
 		if node:type() == "code_fence_content" then
 			return true
@@ -54,16 +56,8 @@ local function in_code_context()
 end
 
 local function cursor_in_string()
-	local ok = pcall(require, "nvim-treesitter.parsers")
-	if not ok then
-		return false
-	end
-	local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-	local node = vim.treesitter.get_node({ pos = { row - 1, col } })
-	if not node then
-		return false
-	end
-	return node:type():find("string") ~= nil or node:type():find("template") ~= nil
+	local node = node_at()
+	return node ~= nil and (node:type():find("string") ~= nil or node:type():find("template") ~= nil)
 end
 
 for open, close in pairs(pairs_map) do
