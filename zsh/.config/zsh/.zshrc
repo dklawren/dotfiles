@@ -64,4 +64,5 @@ check_and_spawn_session
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
 
+autoload -Uz compinit && compinit
 eval "$(opencode completion)"
