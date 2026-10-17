@@ -1,4 +1,5 @@
 {
+  "promptCacheTtl": "1h",
   "hooks": {
     "Notification": [
       {
@@ -22,16 +23,6 @@
       }
     ],
     "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-activate.js\"",
-            "timeout": 5,
-            "statusMessage": "Loading caveman mode..."
-          }
-        ]
-      },
       {
         "matcher": "startup|resume|clear|fork",
         "hooks": [
@@ -57,16 +48,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"/usr/bin/node\" \"/home/dkl/.claude/hooks/caveman-mode-tracker.js\"",
-            "timeout": 5,
-            "statusMessage": "Tracking caveman mode..."
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
             "command": "workmux set-window-status working"
           }
         ]
@@ -80,12 +61,12 @@
   },
   "enabledPlugins": {
     "adhd-output-style@claude-settings": true,
-    "eli5@claude-community": true,
+    "eli5@claude-community": false,
     "fastly-waf@internal-aidev-plugins": true,
     "github-dev@claude-settings": true,
     "humanize@claude-settings": true,
     "i-have-adhd@i-have-adhd": true,
-    "paad@paad": true,
+    "paad@paad": false,
     "simplify@claude-settings": true
   },
   "extraKnownMarketplaces": {
@@ -152,5 +133,14 @@
   },
   "permissions": {
     "defaultMode": "auto"
+  },
+  "skillOverrides": {
+    "coordinator": "off",
+    "import-to-claude-code": "off",
+    "merge": "off",
+    "open-pr": "off",
+    "rebase": "off",
+    "worktree": "off",
+    "workmux": "off"
   }
 }
