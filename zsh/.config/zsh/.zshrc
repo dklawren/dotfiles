@@ -66,3 +66,5 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
 
 autoload -Uz compinit && compinit
 eval "$(opencode --completions zsh)"
+
+eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
