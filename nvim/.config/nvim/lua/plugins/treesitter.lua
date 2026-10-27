@@ -6,6 +6,27 @@ vim.pack.add({
 })
 
 require("nvim-treesitter").setup({})
+
+-- `goose` is missing from nvim-treesitter's registry: its parser comes from a
+-- fork of aardappel/goose with the generated parser.c committed. TSUpdate
+-- reloads the parsers table, so the entry goes back in from an autocmd.
+local goose_parser = {
+	install_info = {
+		url = "https://github.com/RomanPro100/goose-tree-sitter",
+		branch = "master",
+		files = { "src/parser.c", "src/scanner.c" },
+		queries = "queries",
+	},
+}
+require("nvim-treesitter.parsers").goose = goose_parser
+vim.api.nvim_create_autocmd("User", {
+	desc = "Re-register the goose parser after TSUpdate reloads the parsers table",
+	pattern = "TSUpdate",
+	callback = function()
+		require("nvim-treesitter.parsers").goose = goose_parser
+	end,
+})
+
 -- The parsers nvim 0.13 ships are left out: c, diff, lua, markdown,
 -- markdown_inline, query, vim and vimdoc.
 require("nvim-treesitter").install({
@@ -18,6 +39,7 @@ require("nvim-treesitter").install({
 	"gitcommit",
 	"gitignore",
 	"go",
+	"goose",
 	"gomod",
 	"gosum",
 	"gowork",

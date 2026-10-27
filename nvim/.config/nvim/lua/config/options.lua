@@ -101,6 +101,7 @@ vim.filetype.add({
 	extension = {
 		txt = "markdown",
 		ejs = "embedded_template",
+		goose = "goose",
 	},
 	filename = {
 		["env"] = "env",

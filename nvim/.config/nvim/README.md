@@ -2,8 +2,8 @@
 
 > Fast, IDE-grade Neovim setup with 13 plugins using native `vim.pack` (no plugin manager needed)
 
-![Neovim](https://img.shields.io/badge/NeoVim-0.13+-57A143?style=flat-square&logo=neovim)
-![Plugins](https://img.shields.io/badge/plugins-13-orange?style=flat-square)
+![Neovim](https://img.shields.io/badge/NeoVim-0.12+-57A143?style=flat-square&logo=neovim)
+![Plugins](https://img.shields.io/badge/plugins-12-orange?style=flat-square)
 
 - Uses native `vim.pack` (no lazy.nvim/packer overhead)
 - Custom UI components (statusline, tabline, session manager) without extra plugins
@@ -16,7 +16,6 @@
 | Plugin                   | Purpose                                                                   |
 | ------------------------ | ------------------------------------------------------------------------- |
 | blink.cmp                | Completion with LSP, snippets, fuzzy matching                             |
-| codeme.nvim (optional)   | Coding time tracker / dashboard                                           |
 | fff.nvim                 | File finder and live grep picker                                          |
 | gitsigns.nvim            | Git signs in the gutter, hunk navigation, line blame                      |
 | grug-far.nvim            | Search & replace across files                                             |
@@ -37,7 +36,7 @@
 | Auto-pairs        | `config/pairs.lua`       | Insert-mode auto-close for brackets, and smart backspace                                           |
 | Statusline        | `config/statusline.lua`  | Git branch/diff, LSP diagnostics, word count for markdown                                          |
 | Tabline           | `config/tabline.lua`     | Smart buffer management with devicons                                                              |
-| Session manager   | `config/session.lua`     | Per-directory auto-save/restore, `:Session <dir>` to switch workspace                       |
+| Session manager   | `config/session.lua`     | Per-directory auto-save/restore, `:Session <dir>` to switch workspace                              |
 | LSP utilities     | `config/lsp.lua`         | Unified 15+ server setup with format-on-save, inlay hints                                          |
 | Diagnostics       | `config/diagnostics.lua` | Custom diagnostic display config                                                                   |
 | Pack UI           | `config/pack.lua`        | Browser for `vim.pack` plugin registry                                                             |
@@ -52,7 +51,7 @@ The config asks nvim for what nvim has, so the code stays small:
 
 - `'autoread'` has its own file watchers, so nothing calls `:checktime` on focus.
 - `ui2` is enabled with one change, a pager that fills the window. Every other `messagesopt` item and height is already the default.
-- `config/options.lua` holds only what differs from a `nvim --clean` start, and each plugin setup only what its plugin does not default (oil, fff, gitsigns, blink, codeme).
+- `config/options.lua` holds only what differs from a `nvim --clean` start, and each plugin setup only what its plugin does not default.
 - `vim.fs.mkdir({parents})`, `nvim_set_hl`, `vim.iter`, `vim.list_slice` and the optional trailing `opts` of the 0.13 API contract replace hand-rolled versions of themselves.
 
 I also wrote a series of articles about my [Neovim config](https://tduyng.com/tags/neovim/)
