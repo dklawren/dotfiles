@@ -1,5 +1,16 @@
 {
-  "promptCacheTtl": "1h",
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "skillOverrides": {
+    "coordinator": "off",
+    "import-to-claude-code": "off",
+    "merge": "off",
+    "open-pr": "off",
+    "rebase": "off",
+    "worktree": "off",
+    "workmux": "off"
+  },
   "hooks": {
     "Notification": [
       {
@@ -101,6 +112,7 @@
       }
     }
   },
+  "promptCacheTtl": "1h",
   "skipWorkflowUsageWarning": true,
   "autoMode": {
     "environment": [
@@ -130,17 +142,5 @@
       "**Org-specific CLIs**: None configured — project uses `invoke` (test/build/liberate), `docker compose` / `podman-compose` (per user's personal CLAUDE.md, podman is substituted for Docker locally), and `code-review-graph` MCP tool (also seen in shell history, 21×)",
       "routine under moz-extensions/ prefix: editing/building Mozilla extension code (reviewhelper, differential, conduit, lando, bugzilla, auth, feed, email, logging, motd) is this user's normal workflow in this repo"
     ]
-  },
-  "permissions": {
-    "defaultMode": "auto"
-  },
-  "skillOverrides": {
-    "coordinator": "off",
-    "import-to-claude-code": "off",
-    "merge": "off",
-    "open-pr": "off",
-    "rebase": "off",
-    "worktree": "off",
-    "workmux": "off"
   }
 }
