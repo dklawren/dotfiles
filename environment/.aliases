@@ -12,6 +12,7 @@ alias grep='rg --color=auto'
 alias lg='lazygit'
 
 # Workmux
+alias wm='workmux'
 alias wml='workmux list'
 alias wma='workmux add'
 alias wms='workmux status'
