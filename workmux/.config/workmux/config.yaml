@@ -335,6 +335,11 @@
 
 nerdfont: true
 
+# Create worktrees as siblings of the main checkout, e.g. from
+# mozilla/bmo/master, `workmux add 123456` -> mozilla/bmo/123456.
+# Relative paths resolve against the repo root, not the shell's cwd.
+worktree_dir: ..
+
 # Agent for <agent> panes. Replaces worktrunk. `opencode` also auto-detects.
 agent: claude
 
@@ -354,20 +359,12 @@ sidebar:
 dashboard:
   close_on_jump: true
 
-mode: session
-windows:
-  - name: worktree
-    panes:
-      - command: <agent>
-      - split: horizontal
-        focus: true
-  - name: dashboard
-    panes:
-      - command: "workmux dashboard -t worktrees"
-#   - name: zsh
-#     panes:
-#       - focus: true
-#   - name: <agent>
-#     panes:
-#       - focus: false
-#         command: <agent>
+mode: window
+default_session: main
+window_placement: rightmost
+
+panes:
+  - command: <agent>
+    name: <agent>
+    focus: true
+  - split: horizontal
