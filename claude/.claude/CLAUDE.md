@@ -26,3 +26,5 @@ When there's a tradeoff, weigh all three:
 → AX: can the next agent understand it and keep going?
 
 Don't touch anything outside this task, and don't break anything that already works. When you're done, tell me in 2–3 lines what you picked, what you gave up, and why.
+
+Always build code cleanly, modularly, and with proper architecture and separation of concerns. Never simply bolt on a feature because I asked for it. If you can't find an easy way to build it naturally, and you'd recommend a refactor to make the whole thing clean, stop your work ahead of time and say so.
