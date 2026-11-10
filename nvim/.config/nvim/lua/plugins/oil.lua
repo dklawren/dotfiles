@@ -10,9 +10,6 @@ require("oil").setup({
 	view_options = {
 		show_hidden = true,
 		natural_order = true,
-		is_always_hidden = function(name, _)
-			return name == ".." or name == ".git"
-		end,
 	},
 	float = {
 		padding = 4,
@@ -38,4 +35,26 @@ vim.keymap.set("n", "<leader>e", function()
 	end
 end, { desc = "File Explorer" })
 
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+-- :Oil with no argument opens the current buffer's own directory, and
+-- fnamemodify(dir, ":p:h") returns that directory unchanged, so from a netrw
+-- listing or a directory buffer it reopens where you already are. Resolve the
+-- directory on screen first, then step up from it. For a file, nil lets oil
+-- open the file's own directory with the cursor on it.
+local function shown_dir()
+	local name = vim.api.nvim_buf_get_name(0)
+	if vim.bo.filetype == "oil" then
+		return require("oil").get_current_dir()
+	elseif vim.bo.filetype == "netrw" then
+		return vim.b.netrw_curdir
+	elseif name == "" then
+		return vim.fn.getcwd()
+	elseif vim.fn.isdirectory(name) == 1 then
+		return name
+	end
+	return nil
+end
+
+vim.keymap.set("n", "-", function()
+	local dir = shown_dir()
+	require("oil").open(dir and vim.fs.dirname(vim.fs.normalize(dir)))
+end, { desc = "Open parent directory" })

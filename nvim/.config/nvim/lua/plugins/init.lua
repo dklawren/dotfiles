@@ -1,4 +1,5 @@
 require("plugins.blink")
+require("plugins.conform")
 require("plugins.dap")
 require("plugins.fff")
 require("plugins.git")

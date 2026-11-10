@@ -1,121 +1,18 @@
--- Retry transient network failures (corporate proxy/VPN blips) instead of
--- failing the whole install on the first curl error.
-local FFF_CURL_ARGS = { "--retry", "3", "--retry-delay", "2", "--connect-timeout", "15" }
-
-local function is_wsl()
-	if vim.uv.os_uname().sysname:lower() ~= "linux" then
-		return false
-	end
-	if os.getenv("WSL_DISTRO_NAME") or os.getenv("WSL_INTEROP") then
-		return true
-	end
-	local f = io.open("/proc/version", "r")
-	if not f then
-		return false
-	end
-	local content = f:read("*a")
-	f:close()
-	return content:lower():find("microsoft", 1, true) ~= nil
-end
-
-local function notify_install_failure(err)
-	vim.schedule(function()
-		vim.notify("fff.nvim binary install failed: " .. (err or "unknown error"), vim.log.levels.ERROR)
-	end)
-end
-
--- Ensure the fff binary exists on startup and after install/update.
---
--- Runs fully async: fff's own download_or_build_binary() blocks the caller
--- with a fixed 2-minute vim.wait, which a real `cargo build --release` can
--- exceed, turning a slow-but-fine build into a hard install failure. We're
--- inside a live Neovim session (not a headless hook that exits as soon as we
--- return), so nothing forces us to block, and pcall keeps any error from
--- surfacing as an uncaught autocmd error.
-local function ensure_fff_binary(force)
-	local ok, download = pcall(require, "fff.download")
-	if not ok then
-		return
-	end
-
-	local function download_or_build()
-		local dl_ok, dl_err = pcall(
-			download.ensure_downloaded,
-			{ force = force, extra_curl_args = FFF_CURL_ARGS },
-			function(success, err)
-				if success then
-					return
-				end
-				vim.schedule(function()
-					vim.notify(
-						"fff.nvim: prebuilt binary unavailable (" .. (err or "unknown error") .. "), building from source",
-						vim.log.levels.WARN
-					)
-				end)
-				local build_ok, build_err = pcall(download.build_binary, function(bok, berr)
-					if not bok then
-						notify_install_failure(berr)
-					end
-				end)
-				if not build_ok then
-					notify_install_failure(build_err)
-				end
-			end
-		)
-		if not dl_ok then
-			notify_install_failure(dl_err)
-		end
-	end
-
-	-- Prebuilt Linux release binaries have a known SIGILL crash on CPUs
-	-- without AVX-512, which is common under WSL. Build against the host's
-	-- own CPU features first and only fall back to the prebuilt binary
-	-- (still forced through the retrying curl) if the build itself fails.
-	if force and is_wsl() and vim.fn.executable("rustup") == 1 then
-		local build_ok, build_err = pcall(download.build_binary, function(bok, berr)
-			if bok then
-				return
-			end
-			vim.schedule(function()
-				vim.notify(
-					"fff.nvim: local build failed (" .. (berr or "unknown error") .. "), falling back to prebuilt binary",
-					vim.log.levels.WARN
-				)
-			end)
-			download_or_build()
-		end)
-		if not build_ok then
-			notify_install_failure(build_err)
-		end
-		return
-	end
-
-	download_or_build()
-end
-
--- Before vim.pack.add: PackChanged fires inside add(), so a later handler never
--- sees "install" and the Rust binary is never built. See |vim.pack-events|.
+-- Upstream's install recipe. This must be registered before vim.pack.add, since
+-- add() fires PackChanged itself. The call blocks until the binary is written,
+-- so a pack update cannot exit with a half-downloaded library.
 vim.api.nvim_create_autocmd("PackChanged", {
+	desc = "Download the fff.nvim binary on install and update",
 	group = vim.api.nvim_create_augroup("fff-pack-changed", { clear = true }),
 	callback = function(ev)
-		local name, kind = ev.data.spec.name, ev.data.kind
-		if name == "fff.nvim" and (kind == "install" or kind == "update") then
-			if not ev.data.active then
-				vim.cmd.packadd("fff.nvim")
-			end
-			ensure_fff_binary(true)
+		local kind = ev.data.kind
+		if ev.data.spec.name ~= "fff.nvim" or (kind ~= "install" and kind ~= "update") then
+			return
 		end
-	end,
-})
-
--- Check for binary when the plugin loads (deferred to not block startup)
-vim.api.nvim_create_autocmd("User", {
-	pattern = "VeryLazy",
-	group = vim.api.nvim_create_augroup("fff-startup-check", { clear = true }),
-	callback = function()
-		vim.schedule(function()
-			ensure_fff_binary(false)
-		end)
+		if not ev.data.active then
+			vim.cmd.packadd("fff.nvim")
+		end
+		require("fff.download").download_or_build_binary()
 	end,
 })
 

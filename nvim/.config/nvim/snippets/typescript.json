@@ -33,10 +33,5 @@
     "prefix": "itt",
     "body": ["it('should return ', () => {", "", "})"],
     "description": "it unit test"
-  },
-  "ItParams mocha test": {
-    "prefix": "itp",
-    "body": ["itParam('should return when ${value.case}', data, (value) => {", "", "})"],
-    "description": "itParam mocha test"
   }
 }

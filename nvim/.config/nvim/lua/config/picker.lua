@@ -208,8 +208,12 @@ local IGNORE_PATTERNS = {
 	"__pycache__/",
 }
 
+local git_seq = 0
+
 local function close()
 	bare_memo = {}
+	git_seq = git_seq + 1
+	local showing = state
 	-- The `or 0` is the fix, not noise: a picker opened without a filter line
 	-- has no filter window, and ipairs stops at the first hole, so every one of
 	-- these loops did nothing at all. The floats stayed on screen, and the
@@ -226,6 +230,9 @@ local function close()
 		end
 	end
 	state = {}
+	if showing.on_cancel and not showing.confirmed then
+		showing.on_cancel()
+	end
 end
 
 ---Whether the picker is up, as far as anything outside this file can tell.
@@ -517,12 +524,44 @@ function ctx.set_file(path, lnum, col)
 	end)
 end
 
+---Preview what a git command says. Debounced and last answer wins: holding an
+---arrow key down a log must not start one git process per row, and a slow
+---answer must never paint over the row that replaced it.
+---@param args string[] arguments after `git --no-pager`
+---@param ft string
+function ctx.git(args, ft)
+	if not (state.preview_win and vim.api.nvim_win_is_valid(state.preview_win)) then
+		return
+	end
+	git_seq = git_seq + 1
+	local seq = git_seq
+	vim.defer_fn(function()
+		if seq ~= git_seq then
+			return
+		end
+		vim.system(vim.list_extend({ "git", "--no-pager" }, args), { text = true }, function(out)
+			vim.schedule(function()
+				if seq ~= git_seq then
+					return
+				end
+				local text = vim.trim((out.stdout or "") .. (out.stderr or ""))
+				local lines = vim.split(text, "\n", { plain = true })
+				if #lines == 1 and lines[1] == "" then
+					lines = { "Nothing to show" }
+				end
+				ctx.set_lines(lines, ft)
+			end)
+		end)
+	end, 40)
+end
+
 ---@class picker.Opts
 ---@field title? string
 ---@field skip_single? boolean Auto-confirm when there is exactly one item (default true)
 ---@field format fun(item: any, i: integer): string
 ---@field preview? fun(item: any, ctx: table)
 ---@field on_confirm fun(item: any)
+---@field on_cancel? fun() Called when the picker closes without a choice
 ---@field filter? boolean add a line to narrow the list as you type
 ---@field keys? table<string, { desc: string, run: fun(item: any) }> extra buffer-local keys, shown in the title
 
@@ -563,6 +602,7 @@ function M.open(items, opts)
 	end
 
 	state.items = items
+	state.on_cancel = opts.on_cancel
 	-- The index is passed on, because a caller that numbers its rows asks for
 	-- it: vim.tbl_map hands over the value alone, and the yank history numbers
 	-- every row, so its label raised an error on the first one and the picker
@@ -768,6 +808,7 @@ function M.open(items, opts)
 		if item == nil then
 			return
 		end
+		state.confirmed = true
 		close()
 		opts.on_confirm(item)
 	end
@@ -780,6 +821,7 @@ function M.open(items, opts)
 		if item == nil then
 			return
 		end
+		state.confirmed = true
 		close()
 		action.run(item)
 	end
@@ -1049,5 +1091,89 @@ function M.filter_ignored(items)
 		return true
 	end, items)
 end
+
+---What a row of a `vim.ui.select` list is about, when it is about git: the
+---arguments that preview it and the filetype to read them in. `file` limits a
+---commit to the file the list was opened from, which is what a file history is
+---asking about. nil for a row that is not a commit or a stash.
+---@param item any
+---@param file? string
+---@return { args: string[], ft: string }|nil
+function M.git_preview(item, file)
+	if type(item) ~= "string" then
+		return nil
+	end
+	local commit = item:match("^(%x%x%x%x%x%x%x%x*) %- ")
+	if commit then
+		local args = { "show", "--no-color", commit }
+		if file and file ~= "" then
+			vim.list_extend(args, { "--", file })
+		end
+		return { args = args, ft = "git" }
+	end
+	local stash = item:match("^(stash@{%d+}) %- ")
+	if stash then
+		return { args = { "stash", "show", "--patch", stash }, ft = "diff" }
+	end
+	return nil
+end
+
+---@class picker.SelectOpts: vim.ui.select.Opts
+---@field kind? string
+
+---`vim.ui.select` over the floating picker, so a plugin asking the user to
+---choose from a list gets the filter line and the live preview too. A row that
+---names a commit previews that commit against the file the list was opened
+---from (vdiff's file and line history), and a stash row previews its patch.
+---@param items any[]
+---@param opts? picker.SelectOpts
+---@param on_choice fun(item?: any, idx?: integer)
+function M.select(items, opts, on_choice)
+	opts = opts or {}
+	if opts.kind == "codeaction" then
+		M.code_actions(items, on_choice, opts.format_item)
+		return
+	end
+	if #items == 0 then
+		on_choice(nil, nil)
+		return
+	end
+	-- Taken before the picker opens: with a filter line the cursor is in a
+	-- scratch buffer, and that buffer has no path to give git.
+	local file = vim.api.nvim_buf_get_name(0)
+	local rows = {}
+	for idx, item in ipairs(items) do
+		rows[idx] = { item = item, idx = idx }
+	end
+	local format = opts.format_item or tostring
+	M.open(rows, {
+		title = (opts.prompt or "Select"):gsub("^%s*", ""):gsub("[%s:]*$", ""),
+		skip_single = false,
+		filter = true,
+		format = function(row)
+			return format(row.item)
+		end,
+		preview = function(row, c)
+			local git = M.git_preview(row.item, file)
+			if git then
+				c.git(git.args, git.ft)
+			else
+				c.set_lines({}, "qf")
+			end
+		end,
+		on_confirm = function(row)
+			vim.schedule(function()
+				on_choice(row.item, row.idx)
+			end)
+		end,
+		on_cancel = function()
+			vim.schedule(function()
+				on_choice(nil, nil)
+			end)
+		end,
+	})
+end
+
+vim.ui.select = M.select
 
 return M

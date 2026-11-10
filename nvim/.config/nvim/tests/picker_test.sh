@@ -12,10 +12,11 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
 # step name <TAB> the keys to send, hex so an escape can be written.
-printf 'A.open\t\nA.opened\t\nA.b\t62\nA.ba\t78\nA.back\t7f\nA.clear\t7f\nA.gam\t67616d\nA.z\t7a\nA.esc_clears\t1b\nA.esc_closes\t1b\nB.open\t\nB.confirm\t620d\nC.open\t\nC.run\t18\nD.open\t\nD.pick\t6a0d\nE.open\t\nF.open\t\nF.one\t6f6e65\nF.dismiss\t1b\nG.open\t\nG.type\t62657461\nG.pick\t0d\nH.open\t\nH.confg\t636f6e6667\nH.dismiss\t1b\nI.open\t\nI.confg\t636f6e6667\nI.dismiss\t1b\nI.typed\t636f6e6669675069636b6572\nI.hits\t\nI.close\t1b\nJ.open\t\nJ.up\t1b5b41\nJ.down\t1b5b42\nJ.one\t6f6e65\nJ.clear\t7f7f7f\nJ.pick\t0d\nK.open\t\nK.word\t6c75612f636f6e6669672f73657373696f6e2e6c7561\nK.grow\t6162636465666768696a6b6c\nK.shrink\t7f7f7f7f7f7f7f7f7f7f7f7f\nK.back\t\nL.open\t\nL.part\t6c75612f636f6e\nL.shared\t09\nL.word\t09\nL.whole\t09\nL.other\t09\nL.last\t09\nL.wrap\t09\nL.close\t1b\nM.open\t\nM.part\t6c75612f63\nM.tab1\t09\nM.typed\t73\nM.tab2\t09\nM.tab3\t09\nM.close\t1b\nO.open\t\nO.numbered\t\nO.close\t1b\nN.open\t\nN.part\t6c75612f636f6e6669672f706169\nN.tab1\t09\nN.tab2\t09\nN.tab3\t09\nN.tab4\t09\nN.tab5\t09\nN.close\t1b\nP.open\t\nP.type_a\t61\nP.painted\t\nP.back\t7f\nP.cleared\t\nP.close\t1b\nR.open\t\nR.pick\t0d\nS.open\t\nS.rows\t\nS.close\t1b\ndone\t\n' >"$tmp/keys"
+printf 'A.open\t\nA.opened\t\nA.b\t62\nA.ba\t78\nA.back\t7f\nA.clear\t7f\nA.gam\t67616d\nA.z\t7a\nA.esc_clears\t1b\nA.esc_closes\t1b\nB.open\t\nB.confirm\t620d\nC.open\t\nC.run\t18\nD.open\t\nD.pick\t6a0d\nE.open\t\nF.open\t\nF.one\t6f6e65\nF.dismiss\t1b\nG.open\t\nG.type\t62657461\nG.pick\t0d\nH.open\t\nH.confg\t636f6e6667\nH.dismiss\t1b\nI.open\t\nI.confg\t636f6e6667\nI.dismiss\t1b\nI.typed\t636f6e6669675069636b6572\nI.hits\t\nI.close\t1b\nJ.open\t\nJ.up\t1b5b41\nJ.down\t1b5b42\nJ.one\t6f6e65\nJ.clear\t7f7f7f\nJ.pick\t0d\nK.open\t\nK.word\t6c75612f636f6e6669672f73657373696f6e2e6c7561\nK.grow\t6162636465666768696a6b6c\nK.shrink\t7f7f7f7f7f7f7f7f7f7f7f7f\nK.back\t\nL.open\t\nL.part\t6c75612f636f6e\nL.shared\t09\nL.word\t09\nL.whole\t09\nL.other\t09\nL.last\t09\nL.wrap\t09\nL.close\t1b\nM.open\t\nM.part\t6c75612f63\nM.tab1\t09\nM.typed\t73\nM.tab2\t09\nM.tab3\t09\nM.close\t1b\nO.open\t\nO.numbered\t\nO.close\t1b\nN.open\t\nN.part\t6c75612f636f6e6669672f706169\nN.tab1\t09\nN.tab2\t09\nN.tab3\t09\nN.tab4\t09\nN.tab5\t09\nN.close\t1b\nP.open\t\nP.type_a\t61\nP.painted\t\nP.back\t7f\nP.cleared\t\nP.close\t1b\nR.open\t\nR.pick\t0d\nS.open\t\nS.rows\t\nS.close\t1b\nT.select\t\nT.type\t62657461\nT.pick\t0d\nT.done\t\nU.select\t\nU.pick\t0d\nU.done\t\nV.select\t\nV.esc\t1b\nV.done\t\nW.open\t\nW.pick\t74776f0d\nW.done\t\nX.open\t\nX.type\t68656c6c6f0d\nX.done\t\nY.open\t\nY.pick\t0d\nY.done\t\ndone\t\n' >"$tmp/keys"
 
 cat >"$tmp/probe.lua" <<'LUA'
 local P = require("config.picker")
+local L = require("config.lists")
 
 local checks, failures = 0, {}
 local function check(name, ok, detail)
@@ -226,6 +227,59 @@ eq("a whole word comes before a row that only contains it", P.visible_indices({ 
 eq("and a row that merely contains the word comes last", P.visible_indices({ "someone", "one" }, "one"), { 2, 1 })
 eq("ranking is by answer, not by length of needle", P.visible_indices({ "one two", "one" }, "one"), { 2, 1 })
 
+-- 3b. the preview a `vim.ui.select` row asks for. A commit row is a diff, the
+-- file the list was opened from is its pathspec, and a stash row is its patch.
+eq("a commit row previews that commit for the file it came from", P.git_preview("abc1234 - fix: one (me) - 2 days ago", "/repo/a.lua"), {
+	args = { "show", "--no-color", "abc1234", "--", "/repo/a.lua" },
+	ft = "git",
+})
+eq("with no file it previews the whole commit", P.git_preview("abc1234 - fix", ""), {
+	args = { "show", "--no-color", "abc1234" },
+	ft = "git",
+})
+eq("a full hash is kept whole", P.git_preview(("a"):rep(40) .. " - fix"), {
+	args = { "show", "--no-color", ("a"):rep(40) },
+	ft = "git",
+})
+eq("a stash row previews its patch", P.git_preview("stash@{0} - WIP on main: deadbee thing"), {
+	args = { "stash", "show", "--patch", "stash@{0}" },
+	ft = "diff",
+})
+eq("a merge request row is not a commit", P.git_preview("!42 - a merge request"), nil)
+eq("nor is six hex characters followed by a dash", P.git_preview("abc123 - fix"), nil)
+eq("nor is a row that is not a string", P.git_preview({ commit = "abc1234" }), nil)
+
+-- 3c. the native lists as picker rows
+local lists_dir = vim.fn.tempname()
+vim.fn.mkdir(lists_dir, "p")
+local lists_file = lists_dir .. "/marks.lua"
+vim.fn.writefile({ "one", "two" }, lists_file)
+vim.cmd.edit(vim.fn.fnameescape(lists_file))
+vim.api.nvim_buf_set_mark(0, "m", 2, 0, {})
+local marks = L.mark_items()
+local mark = vim.iter(marks):find(function(row)
+	return row.name == "m"
+end)
+check("a buffer mark is a row", mark ~= nil, vim.inspect(marks))
+eq("with the line it points at", mark and mark.lnum, 2)
+eq("and reads that line", mark and mark.text, "two")
+eq("and its path", vim.fn.fnamemodify(mark.path, ":t"), "marks.lua")
+
+vim.fn.setreg("x", { "alpha", "beta" }, "V")
+local reg = vim.iter(L.register_items()):find(function(row)
+	return row.reg == "x"
+end)
+eq("a register is a row", reg and reg.lines, { "alpha", "beta" })
+eq("with its type", reg and reg.kind, "V")
+eq("and an empty register is not a row", vim.iter(L.register_items()):find(function(row)
+	return row.reg == "_"
+end), nil)
+
+vim.fn.histadd(":", "echo lists")
+eq("history rows are newest first", L.history_items(":")[1].entry, "echo lists")
+check("commands are rows", #L.command_items() > 0, #L.command_items())
+check("autocmds are rows", #L.autocmd_items() > 0, #L.autocmd_items())
+
 -- 4. a real picker, typed into
 local items = { { name = "alpha" }, { name = "beta" }, { name = "gamma" } }
 local confirmed, run = nil, nil
@@ -359,6 +413,11 @@ end
 
 local wins = 0
 local line_width = 0
+
+-- For the `vim.ui.select` checks below: what the callback was given, and the
+-- table rows whose identity has to survive the round trip.
+local picked, picked_idx = nil, nil
+local table_items = { { name = "alpha" }, { name = "beta" } }
 
 -- For the diagnostics picker below: where this file lives, and the buffers
 -- the two problems are in.
@@ -991,6 +1050,136 @@ local steps = {
 	end },
 	{ name = "S.close" },
 
+	-- 19. `vim.ui.select` goes through the same picker, and comes back with the
+	-- chosen item and its index, which is what vdiff's history list uses.
+	{
+		name = "T.select",
+		open = function()
+			picked, picked_idx = "untouched", -1
+			P.select({ "alpha", "beta", "gamma" }, { prompt = "Pick: " }, function(item, idx)
+				picked, picked_idx = item, idx
+			end)
+		end,
+		check = function()
+			eq("the select list is up with every row", P.visible().count, 3)
+			eq("and the prompt is its title", P.visible().labels[1], "alpha")
+		end,
+	},
+	{ name = "T.type", check = function()
+		eq("typing narrows it like any other picker", P.visible().count, 1)
+		eq("to the row that answered", P.visible().labels, { "beta" })
+	end },
+	{ name = "T.pick", check = function()
+		eq("Enter returns the chosen row", picked, "beta")
+		eq("and the index it came from", picked_idx, 2)
+	end },
+	{ name = "T.done" },
+
+	-- table rows are labelled by format_item and handed back whole
+	{
+		name = "U.select",
+		open = function()
+			picked, picked_idx = nil, nil
+			P.select(table_items, {
+				prompt = "Pick a table:",
+				format_item = function(item)
+					return item.name
+				end,
+			}, function(item, idx)
+				picked, picked_idx = item, idx
+			end)
+		end,
+		check = function()
+			eq("a table row is labelled by format_item", P.visible().labels, { "alpha", "beta" })
+		end,
+	},
+	{ name = "U.pick", check = function()
+		eq("and comes back as the same table", picked == table_items[1], true)
+		eq("with its index", picked_idx, 1)
+	end },
+	{ name = "U.done" },
+
+	-- leaving without a choice answers nil, the way vim.ui.select does
+	{
+		name = "V.select",
+		open = function()
+			picked, picked_idx = "untouched", -1
+			P.select({ "only", "two" }, { prompt = "Pick: " }, function(item, idx)
+				picked, picked_idx = item, idx
+			end)
+		end,
+		check = function()
+			eq("the list is up before anything is pressed", P.visible().count, 2)
+		end,
+	},
+	{ name = "V.esc", check = function()
+		eq("Escape answers with nothing", picked, nil)
+		eq("and no index", picked_idx, nil)
+		eq("and leaves no picker behind", P.visible().count, 0)
+	end },
+	{ name = "V.done" },
+
+	{
+		name = "W.open",
+		open = function()
+			vim.cmd.stopinsert()
+			vim.cmd.edit(vim.fn.fnameescape(lists_file))
+			vim.api.nvim_buf_set_mark(vim.api.nvim_get_current_buf(), "m", 2, 0, {})
+			L.marks()
+		end,
+		check = function()
+			eq("every mark is a row", P.visible().count >= 3, true)
+			check("including the buffer mark", table.concat(P.visible().labels, "\n"):find("'m", 1, true) ~= nil)
+		end,
+	},
+	{ name = "W.pick", check = function()
+		eq("Enter jumps to the mark", vim.api.nvim_win_get_cursor(0)[1], 2)
+		eq("in the file it belongs to", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t"), "marks.lua")
+	end },
+	{ name = "W.done" },
+
+	-- Enter pastes a register into the buffer under the picker
+	{
+		name = "X.open",
+		open = function()
+			vim.cmd.stopinsert()
+			vim.fn.writefile({ "top" }, lists_dir .. "/paste.lua")
+			vim.cmd.edit(vim.fn.fnameescape(lists_dir .. "/paste.lua"))
+			vim.api.nvim_win_set_cursor(0, { 1, 0 })
+			vim.fn.setreg("a", { "hello", "world" }, "V")
+			L.registers()
+		end,
+		check = function()
+			check("registers are rows", P.visible().count >= 2, P.visible().count)
+		end,
+	},
+	{ name = "X.type", check = function()
+		eq("Enter pastes it below the cursor", vim.api.nvim_buf_get_lines(0, 0, 3, false), { "top", "hello", "world" })
+	end },
+	{ name = "X.done" },
+
+	-- a quickfix entry previews and jumps like an LSP location
+	{
+		name = "Y.open",
+		open = function()
+			vim.cmd.stopinsert()
+			local path = lists_dir .. "/qf.lua"
+			vim.fn.writefile({ "one", "two", "three" }, path)
+			vim.cmd.edit(vim.fn.fnameescape(path))
+			vim.api.nvim_win_set_cursor(0, { 1, 0 })
+			vim.fn.setqflist({ { filename = path, lnum = 3, col = 1, text = "probe trouble", type = "E" } })
+			L.quickfix()
+		end,
+		check = function()
+			eq("the quickfix entry is a row", P.visible().labels[1]:find("probe trouble", 1, true) ~= nil, true)
+		end,
+	},
+	{ name = "Y.pick", check = function()
+		eq("Enter lands on the line", vim.api.nvim_win_get_cursor(0)[1], 3)
+		eq("in the file the entry names", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t"), "qf.lua")
+	end },
+	{ name = "Y.done" },
+
 	{ name = "done" },
 }
 
@@ -1036,7 +1225,9 @@ end
 vim.defer_fn(run, 600)
 LUA
 
-if ! python3 tests/pty_drive.py "$tmp/keys" "$tmp/status" "$tmp/result" -- \
+# Long: the picker is driven one step per 600ms, and the suite has more than
+# a hundred steps, so the default one minute deadline is the run, not a hang.
+if ! PTY_DEADLINE=180 python3 tests/pty_drive.py "$tmp/keys" "$tmp/status" "$tmp/result" -- \
 	nvim -u NONE -i NONE --cmd "set rtp^=$PWD" -c "autocmd VimEnter * luafile $tmp/probe.lua"; then
 	printf 'picker test did not pass\n'
 	exit 1

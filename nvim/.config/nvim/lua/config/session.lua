@@ -39,6 +39,23 @@ local function has_buffers()
 	return false
 end
 
+---Drop buffers named after a file that was never written: a scratch name from
+---a format check, not a document. mksession saves them, so a load that keeps
+---them opens an empty tab for the name on every later nvim in the directory.
+local function drop_phantoms()
+	for _, buf in ipairs(api.nvim_list_bufs()) do
+		local name = api.nvim_buf_is_valid(buf) and api.nvim_buf_get_name(buf) or ""
+		if
+			name ~= ""
+			and vim.bo[buf].buftype == ""
+			and not vim.bo[buf].modified
+			and vim.uv.fs_stat(name) == nil
+		then
+			api.nvim_buf_delete(buf, {})
+		end
+	end
+end
+
 ---Write the layout to a session file, beside it and renamed over it, so a save
 ---that dies part way leaves the previous session whole instead of truncated.
 ---@param path string
@@ -125,6 +142,7 @@ function M.load(target)
 	if not ok then
 		return false, tostring(err)
 	end
+	drop_phantoms()
 	return true
 end
 
@@ -165,8 +183,13 @@ end, { desc = "Delete the session for this directory" })
 
 local group = api.nvim_create_augroup("session", { clear = true })
 
+-- nested: the source ends in :edit, and an autocommand that is not nested
+-- swallows the BufRead and FileType events that edit fires. Without it the
+-- restored buffers keep no filetype, so no ftplugin and no treesitter, until
+-- a hand-run :e fires them again.
 api.nvim_create_autocmd("VimEnter", {
 	group = group,
+	nested = true,
 	callback = function()
 		-- Files named on the command line are the layout the user asked for.
 		if vim.fn.argc() == 0 then

@@ -7,6 +7,18 @@ vim.pack.add({
 
 require("nvim-treesitter").setup({})
 
+-- nvim-treesitter keeps its queries in runtime/, which nvim puts on the
+-- runtimepath from 0.13 on. Without it, the languages nvim ships a parser for
+-- (lua, c, markdown, vim, ...) get no indents query, indentexpr answers 0, and
+-- = leaves the file flat.
+if vim.fn.has("nvim-0.13") == 0 then
+	local init = vim.api.nvim_get_runtime_file("lua/nvim-treesitter/init.lua", false)[1]
+	local root = init and vim.fs.dirname(vim.fs.dirname(vim.fs.dirname(init)))
+	if root and vim.fn.isdirectory(root .. "/runtime") == 1 then
+		vim.opt.rtp:prepend(root .. "/runtime")
+	end
+end
+
 -- `goose` is missing from nvim-treesitter's registry: its parser comes from a
 -- fork of aardappel/goose with the generated parser.c committed. TSUpdate
 -- reloads the parsers table, so the entry goes back in from an autocmd.

@@ -3,11 +3,30 @@ local npcall = require("config.compat")
 vim.keymap.set("n", "<leader>pp", "<cmd>Pack<cr>", { desc = "Pack UI" })
 vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<cr>", { desc = "Pack Update All" })
 vim.keymap.set("n", "<leader>pd", function()
-	vim.ui.input({ prompt = "Plugin name to delete: " }, function(input)
-		if input and input ~= "" then
-			npcall(vim.pack.del, { input })
-		end
+	local plugins = vim.pack.get(nil, { info = false })
+	table.sort(plugins, function(a, b)
+		return a.spec.name < b.spec.name
 	end)
+	require("config.picker").open(plugins, {
+		title = "Delete plugin",
+		filter = true,
+		skip_single = false,
+		format = function(plugin)
+			return plugin.spec.name
+		end,
+		preview = function(plugin, ctx)
+			ctx.set_lines({
+				plugin.spec.name,
+				"",
+				"source:   " .. tostring(plugin.spec.src or ""),
+				"revision: " .. tostring(plugin.rev or ""),
+				plugin.active and "loaded" or "not loaded",
+			}, "markdown")
+		end,
+		on_confirm = function(plugin)
+			npcall(vim.pack.del, { plugin.spec.name })
+		end,
+	})
 end, { desc = "Pack Delete" })
 
 -- ui

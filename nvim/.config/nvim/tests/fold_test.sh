@@ -67,12 +67,22 @@ ok(vim.bo.filetype == "lua", "expected filetype lua, got " .. vim.bo.filetype)
 -- back to its own GetLuaIndent(), which for Lua happens to produce the same
 -- tabs, so every indentation check below passes with treesitter switched off
 -- entirely. Only naming the provider catches that.
-ok(type(vim.wo.foldexpr) == "function",
-	"foldexpr should be a function reference, not a string, so nvim calls it directly; got "
-		.. type(vim.wo.foldexpr) .. " " .. tostring(vim.wo.foldexpr):sub(1, 40))
-ok(type(vim.bo.indentexpr) == "function",
-	"indentexpr should be a function reference, not a string; got "
-		.. type(vim.bo.indentexpr) .. " " .. tostring(vim.bo.indentexpr):sub(1, 40))
+-- The function form needs 0.13; below that the config falls back to the v:lua
+-- string, because older nvim rejects a function as the option value. The
+-- assertion follows the gate rather than assuming the newer nvim.
+if vim.fn.has("nvim-0.13") == 1 then
+	ok(type(vim.wo.foldexpr) == "function",
+		"foldexpr should be a function reference, not a string, so nvim calls it directly; got "
+			.. type(vim.wo.foldexpr) .. " " .. tostring(vim.wo.foldexpr):sub(1, 40))
+	ok(type(vim.bo.indentexpr) == "function",
+		"indentexpr should be a function reference, not a string; got "
+			.. type(vim.bo.indentexpr) .. " " .. tostring(vim.bo.indentexpr):sub(1, 40))
+else
+	ok(vim.wo.foldexpr == "v:lua.vim.treesitter.foldexpr()",
+		"foldexpr should be the treesitter v:lua string on 0.12, got " .. vim.wo.foldexpr)
+	ok(vim.bo.indentexpr:match("nvim%-treesitter") ~= nil,
+		"indentexpr should call nvim-treesitter on 0.12, got " .. vim.bo.indentexpr)
+end
 ok(vim.bo.indentexpr ~= "GetLuaIndent()",
 	"indentexpr fell back to the nvim builtin, so indentation is no longer coming from treesitter")
 ok(vim.wo.foldmethod == "expr", "foldmethod should be expr, got " .. vim.wo.foldmethod)

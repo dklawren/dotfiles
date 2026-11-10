@@ -79,35 +79,91 @@ require("vdiff").setup({
 	merge_layout = "diff3_vertical", -- 3-way side-by-side
 })
 
--- Accepts any ref: branch, commit, tag, HEAD~N, or empty for working tree
--- Empty or nil = working tree vs HEAD
--- --staged = staged changes
--- main = compare with main branch
--- HEAD~3 = compare with 3 commits ago
--- abc123 = compare with commit hash
--- v1.0.0 = compare with tag
-vim.keymap.set("n", "<leader>gc", function()
-	vim.ui.input({
-		prompt = "Compare with (branch/commit/tag/HEAD~N, empty=working): ",
-	}, function(ref)
-		if ref == nil then -- cancelled; "" means working tree
-			return
-		end
-		vim.cmd("VDiffCompare " .. ref)
-	end)
-end, { desc = "Git: compare (universal)" })
+local function git_lines(args)
+	local out = vim.fn.systemlist(vim.list_extend({ "git", "--no-pager" }, args))
+	return vim.v.shell_error == 0 and out or {}
+end
 
--- COMPARE TWO REFS (e.g., branches, commits, tags)
-vim.keymap.set("n", "<leader>gC", function()
-	vim.ui.input({ prompt = "Compare ref1 (default=HEAD): " }, function(ref1)
-		if not ref1 or ref1 == "" then
-			ref1 = "HEAD"
+local function refs_under(prefix, kind)
+	local rows = {}
+	local format = "%(refname)\t%(objectname:short)\t%(contents:subject)"
+	local args = { "for-each-ref", "--sort=-committerdate", "--format=" .. format, "refs/" .. prefix }
+	for _, line in ipairs(git_lines(args)) do
+		local full, hash, subject = line:match("^(.-)\t(%x+)\t(.*)$")
+		if full and not full:match("/HEAD$") then
+			local ref = full:gsub("^refs/[^/]+/", "")
+			rows[#rows + 1] = { ref = ref, hash = hash, kind = kind, desc = subject }
 		end
-		vim.ui.input({ prompt = "Compare ref2: " }, function(ref2)
-			if not ref2 or ref2 == "" then
-				return
+	end
+	return rows
+end
+
+---Branches, remote branches, tags, then the commits the head has. Typing a
+---ref by hand is what this list replaces, but the list is not the only answer:
+---`<leader>gF` still takes any ref `:VDiff` accepts.
+local function git_refs()
+	local rows = {}
+	vim.list_extend(rows, refs_under("heads", "branch"))
+	vim.list_extend(rows, refs_under("remotes", "remote"))
+	vim.list_extend(rows, refs_under("tags", "tag"))
+	for _, line in ipairs(git_lines({ "log", "--pretty=format:%h\t%cr\t%s", "-n", "40" })) do
+		local hash, age, subject = line:match("^(%x+)\t(.-)\t(.*)$")
+		if hash then
+			rows[#rows + 1] = { ref = hash, hash = hash, kind = "commit", age = age, desc = subject }
+		end
+	end
+	return rows
+end
+
+local function preview_ref(row, ctx)
+	if row.kind == "worktree" then
+		ctx.set_lines({ "Working tree", "", "The files on disk, against HEAD." }, "markdown")
+	else
+		ctx.git({ "log", "--oneline", "--decorate", "--no-color", "-n", "20", row.ref }, "git")
+	end
+end
+
+---@param title string
+---@param opts { worktree?: boolean }
+---@param on_pick fun(row: table)
+local function pick_ref(title, opts, on_pick)
+	local rows = {}
+	if opts.worktree then
+		rows[#rows + 1] = { ref = "", kind = "worktree", desc = "uncommitted changes" }
+	end
+	rows[#rows + 1] = { ref = "HEAD", hash = "", kind = "head", desc = "the checked out commit" }
+	vim.list_extend(rows, git_refs())
+	require("config.picker").open(rows, {
+		title = title,
+		skip_single = false,
+		filter = true,
+		format = function(row)
+			if row.kind == "worktree" then
+				return "working tree  (uncommitted changes)"
+			elseif row.kind == "commit" then
+				return ("%s  %s  %s"):format(row.hash, row.age, row.desc)
 			end
-			vim.cmd("VDiffCompareRefs " .. ref1 .. " " .. ref2)
+			return ("%s  %s  %s"):format(row.ref, row.hash or "", row.desc or "")
+		end,
+		preview = preview_ref,
+		on_confirm = on_pick,
+	})
+end
+
+-- Accepts any ref: branch, commit, tag, or a commit from the list. The working
+-- tree row is the empty ref, which is what `:VDiffCompare` without an argument
+-- already means.
+vim.keymap.set("n", "<leader>gc", function()
+	pick_ref("Compare with", { worktree = true }, function(row)
+		vim.cmd("VDiffCompare" .. (row.ref ~= "" and (" " .. row.ref) or ""))
+	end)
+end, { desc = "Git: compare with a ref" })
+
+-- COMPARE TWO REFS (branches, commits, tags)
+vim.keymap.set("n", "<leader>gC", function()
+	pick_ref("Compare from", {}, function(first)
+		pick_ref("Compare to", {}, function(second)
+			vim.cmd(("VDiffCompareRefs %s %s"):format(first.ref, second.ref))
 		end)
 	end)
 end, { desc = "Git: compare two refs" })
@@ -145,11 +201,8 @@ end, { desc = "Git: review MR/PR by number, URL or branch" })
 -- Same principle: accepts any ref or empty for HEAD
 vim.keymap.set("n", "<leader>gf", "<Cmd>VDiff<CR>", { desc = "Git: diff file vs HEAD" })
 vim.keymap.set("n", "<leader>gF", function()
-	vim.ui.input({ prompt = "Diff file with (ref, empty=HEAD): " }, function(ref)
-		if ref == nil then
-			return
-		end
-		vim.cmd("VDiff " .. ref)
+	pick_ref("Diff file with", {}, function(row)
+		vim.cmd("VDiff " .. row.ref)
 	end)
 end, { desc = "Git: diff file (universal)" })
 

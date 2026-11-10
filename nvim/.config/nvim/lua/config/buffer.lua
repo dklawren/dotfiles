@@ -1,12 +1,11 @@
 local M = {}
-local npcall = require("config.compat")
 
 -- A plain loop rather than an iterator chain: nvim_list_bufs gives the checker
 -- a generic element, and a loop says what an element is without a cast.
 local function listed()
 	local out = {}
 	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.bo[buf].buflisted and vim.api.nvim_buf_get_name(buf) ~= "" then
+		if vim.bo[buf].buflisted then
 			out[#out + 1] = buf
 		end
 	end
@@ -36,37 +35,55 @@ local function survivor(doomed)
 end
 
 ---@param targets integer[]
----@param force boolean? discard unsaved changes instead of keeping the buffer
+---@param force boolean? discard unsaved changes instead of asking
 function M.close(targets, force)
-	local doomed, kept = {}, 0
+	local doomed = {}
+	local dirty = {}
 	for _, buf in ipairs(targets) do
 		if vim.api.nvim_buf_is_valid(buf) then
-			if force or not unsaved(buf) then
-				doomed[buf] = true
+			if unsaved(buf) then
+				dirty[#dirty + 1] = buf
 			else
-				kept = kept + 1
+				doomed[buf] = true
 			end
 		end
 	end
 
-	if next(doomed) then
-		-- Windows have to move off the doomed buffers first: otherwise Neovim
-		-- picks each replacement itself and reads a file from disk that the next
-		-- iteration deletes again.
-		local keep = survivor(doomed)
-		for _, win in ipairs(vim.api.nvim_list_wins()) do
-			if doomed[vim.api.nvim_win_get_buf(win)] then
-				vim.api.nvim_win_set_buf(win, keep)
+	-- One question for the whole command: a prompt per buffer turns closing ten
+	-- of them into ten keystrokes. Cancel means nothing closes, so a "no" is not
+	-- half an answer.
+	if #dirty > 0 then
+		if not force then
+			local ask = ("%d buffer(s) have unsaved changes. Discard?"):format(#dirty)
+			if vim.fn.confirm(ask, "&Discard\n&Cancel", 2) ~= 1 then
+				return
 			end
 		end
-		for buf in pairs(doomed) do
-			npcall(vim.api.nvim_buf_delete, buf, { force = true })
+		for _, buf in ipairs(dirty) do
+			doomed[buf] = true
 		end
 	end
 
-	if kept > 0 then
-		vim.notify(kept .. " buffer(s) with unsaved changes kept", vim.log.levels.WARN)
+	if not next(doomed) then
+		return
 	end
+
+	-- Windows have to move off the doomed buffers first: otherwise Neovim picks
+	-- each replacement itself and reads a file from disk that the next iteration
+	-- deletes again.
+	local keep = survivor(doomed)
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		if doomed[vim.api.nvim_win_get_buf(win)] then
+			vim.api.nvim_win_set_buf(win, keep)
+		end
+	end
+	for buf in pairs(doomed) do
+		local ok, err = pcall(vim.api.nvim_buf_delete, buf, { force = true })
+		if not ok then
+			vim.notify("could not close buffer " .. buf .. ": " .. tostring(err), vim.log.levels.ERROR)
+		end
+	end
+	vim.cmd.redrawtabline()
 end
 
 ---@param side "left"|"right"|"other"

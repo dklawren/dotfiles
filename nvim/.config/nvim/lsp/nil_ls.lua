@@ -9,9 +9,6 @@ return {
 					autoArchive = true,
 				},
 			},
-			formatting = {
-				command = { "nixfmt" },
-			},
 		},
 	},
 }

@@ -62,6 +62,9 @@ local function tabline_files()
 end
 
 local mode = assert(os.getenv("SESSION_TEST_MODE"))
+-- `-u NONE` leaves filetype detection off, and it has to be on for the restored
+-- buffers to show whether the session's :edit fired BufRead.
+vim.cmd("filetype on")
 
 if mode == "layout" then
 	-- What a closing nvim looks like: two windows, the right file in each, and
@@ -95,6 +98,7 @@ elseif mode == "enter" then
 			say("unshown", vim.fn.bufexists("third.lua") and "yes" or "no")
 			say("tabline", tabline_files())
 			say("cursor", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t") .. ":" .. vim.fn.line("."))
+			say("filetype", vim.bo[vim.fn.bufnr("two.lua")].filetype)
 			vim.cmd("qa!")
 		end,
 	})
@@ -107,6 +111,19 @@ elseif mode == "unsaved" then
 	local buf = vim.fn.bufnr("one.lua")
 	say("modified", vim.bo[buf].modified)
 	say("lines", #vim.api.nvim_buf_get_lines(buf, 0, -1, false))
+elseif mode == "phantom" then
+	-- What a format check leaves behind: a buffer named after a file that was
+	-- never written. mksession records it, so a load has to drop it again.
+	vim.cmd("edit " .. assert(os.getenv("SESSION_TEST_PHANTOM")))
+	session.save()
+elseif mode == "restore" then
+	vim.api.nvim_create_autocmd("VimEnter", {
+		callback = function()
+			say("windows", windows())
+			say("phantom", vim.fn.bufexists(assert(os.getenv("SESSION_TEST_PHANTOM"))))
+			vim.cmd("qa!")
+		end,
+	})
 elseif mode == "empty" then
 	session.save()
 elseif mode == "delete" then
@@ -122,15 +139,15 @@ run() {
 	shift
 	# The enter scenario quits from its own VimEnter callback, and a `qa!` given
 	# as a startup command would quit before that callback ever fires.
-	local quit=(-c "qa!")
-	if [[ "$mode" == "enter" ]]; then
-		quit=()
+	local quit=()
+	if [[ "$mode" != "enter" && "$mode" != "restore" ]]; then
+		quit=(-c "qa!")
 	fi
 	SESSION_TEST_OUT="$OUT" SESSION_TEST_SAY="$WORK/say.lua" SESSION_TEST_MODE="$mode" \
 		SESSION_TEST_PROJ="$PROJ" XDG_STATE_HOME="$STATE" XDG_DATA_HOME="$DATA" \
 		XDG_CACHE_HOME="$CACHE" XDG_RUNTIME_DIR="$RUNROOT/nvim-suite/0" \
 		timeout 120 nvim --headless -u NONE -i NONE --cmd "set rtp^=$REPO" \
-		--cmd "cd $PROJ" -c "luafile $WORK/scenario.lua" "${quit[@]}" "$@" >/dev/null 2>&1 || true
+		--cmd "cd ${SESSION_TEST_DIR:-$PROJ}" -c "luafile $WORK/scenario.lua" ${quit[@]+"${quit[@]}"} "$@" >/dev/null 2>&1 || true
 }
 
 CHECKS=0
@@ -173,6 +190,7 @@ check "the fold state comes back" "manual/0" "$(fact fold)"
 check "a buffer that was open but not shown comes back" "yes" "$(fact unshown)"
 check "and the tabline shows every file from the session" "one.lua,two.lua,third.lua" "$(fact tabline)"
 check "the cursor comes back" "two.lua:1" "$(fact cursor)"
+check "a restored buffer is given its filetype" "lua" "$(fact filetype)"
 
 OUT=$(mktemp)
 run unsaved
@@ -196,6 +214,21 @@ OUT=$(mktemp)
 run delete
 check "a session can be thrown away" "true" "$(fact deleted)"
 check "throwing it away removed the file" "0" "$(sessions)"
+
+# A format check leaves a buffer named after a file it never wrote. mksession
+# records it, and every later nvim in that directory opens an empty tab for the
+# name unless the load drops it.
+PHANTOM="$WORK/phantom-project"
+mkdir -p "$PHANTOM"
+
+OUT=$(mktemp)
+SESSION_TEST_DIR="$PHANTOM" SESSION_TEST_PHANTOM="_fmt_check.lua" run phantom
+check "a session is written for a directory holding only a phantom buffer" "1" "$(sessions)"
+
+OUT=$(mktemp)
+SESSION_TEST_DIR="$PHANTOM" SESSION_TEST_PHANTOM="_fmt_check.lua" run restore
+check "a buffer named after a file that was never written is not restored" "0" "$(fact phantom)"
+check "and no window is left on it" "" "$(fact windows)"
 
 printf 'session checks=%d failures=%d\n' "$CHECKS" "$FAILURES"
 [[ "$FAILURES" -eq 0 ]]

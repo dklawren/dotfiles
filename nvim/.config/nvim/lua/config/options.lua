@@ -52,7 +52,7 @@ vim.opt.autowrite = true -- Auto save
 
 vim.opt.path:append("**") -- include subdirectories in search
 vim.opt.mouse = "a" -- Enable mouse support
--- Clipboard provider and 'clipboard' live in config/clipboard.lua
+vim.opt.clipboard = "unnamedplus" -- Yanks reach the system clipboard, provider autodetected
 
 -- Folding settings
 vim.opt.foldlevel = 99 -- Start with all folds open

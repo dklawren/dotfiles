@@ -60,22 +60,23 @@ local function init_dap()
 			{
 				type = "pwa-node",
 				request = "launch",
-				name = "Nvim Mocha Tests",
-				program = vim.fn.getcwd() .. "/node_modules/mocha/bin/_mocha",
-				args = {
-					"--require",
-					"ts-node/register/transpile-only",
-					"--require",
-					"source-map-support/register",
-					"--reporter",
-					"spec",
-					"--colors",
-					vim.fn.getcwd() .. "/tests/unit/**/*.[tj]s",
-				},
-				internalConsoleOptions = "openOnSessionStart",
+				name = "Vitest (current file)",
+				program = vim.fn.getcwd() .. "/node_modules/vitest/vitest.mjs",
+				args = function()
+					return { "--run", "--no-file-parallelism", "--testTimeout=0", "--hookTimeout=0", vim.fn.expand("%:p") }
+				end,
 				skipFiles = { "<node_internals>/**" },
 				sourceMaps = true,
-				protocol = "inspector",
+				cwd = vim.fn.getcwd(),
+			},
+			{
+				type = "pwa-node",
+				request = "launch",
+				name = "Vitest (sales)",
+				program = vim.fn.getcwd() .. "/node_modules/vitest/vitest.mjs",
+				args = { "--run", "--no-file-parallelism", "--testTimeout=0", "--hookTimeout=0" },
+				skipFiles = { "<node_internals>/**" },
+				sourceMaps = true,
 				cwd = vim.fn.getcwd(),
 			},
 		}

@@ -2,23 +2,13 @@ vim.pack.add({
 	"https://github.com/gbprod/yanky.nvim",
 })
 
-local loaded = false
-
-local function load()
-	if loaded then
-		return
-	end
-	loaded = true
-
-	require("yanky").setup({
-		highlight = { timer = 150 },
-	})
-end
-
-vim.api.nvim_create_autocmd("TextYankPost", {
-	group = vim.api.nvim_create_augroup("YankyLazy", { clear = true }),
-	once = true,
-	callback = load,
+-- Loaded here rather than on the first yank: setup inside a key mapping puts
+-- plugin work in the keypress path, where it is felt as a lag on `yy`.
+require("yanky").setup({
+	highlight = { timer = 150 },
+	-- Off: this reads the clipboard on every focus change, one blocking
+	-- clipboard command each time the terminal comes back.
+	system_clipboard = { sync_with_ring = false },
 })
 
 local function pick()
@@ -50,10 +40,10 @@ local function pick()
 end
 
 -- stylua: ignore start
-vim.keymap.set({ "n", "x" }, "y", function() load(); return "<Plug>(YankyYank)" end, { expr = true })
-vim.keymap.set({ "n", "x" }, "p", function() load(); return "<Plug>(YankyPutAfter)" end, { expr = true })
-vim.keymap.set({ "n", "x" }, "P", function() load(); return "<Plug>(YankyPutBefore)" end, { expr = true })
-vim.keymap.set("n", "<C-p>", function() load(); return "<Plug>(YankyCycleForward)" end, { expr = true })
-vim.keymap.set("n", "<C-n>", function() load(); return "<Plug>(YankyCycleBackward)" end, { expr = true })
-vim.keymap.set({ "n", "x" }, "<leader>y", function() load(); pick() end, { desc = "Yank History" })
+vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)")
+vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
+vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
+vim.keymap.set("n", "<C-p>", "<Plug>(YankyCycleForward)")
+vim.keymap.set("n", "<C-n>", "<Plug>(YankyCycleBackward)")
+vim.keymap.set({ "n", "x" }, "<leader>y", pick, { desc = "Yank History" })
 -- stylua: ignore end

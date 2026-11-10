@@ -1,5 +1,6 @@
 local map = vim.keymap.set
 local opts = { silent = true }
+local lists = require("config.lists")
 
 -- Better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
@@ -83,19 +84,10 @@ map("x", ">", ">gv")
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 
 -- location list
--- :lopen raises E42 when there is no list to open, and a message beats a
--- traceback thrown out of a keymap
-map("n", "<leader>xl", function()
-	if #vim.fn.getloclist(0) == 0 then
-		return vim.notify("No location list", vim.log.levels.INFO)
-	end
-	vim.cmd(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and "lclose" or "lopen")
-end, { desc = "Location List" })
+map("n", "<leader>xl", lists.location, { desc = "Location List" })
 
 -- quickfix list
-map("n", "<leader>xq", function()
-	vim.cmd(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and "cclose" or "copen")
-end, { desc = "Quickfix List" })
+map("n", "<leader>xq", lists.quickfix, { desc = "Quickfix List" })
 
 map("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
 map("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
@@ -181,8 +173,12 @@ map("n", "dm", function()
 end, { desc = "Delete mark" })
 
 -- Command history
-map("n", "<leader>:", "q:", { desc = "Command History" })
-map("n", "<leader>sc", "q:", { desc = "Command History" })
+map("n", "<leader>:", function()
+	lists.history(":")
+end, { desc = "Command History" })
+map("n", "<leader>sc", function()
+	lists.history(":")
+end, { desc = "Command History" })
 
 -- Terminal
 -- :terminal opens in the current directory, which is where nvim started, not
@@ -202,15 +198,17 @@ map("n", "<leader>uc", "<cmd>set conceallevel!<cr>", { desc = "Toggle Conceal Le
 map("n", "<leader>uA", "<cmd>set showtabline!<cr>", { desc = "Toggle Tabline" })
 
 -- Other native replacements
-map("n", "<leader>sm", ":marks<cr>", { desc = "Marks" })
+map("n", "<leader>sm", lists.marks, { desc = "Marks" })
 map("n", "<leader>sM", ":Man<cr>", { desc = "Man Pages" })
-map("n", "<leader>sq", "<cmd>copen<cr>", { desc = "Quickfix List" })
-map("n", '<leader>s"', ":registers<cr>", { desc = "Registers" })
-map("n", "<leader>s/", "q/", { desc = "Search History" })
-map("n", "<leader>sa", ":autocmd<cr>", { desc = "Autocmds" })
-map("n", "<leader>sC", ":commands<cr>", { desc = "Commands" })
-map("n", "<leader>sj", ":jumps<cr>", { desc = "Jumps" })
-map("n", "<leader>sl", "<cmd>lopen<cr>", { desc = "Location List" })
+map("n", "<leader>sq", lists.quickfix, { desc = "Quickfix List" })
+map("n", '<leader>s"', lists.registers, { desc = "Registers" })
+map("n", "<leader>s/", function()
+	lists.history("/")
+end, { desc = "Search History" })
+map("n", "<leader>sa", lists.autocmds, { desc = "Autocmds" })
+map("n", "<leader>sC", lists.commands, { desc = "Commands" })
+map("n", "<leader>sj", lists.jumps, { desc = "Jumps" })
+map("n", "<leader>sl", lists.location, { desc = "Location List" })
 map("n", "<leader>N", ":help news<cr>", { desc = "Neovim News" })
 map("n", "<leader>un", function()
 	vim.notify("Notifications dismissed", vim.log.levels.INFO)

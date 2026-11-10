@@ -62,6 +62,9 @@ test-filetype:
 test-plugins:
 	@bash tests/plugins_test.sh
 
+test-tree:
+	@bash tests/tree_test.sh
+
 test-buffer:
 	@bash tests/buffer_test.sh
 
@@ -93,7 +96,7 @@ test-scroll:
 # mistake no behaviour test can see: a name used in a function before the local
 # that holds it is declared is a global, and a global that happens to be nil
 # formats into a string as the text "nil" rather than complaining.
-test: test-session test-picker test-markdown test-buffer test-mcursor test-pairs test-pack test-statusline test-cloak test-jump test-codeaction test-filetype test-plugins test-fold test-format test-blink test-scroll test-draw lint-lua
+test: test-session test-picker test-markdown test-buffer test-mcursor test-pairs test-pack test-statusline test-cloak test-jump test-codeaction test-filetype test-plugins test-tree test-fold test-format test-blink test-scroll test-draw lint-lua
 	@echo "✅ All suites passed"
 
 # Skipped, not failed, when luacheck is not installed: a machine without it has

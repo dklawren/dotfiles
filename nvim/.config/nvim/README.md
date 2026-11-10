@@ -3,11 +3,11 @@
 > Fast, IDE-grade Neovim setup with 13 plugins using native `vim.pack` (no plugin manager needed)
 
 ![Neovim](https://img.shields.io/badge/NeoVim-0.12+-57A143?style=flat-square&logo=neovim)
-![Plugins](https://img.shields.io/badge/plugins-12-orange?style=flat-square)
+![Plugins](https://img.shields.io/badge/plugins-13-orange?style=flat-square)
 
 - Uses native `vim.pack` (no lazy.nvim/packer overhead)
 - Custom UI components (statusline, tabline, session manager) without extra plugins
-- 15+ LSP servers pre-configured with format-on-save
+- 15+ LSP servers pre-configured, one formatter per project through conform.nvim
 - Session persistence that restores your workspace as VSCode
 - One long lived nvim per project, hopping between them in one terminal
 
@@ -16,6 +16,7 @@
 | Plugin                   | Purpose                                                                   |
 | ------------------------ | ------------------------------------------------------------------------- |
 | blink.cmp                | Completion with LSP, snippets, fuzzy matching                             |
+| conform.nvim             | Format on save, picking prettier, biome, bun fmt or oxfmt per project     |
 | fff.nvim                 | File finder and live grep picker                                          |
 | gitsigns.nvim            | Git signs in the gutter, hunk navigation, line blame                      |
 | grug-far.nvim            | Search & replace across files                                             |
@@ -37,13 +38,16 @@
 | Statusline        | `config/statusline.lua`  | Git branch/diff, LSP diagnostics, word count for markdown                                          |
 | Tabline           | `config/tabline.lua`     | Smart buffer management with devicons                                                              |
 | Session manager   | `config/session.lua`     | Per-directory auto-save/restore, `:Session <dir>` to switch workspace                              |
-| LSP utilities     | `config/lsp.lua`         | Unified 15+ server setup with format-on-save, inlay hints                                          |
+| LSP utilities     | `config/lsp.lua`         | Unified 15+ server setup, inlay hints                                                              |
 | Diagnostics       | `config/diagnostics.lua` | Custom diagnostic display config                                                                   |
 | Pack UI           | `config/pack.lua`        | Browser for `vim.pack` plugin registry                                                             |
+| Picker            | `config/picker.lua`      | Floating list with filter and live preview, also the `vim.ui.select` backend                       |
+| Picker lists      | `config/lists.lua`       | Marks, jumps, registers, quickfix, commands, autocmds and history as previewable pickers          |
 | Jump              | `config/jump.lua`        | Minimal 2-char search with label jump                                                              |
 | Multicursor       | `config/mcursor.lua`     | Column-align native multicursors (`:h multicursor`), keymap `g<Space>`                             |
 | UI overrides      | `config/ui2.lua`         | Native `ui2` message layer, with a pager that fills the window                                     |
 | Markdown render   | `config/markdown.lua`    | In-buffer markdown rendering (headings, code, lists, tables, callouts), image preview, mdserve     |
+| File tree         | `config/tree.lua`        | Sidebar tree that reveals the current file, devicons, bold current file, `h`/`l` fold, `<CR>` opens |
 
 ## What the runtime already does
 
@@ -107,7 +111,7 @@ Files & Search
   <leader>/         Grep (fff.nvim)
   <leader>e         File explorer (oil.nvim)
   -                 Open parent directory (oil.nvim)
-  <leader>E         File explorer (tree, netrw)
+  <leader>E         File explorer tree, reveals the current file
   <leader>sr        Search & replace (grug-far.nvim)
 
 Buffers
@@ -120,6 +124,17 @@ Buffers
   <Tab>/<S-Tab>     Next/Previous buffer
   <S-h>/<S-l>       Previous/Next buffer
   [b / ]b           Previous/Next buffer
+
+Lists (picker)
+  <leader>sm        Marks (Enter jumps to the mark)
+  <leader>sj        Jumps
+  <leader>s"        Registers (Enter pastes, <C-y> yanks)
+  <leader>sq        Quickfix
+  <leader>sl        Location list
+  <leader>sC        Commands (Enter fills in the command)
+  <leader>sa        Autocmds (Enter opens the source)
+  <leader>sc        Command history
+  <leader>s/        Search history
 
 Windows
   Ctrl-h/j/k/l      Navigate windows
@@ -152,6 +167,8 @@ LSP (native)
   K / <leader>k     Hover documentation
   <leader>ca        Code actions
   <leader>cl        Fix all (LSP)
+  <leader>cf        Format buffer (conform.nvim)
+  <leader>cF        Which formatter conform picks and why
   <leader>cr        Rename
   <leader>ss        Document symbols
   <leader>cw        Workspace diagnostics
@@ -170,6 +187,12 @@ Git (vdiff.nvim)
   <leader>gm        Git: merge conflicts
   <leader>gr...     Git: review prefix (MR/PR)
 
+The file and line history lists preview the commit under the cursor, its diff
+for the current file, as you move. Stash and review lists go through the same
+picker, so they filter as you type. "Compare with" and "diff file with" list
+the branches, tags and recent commits, with the ref's log in the preview, and
+the working tree is a row of its own.
+
 Debug (DAP)
   <leader>db        Toggle breakpoint
   <leader>dc        Run/Continue
@@ -178,6 +201,13 @@ Debug (DAP)
   <leader>dO        Step over
   <leader>du        DAP view toggle
   <leader>dh        DAP hover
+
+DAP setup (once)
+  git clone https://github.com/microsoft/vscode-js-debug ~/vscode-js-debug
+  cd ~/vscode-js-debug && npm ci && npx gulp dapDebugServer
+  Nest: run `pnpm start:dev:debug`, then "Nvim Debug App" (attaches to :9229)
+  Vitest: "Vitest (current file)" runs the open spec, "Vitest (sales)" runs the suite
+  Vitest needs the service's test Postgres running (global setup)
 
 Diagnostics
   <leader>cd        Line diagnostics

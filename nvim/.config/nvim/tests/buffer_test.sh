@@ -66,15 +66,55 @@ run("Close other buffers")
 local rest = vim.fn.getbufinfo({ buflisted = 1 })
 assert(#rest == 1 and rest[1].bufnr == keep, "close others left " .. #rest .. " buffers")
 
--- Unsaved changes are kept unless the force map is used.
+-- Unsaved changes are asked about once: Cancel keeps everything, Discard closes.
 reset()
 vim.cmd("edit " .. tmpfile("dirty.txt"))
 local dirty = vim.api.nvim_get_current_buf()
 vim.api.nvim_buf_set_lines(dirty, 0, -1, false, { "edited" })
+local confirm = vim.fn.confirm
+local asked = 0
+vim.fn.confirm = function()
+	asked = asked + 1
+	return 2
+end
 run("Close buffer")
-assert(vim.api.nvim_buf_is_valid(dirty), "unsaved buffer was discarded")
-M.close({ dirty }, true)
-assert(not vim.api.nvim_buf_is_valid(dirty), "force close did not delete")
+assert(asked == 1, "expected one question, got " .. asked)
+assert(vim.api.nvim_buf_is_valid(dirty), "Cancel discarded the buffer")
+vim.fn.confirm = function()
+	asked = asked + 1
+	return 1
+end
+run("Close buffer")
+assert(not vim.api.nvim_buf_is_valid(dirty), "Discard kept the buffer")
+
+-- Force closes without asking.
+local forced = vim.api.nvim_get_current_buf()
+vim.api.nvim_buf_set_lines(forced, 0, -1, false, { "edited" })
+vim.fn.confirm = function()
+	error("force must not ask")
+end
+M.close({ forced }, true)
+assert(not vim.api.nvim_buf_is_valid(forced), "force close did not delete")
+
+-- Dirty buffers on both sides are all behind one question, not one each.
+reset()
+vim.cmd("edit " .. tmpfile("keep.txt"))
+local keep = vim.api.nvim_get_current_buf()
+for i = 1, 2 do
+	vim.cmd("edit " .. tmpfile("other" .. i .. ".txt"))
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, { "edited" })
+end
+vim.cmd("buffer " .. keep)
+asked = 0
+vim.fn.confirm = function()
+	asked = asked + 1
+	return 1
+end
+run("Close other buffers")
+assert(asked == 1, "expected one question, got " .. asked)
+local left = vim.fn.getbufinfo({ buflisted = 1 })
+assert(#left == 1 and left[1].bufnr == keep, "close others left " .. #left .. " buffers")
+vim.fn.confirm = confirm
 
 -- Closing the buffer shown in a split keeps the split.
 reset()
