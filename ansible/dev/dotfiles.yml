@@ -27,7 +27,7 @@
   args:
     chdir: "{{ dotfiles_dir }}"
   loop: "{{ _stow_packages.files }}"
-  when: (item.path | basename) != '.git'
+  when: (item.path | basename) not in ['ansible', '.git']
   become: true
   become_user: "{{ user_name }}"
   environment:

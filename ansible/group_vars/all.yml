@@ -5,8 +5,8 @@ user_home: /home/dkl
 dotfiles_repo: https://github.com/dklawren/dotfiles.git
 dotfiles_dir: "{{ user_home }}/.dotfiles"
 
-distrobox_name: fedora
-distrobox_image: fedora:latest
+distrobox_name: fedora-45
+distrobox_image: fedora:45
 
 flatpak_remotes:
   - name: flathub
@@ -23,32 +23,25 @@ flatpak_apps:
   - com.github.rafostar.Clapper.Enhancers
   - com.github.tchx84.Flatseal
   - com.google.Chrome
-  - com.jeffser.Alpaca
-  - com.jeffser.Alpaca.Plugins.Ollama
   - com.mattjakeman.ExtensionManager
   - com.slack.Slack
   - com.spotify.Client
-  - com.todoist.Todoist
   - com.transmissionbt.Transmission
   - com.ultimaker.cura
   - com.usebottles.bottles
   - de.capypara.FieldMonitor
   - dev.diegovsky.Riff
   - dev.geopjr.Tuba
-  - io.github.alainm23.planify
   - io.github.flattool.Warehouse
   - io.gitlab.adhami3310.Impression
   - io.gitlab.librewolf-community
   - io.missioncenter.MissionCenter
   - io.podman_desktop.PodmanDesktop
   - it.mijorus.gearlever
-  - md.obsidian.Obsidian
   - me.iepure.devtoolbox
   - org.chromium.Chromium
   - org.chromium.Chromium.Codecs
   - org.fedoraproject.MediaWriter
-  - org.gnome.Boxes
-  - org.gnome.Boxes.Extension.OsinfoDb
   - org.gnome.Firmware
   - org.gnome.Fractal
   - org.gnome.gitlab.cheywood.Pulp
