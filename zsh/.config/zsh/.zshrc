@@ -64,7 +64,13 @@ check_and_spawn_session
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
 
 autoload -Uz compinit && compinit
-command -v herdr >/dev/null && source <(herdr completion zsh)
-eval "$(opencode --completions zsh)"
 
+# herdr
+command -v herdr >/dev/null && source <(herdr completion zsh)
+
+# perl
 eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+
+# opencode
+export PATH=/home/dkl/.opencode/bin:$PATH
+command -v opencode >/dev/null && source <(opencode --completions zsh)
