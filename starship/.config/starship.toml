@@ -1,1 +1,7 @@
 command_timeout = 2000
+
+[custom.git_repo]
+command = 'git remote get-url origin 2>/dev/null | sed -E "s/.*[:/]([^/]*\/[^/]*)(\.git)?$/\1/"'
+when = 'git remote get-url origin 2>/dev/null | grep -q .'
+style = "bold cyan"
+format = "\\[[$output]($style)\\] "
