@@ -40,23 +40,22 @@ fi
 eval "$(zoxide init zsh)"
 
 # ===========================================
-# 11. Session Management Checks (tmux/IDE)
+# 11. Session Management Checks (herdr/IDE)
 # ===========================================
 function check_and_spawn_session() {
-    # Only act in interactive shells; skip scripts, SSH-exec, etc.
+    # Only act in interactive shells. Skip scripts, SSH-exec, etc.
     [[ $- == *i* ]] || return
-    # Need tmux available to do anything useful.
-    command -v tmux >/dev/null 2>&1 || return
-    # Already inside tmux: nothing to do.
-    [[ -n "$TMUX" ]] && return
+    # Need herdr available to do anything useful.
+    command -v herdr >/dev/null 2>&1 || return
+    # Already inside a herdr pane (herdr sets HERDR_ENV=1), so nothing to do.
+    [[ "$HERDR_ENV" == "1" ]] && return
 
     # Skip inside VS Code / embedded IDE terminals.
     case "$TERM_PROGRAM" in vscode) return ;; esac
     [[ -n "$VSCODE_INJECTION" ]] && return
 
-    # Attach to an existing 'main' session, creating it if needed, and
-    # replace this shell so we actually land inside tmux.
-    exec tmux new-session -A -s main
+    # Replace this shell so closing herdr closes the terminal.
+    exec herdr
 }
 
 # Run the check when the shell starts
@@ -65,6 +64,7 @@ check_and_spawn_session
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
 
 autoload -Uz compinit && compinit
+command -v herdr >/dev/null && source <(herdr completion zsh)
 eval "$(opencode --completions zsh)"
 
 eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
