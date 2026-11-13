@@ -143,8 +143,7 @@
 	  helper = /home/dkl/.mozbuild/git-cinnabar/git-cinnabar-helper
 	  version-check = 1579111512
 [pull]
-	  rebase = true
-    ff = false
+	ff = only
 [credential]
     helper = libsecret
 [gpg]
