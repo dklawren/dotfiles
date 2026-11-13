@@ -1,0 +1,7 @@
+# ~/.config/herdr symlinks to this directory, so it holds all of Herdr's
+# runtime state (logs, sockets, session snapshots). Only hand-authored
+# config is tracked.
+
+# Ignore everything else except the allowlist below
+.config/herdr/*
+!.config/herdr/config.toml
