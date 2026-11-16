@@ -11,13 +11,12 @@ alias grep='rg --color=auto'
 # Lazygit shortcut
 alias lg='lazygit'
 
-# Workmux
-alias wm='workmux'
-alias wml='workmux list'
-alias wma='workmux add'
-alias wms='workmux status'
-alias wmd='workmux dashboard'
-alias wmr='workmux remove'
+# Worktrunk (git worktrees); `wt` itself needs the shell init in .zshrc to cd
+alias wtl='wt list'
+alias wts='wt switch'
+alias wtc='wt switch --create'
+alias wtm='wt merge'
+alias wtr='wt remove'
 
 # Dotfile management
 alias config='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'

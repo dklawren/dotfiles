@@ -24,6 +24,6 @@ export VISUAL="nvim"
 
 # distrobox: /etc/profile.d/distrobox_profile.sh runs `host-spawn` on every
 # login shell when this is empty, and host-spawn swallows pending terminal
-# input (e.g. the `claude` command workmux sends to new panes). Any non-empty
+# input (e.g. a command a multiplexer sends to a new pane). Any non-empty
 # value skips that call. Only openSUSE's xauth reads it.
 export XAUTHLOCALHOSTNAME="${XAUTHLOCALHOSTNAME:-$HOST}"

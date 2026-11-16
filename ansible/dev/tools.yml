@@ -13,14 +13,11 @@
     cmd: |
       source {{ user_home }}/.cargo/env
       cargo install --locked {{ item.pkg }}
-      {% if item.pkg == 'worktrunk' %}
-      wt config shell install --yes zsh
-      {% endif %}
     creates: "{{ user_home }}/.cargo/bin/{{ item.bin }}"
   loop:
     - { pkg: zoxide, bin: zoxide }
     - { pkg: eza, bin: eza }
-    - { pkg: workmux, bin: workmux }
+    - { pkg: worktrunk, bin: wt }
     - { pkg: perl-lsp, bin: perl-lsp }
     - { pkg: foxtail, bin: foxtail }
     - { pkg: stylua, bin: stylua }

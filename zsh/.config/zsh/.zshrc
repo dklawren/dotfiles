@@ -39,6 +39,9 @@ fi
 # Zoxide
 eval "$(zoxide init zsh)"
 
+# Worktrunk: shell wrapper so `wt switch` can cd into worktrees
+command -v wt >/dev/null && eval "$(command wt config shell init zsh)"
+
 # ===========================================
 # 11. Session Management Checks (herdr/IDE)
 # ===========================================
