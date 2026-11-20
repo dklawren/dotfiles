@@ -1,0 +1,82 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 32,
+  "spacing": 4,
+  "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "custom/recording", "custom/nightlight", "pulseaudio", "backlight",
+    "network", "bluetooth", "battery", "custom/notification", "tray", "custom/power"
+  ],
+
+  "sway/workspaces": { "disable-scroll": false, "all-outputs": false, "format": "{name}" },
+  "sway/mode": { "format": "{}" },
+  "sway/window": { "format": "{app_id}: {title}", "max-length": 60, "tooltip": false, "icon": false },
+
+  "clock": {
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": { "mode": "month", "format": { "today": "<b><span color='#fabd2f'>{}</span></b>" } }
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 muted",
+    "format-icons": { "default": ["󰕿", "󰖀", "󰕾"], "headphone": "󰋋" },
+    "scroll-step": 5,
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "pavucontrol"
+  },
+  "backlight": { "device": "intel_backlight", "format": "󰃟 {percent}%", "scroll-step": 5 },
+  "network": {
+    "format-wifi": "󰤨 {essid}",
+    "format-ethernet": "󰈀 {ipaddr}",
+    "format-disconnected": "󰤭 offline",
+    "tooltip-format": "{ifname}  {ipaddr}\n{signalStrength}%",
+    "on-click": "nm-connection-editor"
+  },
+  "bluetooth": {
+    "format": "󰂯",
+    "format-off": "󰂲",
+    "format-disabled": "󰂲",
+    "format-connected": "󰂱 {num_connections}",
+    "on-click": "blueman-manager"
+  },
+  "battery": {
+    "states": { "warning": 25, "critical": 12 },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"]
+  },
+  "custom/nightlight": {
+    "exec": "~/.local/bin/sway-nightlight status",
+    "return-type": "json",
+    "interval": 30,
+    "signal": 8,
+    "on-click": "~/.local/bin/sway-nightlight toggle"
+  },
+  "custom/recording": {
+    "exec": "echo '{\"text\":\"󰑊 REC\",\"class\":\"rec\"}'",
+    "exec-if": "pgrep -x wf-recorder",
+    "return-type": "json",
+    "interval": 2,
+    "on-click": "~/.local/bin/sway-record"
+  },
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󱅫", "none": "󰂜",
+      "dnd-notification": "󰂛", "dnd-none": "󰪑"
+    },
+    "return-type": "json",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+  "tray": { "icon-size": 16, "spacing": 8 },
+  "custom/power": { "format": "󰐥", "tooltip": false, "on-click": "~/.local/bin/sway-powermenu" }
+}

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# sway-lid close|open — external monitor connected: toggle internal panel; else lock (logind suspends).
+internal=$(swaymsg -t get_outputs -r | jq -r '[.[]|select(.name|test("^(eDP|LVDS)"))][0].name')
+others=$(swaymsg -t get_outputs -r | jq -r --arg i "$internal" '[.[]|select(.name!=$i and .active)]|length')
+case "$1" in
+  close) if [ "${others:-0}" -gt 0 ]; then swaymsg output "$internal" disable; else "$(dirname "$0")/sway-lock"; fi ;;
+  open)  swaymsg output "$internal" enable ;;
+esac

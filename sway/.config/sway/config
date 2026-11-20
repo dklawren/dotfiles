@@ -1,0 +1,26 @@
+# Sway config — Gruvbox dark. Modular: see config.d/
+set $mod Mod4
+set $left h
+set $down j
+set $up k
+set $right l
+set $term ghostty
+set $menu fuzzel
+set $bin ~/.local/bin
+
+font pango:JetBrainsMono Nerd Font 10
+
+# Gruvbox palette
+set $bg     #282828
+set $bg0h   #1d2021
+set $bg1    #3c3836
+set $bg2    #504945
+set $fg     #ebdbb2
+set $gray   #928374
+set $red    #cc241d
+set $accent #83a598
+
+include ~/.config/sway/config.d/*.conf
+
+# Keep distro defaults (dbus env export, etc. on Ubuntu)
+include /etc/sway/config.d/*

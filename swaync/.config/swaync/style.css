@@ -1,41 +1,42 @@
-@define-color bg          #1a1b26;
-@define-color bg-dark     #16161e;
-@define-color fg          #a9b1d6;
-@define-color accent      #7aa2f7;
-@define-color alert       #f7768e;
+@define-color bg      #282828;
+@define-color bg-dark #1d2021;
+@define-color bg1     #3c3836;
+@define-color bg2     #504945;
+@define-color fg      #ebdbb2;
+@define-color gray    #928374;
+@define-color accent  #83a598;
+@define-color alert   #fb4934;
 
-* {
-    font-family: monospace;
-    background-clip: border-box;
-}
+* { font-family: "JetBrainsMono Nerd Font"; font-size: 13px; }
 
-.notification-row {
-    outline: none;
-}
-
+.notification-row { outline: none; }
 .notification {
-    background: @bg;
-    border: 2px solid @accent;
-    border-radius: 8px;
-    color: @fg;
-    margin: 6px;
-    padding: 10px;
+  background: @bg; color: @fg; border: 2px solid @bg2;
+  border-radius: 0; margin: 6px 12px; padding: 4px;
 }
+.notification.critical { border-color: @alert; }
+.notification-content { padding: 8px; }
+.summary { color: @fg; font-weight: bold; }
+.body, .time { color: @gray; }
+.close-button { background: @bg1; color: @fg; border-radius: 0; }
+.close-button:hover { background: @alert; }
 
 .control-center {
-    background: @bg-dark;
-    border: 2px solid @accent;
-    border-radius: 12px;
-    color: @fg;
-    padding: 12px;
+  background: @bg-dark; color: @fg; border: 2px solid @accent;
+  border-radius: 0; padding: 8px;
 }
+.control-center .notification-row .notification { background: @bg1; border-color: @bg1; }
+.control-center .notification-row:hover .notification { border-color: @accent; }
 
-.control-center .notification-row:focus,
-.control-center .notification-row:hover {
-    background: #24283b;
-}
-
-.widget-title {
-    color: @accent;
-    font-weight: bold;
-}
+.widget-title { margin: 8px; font-size: 16px; color: @accent; }
+.widget-title > button { background: @bg1; color: @fg; border: none; border-radius: 0; padding: 4px 12px; }
+.widget-title > button:hover { background: @bg2; }
+.widget-dnd { margin: 8px; color: @fg; }
+.widget-dnd > switch { background: @bg2; border-radius: 0; }
+.widget-dnd > switch:checked { background: @accent; }
+.widget-dnd > switch slider { background: @fg; border-radius: 0; }
+.widget-volume, .widget-backlight { background: @bg1; margin: 4px 8px; padding: 6px 10px; }
+trough { background: @bg2; border-radius: 0; }
+highlight { background: @accent; border-radius: 0; }
+.widget-mpris { background: @bg1; margin: 4px 8px; padding: 6px; }
+.widget-mpris button { color: @fg; }

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Lock with swaylock; also unlock on fingerprint match (fprintd) without PAM,
+# so a stuck reader can never block password entry.
+# Watcher log: ${XDG_RUNTIME_DIR:-/tmp}/sway-lock-fp.log
+pgrep -x swaylock >/dev/null && exit 0
+
+swaylock -f
+pid=$(pgrep -n -x swaylock) || exit 0
+
+command -v fprintd-verify >/dev/null || exit 0
+
+log=${XDG_RUNTIME_DIR:-/tmp}/sway-lock-fp.log
+setsid bash -c '
+  pid=$1
+  echo "$(date +%T) watcher start, swaylock pid $pid"
+  sleep 1
+  while kill -0 "$pid" 2>/dev/null; do
+    out=$(timeout 30 fprintd-verify </dev/null 2>&1)
+    echo "$(date +%T) fprintd-verify: $(echo "$out" | tail -n2 | tr "\n" " ")"
+    if grep -q "verify-match" <<<"$out"; then
+      kill -USR1 "$pid" && echo "$(date +%T) sent USR1"
+      break
+    fi
+    sleep 1
+  done
+  echo "$(date +%T) watcher exit"
+' _ "$pid" >"$log" 2>&1 </dev/null &

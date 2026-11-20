@@ -1,169 +1,31 @@
 #!/usr/bin/env bash
 #
-# install.sh — Sway + Catppuccin Mocha desktop setup for Ubuntu 26.04
-#
-# Installs Sway and a matching set of Wayland desktop tools (waybar, mako,
-# fuzzel, alacritty, swaylock/swayidle, screenshot tools, portals), then
-# unpacks a Catppuccin-Mocha-themed config tarball into ~/.config.
-#
-# Assumes: GNOME/GDM stays installed as the login manager. This script adds
-# a Sway session entry so you can pick "Sway" from the GDM session menu
-# without removing GNOME.
-#
-# Usage:
-#   ./install.sh
-#
+# install-sway-ubuntu.sh — packages for the Gruvbox Sway desktop on Ubuntu.
+# GNOME/GDM stays; Sway shows up as a session in the GDM menu.
+# Configs come from this repo via `stow .` (run it after this script).
 set -euo pipefail
 
-CONFIG_TARBALL="${1:-sway-catppuccin-config.tar.gz}"
-
-echo "==> Checking for config tarball: ${CONFIG_TARBALL}"
-if [[ ! -f "${CONFIG_TARBALL}" ]]; then
-  echo "ERROR: ${CONFIG_TARBALL} not found in the current directory." >&2
-  echo "Run this script from the same directory as the tarball, or pass its path as \$1." >&2
-  exit 1
-fi
-
-echo "==> Updating package lists"
-sudo apt update
-
 PACKAGES=(
-  alacritty
-  brightnessctl
-  fonts-jetbrains-mono
-  fuzzel
-  grim
-  inkscape
-  jq
-  kanshi
-  mako-notifier
-  network-manager-gnome
-  optipng
-  papirus-icon-theme
-  pavucontrol
-  playerctl
-  sassc
-  slurp
-  sound-theme-freedesktop
-  swappy
-  sway
-  swaybg
-  swayidle
-  swaylock
-  waybar
-  wl-clipboard
-  xdg-desktop-portal
-  xdg-desktop-portal-gtk
-  xdg-desktop-portal-wlr
-  xwayland
+  sway swaybg swayidle swaylock waybar fuzzel kanshi
+  sway-notification-center libnotify-bin swayosd
+  grim slurp swappy wf-recorder wl-clipboard cliphist
+  wlsunset brightnessctl playerctl
+  pipewire wireplumber pipewire-pulse pavucontrol
+  network-manager-gnome blueman policykit-1-gnome gnome-keyring
+  xdg-desktop-portal-wlr xdg-desktop-portal-gtk
+  papirus-icon-theme fonts-noto-color-emoji jq unzip curl stow
 )
 
-echo "==> Installing packages: ${PACKAGES[*]}"
+sudo apt update
 sudo apt install -y "${PACKAGES[@]}"
 
-# --- Polkit authentication agent -------------------------------------------
-# GDM/GNOME normally supplies one implicitly; a bare Sway session needs its
-# own. policykit-1-gnome was dropped from the default install set in recent
-# Ubuntu releases but is still installable.
-echo "==> Installing a polkit authentication agent"
-if ! sudo apt install -y policykit-1-gnome 2>/dev/null; then
-  echo "    policykit-1-gnome unavailable, falling back to polkit-kde-agent-1"
-  sudo apt install -y polkit-kde-agent-1
+# JetBrainsMono Nerd Font (bar icons)
+if ! fc-list | grep -qi "JetBrainsMono Nerd"; then
+  mkdir -p ~/.local/share/fonts
+  curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip -o /tmp/jbm.zip
+  unzip -oq /tmp/jbm.zip -d ~/.local/share/fonts/JetBrainsMonoNerd
+  fc-cache -f
 fi
 
-# --- Backlight brightness permissions ---------------------------------------
-# brightnessctl (bound to the XF86MonBrightness keys in the sway config) writes
-# to /sys/class/backlight/*/brightness, which is only group-writable by "video".
-# The brightnessctl package ships a udev rule granting that access, but the user
-# still has to be a member of the video group for it to take effect. Group
-# membership only applies to new login sessions, so log out/in after this.
-echo "==> Adding $USER to the video group (for brightnessctl backlight control)"
-sudo usermod -aG video "$USER"
-
-# --- Catppuccin-flavored GTK theme (for GTK apps launched from Sway) -------
-# The official catppuccin/gtk repo is archived and no longer maintained.
-# It was built on top of vinceliuice/Colloid-gtk-theme, which IS still
-# actively maintained and ships a Catppuccin color scheme built in via its
-# --tweaks flag. We build from that upstream instead.
-GTK_THEME_NAME="Colloid-catppuccin-Dark"
-GTK_THEME_DIR="$HOME/.themes/${GTK_THEME_NAME}"
-if [[ ! -d "${GTK_THEME_DIR}" ]]; then
-  echo "==> Installing Colloid GTK theme (Catppuccin color scheme)"
-  # Build dependencies for Colloid's install.sh
-  sudo apt install -y sassc optipng inkscape
-
-  TMP_GTK=$(mktemp -d)
-  git clone --depth=1 https://github.com/vinceliuice/Colloid-gtk-theme.git "${TMP_GTK}/colloid-gtk" || {
-    echo "    Could not clone Colloid-gtk-theme (network-restricted?) — skipping GTK theme install."
-    echo "    You can install it manually later from https://github.com/vinceliuice/Colloid-gtk-theme"
-  }
-  if [[ -d "${TMP_GTK}/colloid-gtk" ]]; then
-    mkdir -p "$HOME/.themes"
-    (
-      cd "${TMP_GTK}/colloid-gtk" && \
-      ./install.sh --tweaks catppuccin -c dark -l -d "$HOME/.themes"
-    ) || echo "    Colloid install.sh failed — see output above."
-  fi
-  rm -rf "${TMP_GTK}"
-fi
-echo "==> GTK theme(s) now in ~/.themes:"
-ls "$HOME/.themes" 2>/dev/null | grep -i colloid || echo "    (none found — check the install output above for errors)"
-echo "    Use the exact folder name above as the value for:"
-echo "    gsettings set org.gnome.desktop.interface gtk-theme '<name>'"
-
-# --- GPU driver check --------------------------------------------------------
-# The --unsupported-gpu workaround is only needed when sway detects the
-# proprietary NVIDIA driver. If you're on nouveau (as you are now), it's
-# not required — but we check live rather than assume.
-echo "==> Checking active GPU driver"
-NEEDS_UNSUPPORTED_FLAG=0
-if lsmod | grep -q '^nvidia '; then
-  echo "    Proprietary NVIDIA driver detected — Sway will need --unsupported-gpu."
-  NEEDS_UNSUPPORTED_FLAG=1
-else
-  echo "    No proprietary NVIDIA driver loaded (nouveau/other) — no flag needed."
-fi
-
-# --- GDM session entry -------------------------------------------------------
-SWAY_BIN="$(command -v sway)"
-DESKTOP_FILE="/usr/share/wayland-sessions/sway-catppuccin.desktop"
-EXEC_LINE="${SWAY_BIN}"
-if [[ "${NEEDS_UNSUPPORTED_FLAG}" -eq 1 ]]; then
-  EXEC_LINE="${SWAY_BIN} --unsupported-gpu"
-fi
-
-echo "==> Writing GDM session entry to ${DESKTOP_FILE}"
-sudo tee "${DESKTOP_FILE}" > /dev/null <<EOF
-[Desktop Entry]
-Name=Sway (Catppuccin)
-Comment=Sway, a tiling Wayland compositor
-Exec=${EXEC_LINE}
-Type=Application
-DesktopNames=sway
-EOF
-
-# --- Unpack config tarball ---------------------------------------------------
-echo "==> Backing up any existing configs that would be overwritten"
-for d in sway waybar mako alacritty fuzzel swaylock; do
-  if [[ -d "$HOME/.config/$d" ]]; then
-    mv "$HOME/.config/$d" "$HOME/.config/${d}.bak.$(date +%s)"
-    echo "    backed up ~/.config/$d"
-  fi
-done
-
-echo "==> Extracting Catppuccin Mocha config into ~/.config"
-mkdir -p "$HOME/.config"
-tar xzf "${CONFIG_TARBALL}" -C "$HOME/.config"
-
-echo "==> Done."
-echo ""
-echo "Log out, and at the GDM login screen click the gear icon next to your"
-echo "name, then choose 'Sway (Catppuccin)' before signing in."
-echo ""
-echo "First-launch checklist:"
-echo "  - mod key is Super (Windows key) by default; see ~/.config/sway/config"
-echo "  - mod+d opens fuzzel (app launcher)"
-echo "  - mod+Return opens alacritty"
-echo "  - mod+Shift+e opens the exit menu"
-echo "  - brightness keys need the 'video' group added above — this only takes"
-echo "    effect after a full logout/login (or reboot)"
+command -v ghostty >/dev/null || echo "NOTE: ghostty not installed — see https://github.com/mkasberg/ghostty-ubuntu"
+echo "Done. Run 'stow .' in ~/.dotfiles, then pick 'Sway' in the GDM session menu."

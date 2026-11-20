@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# sway-nightlight start|stop|toggle|status
+#   start  — wlsunset on a schedule: warm 3500K from 19:00 to 07:00 (neutral by day)
+#   toggle — on: force warm 3500K immediately, regardless of time; off: stop wlsunset
+# wlsunset stderr goes to ${XDG_RUNTIME_DIR:-/tmp}/sway-nightlight.log
+log=${XDG_RUNTIME_DIR:-/tmp}/sway-nightlight.log
+on() { pgrep -x wlsunset >/dev/null; }
+scheduled() { setsid wlsunset -t 3500 -T 6500 -S 07:00 -s 19:00 >"$log" 2>&1 </dev/null & }
+forced()    { setsid wlsunset -t 3500 -T 3501 -S 00:00 -s 00:01 >"$log" 2>&1 </dev/null & }
+case "$1" in
+  start)  on || scheduled ;;
+  stop)   pkill -x wlsunset ;;
+  toggle) if on; then pkill -x wlsunset; else forced; fi
+          sleep 0.3; pkill -RTMIN+8 waybar; exit 0 ;;
+  status) if on; then echo '{"text":"󰖔","tooltip":"Night light: on","class":"on"}'; else echo '{"text":"󰖨","tooltip":"Night light: off","class":"off"}'; fi ;;
+esac
