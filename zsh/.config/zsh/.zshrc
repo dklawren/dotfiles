@@ -77,3 +77,5 @@ eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 # opencode
 export PATH=/home/dkl/.opencode/bin:$PATH
 command -v opencode >/dev/null && source <(opencode completion zsh)
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
