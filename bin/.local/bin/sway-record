@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 # Toggle screen recording: region select, saved to ~/Videos/Recordings
-if pkill -SIGINT -x wf-recorder; then notify-send "Recording stopped"; exit 0; fi
+# Waybar REC indicator refreshes on RTMIN+9 (custom/recording "signal": 9)
+refresh() { pkill -RTMIN+9 waybar; }
+if pkill -SIGINT -x wf-recorder; then sleep 0.3; refresh; notify-send "Recording stopped"; exit 0; fi
 dir="$HOME/Videos/Recordings"; mkdir -p "$dir"
 g=$(slurp -d -b '#28282880' -c '#fb4934' -w 2) || exit 0
 notify-send "Recording started" "Mod+Shift+R to stop"
+( sleep 0.5; refresh ) &
 wf-recorder -g "$g" -f "$dir/$(date +%Y-%m-%d_%H-%M-%S).mp4"
+refresh

@@ -22,5 +22,6 @@ set $accent #83a598
 
 include ~/.config/sway/config.d/*.conf
 
-# Keep distro defaults (dbus env export, etc. on Ubuntu)
+# Distro defaults, if the package ships any (absent on this Ubuntu install;
+# 40-startup.conf does the dbus/systemd env export itself)
 include /etc/sway/config.d/*

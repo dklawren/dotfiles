@@ -25,6 +25,8 @@
 | `Super+Shift+H/J/K/L` or `Super+Shift+←/↓/↑/→` | Move window left/down/up/right |
 | `Super+Tab` | Toggle focus between tiling and floating |
 | `Super+A` | Focus parent container |
+| `Super+Shift+Grave` (backtick) | Move window to scratchpad |
+| `Super+Grave` (backtick) | Show/cycle scratchpad |
 | `Super+Left mouse drag` | Move floating window |
 | `Super+Right mouse drag` | Resize floating window |
 
@@ -51,6 +53,9 @@
 | `Super+Shift+1` … `Super+Shift+0` | Move window to workspace 1–10 |
 | `Super+Ctrl+←` / `Super+Ctrl+H` | Previous workspace |
 | `Super+Ctrl+→` / `Super+Ctrl+L` | Next workspace |
+| `Super+Ctrl+Shift+←/→` or `+H/L` | Move workspace to left/right monitor |
+
+Pressing the key for the workspace you are already on jumps back to the previous one.
 
 ## Media, volume, brightness
 
@@ -83,4 +88,4 @@ Screenshots go to `~/Pictures/Screenshots` and the clipboard; recordings to `~/V
 |---|---|
 | Laptop lid closed | Lock (suspends) if alone; disable internal panel if an external monitor is connected |
 | Laptop lid opened | Re-enable internal panel |
-| Idle 5 / 10 / 15 / 30 min | Dim / lock / screen off / suspend |
+| Idle 5 / 10 / 15 / 30 min | Dim / lock / screen off / suspend (suspend on battery only; Waybar idle toggle blocks all) |

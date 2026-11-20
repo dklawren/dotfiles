@@ -6,7 +6,7 @@
   "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
   "modules-center": ["clock"],
   "modules-right": [
-    "custom/recording", "custom/nightlight", "pulseaudio", "backlight",
+    "custom/recording", "idle_inhibitor", "custom/nightlight", "pulseaudio", "backlight",
     "network", "bluetooth", "battery", "custom/notification", "tray", "custom/power"
   ],
 
@@ -25,7 +25,7 @@
     "format-muted": "󰝟 muted",
     "format-icons": { "default": ["󰕿", "󰖀", "󰕾"], "headphone": "󰋋" },
     "scroll-step": 5,
-    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click": "swayosd-client --output-volume mute-toggle",
     "on-click-right": "pavucontrol"
   },
   "backlight": { "device": "intel_backlight", "format": "󰃟 {percent}%", "scroll-step": 5 },
@@ -50,6 +50,12 @@
     "format-plugged": "󰚥 {capacity}%",
     "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"]
   },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": { "activated": "󰅶", "deactivated": "󰾪" },
+    "tooltip-format-activated": "Idle inhibited: no dim/lock/suspend",
+    "tooltip-format-deactivated": "Idle allowed"
+  },
   "custom/nightlight": {
     "exec": "~/.local/bin/sway-nightlight status",
     "return-type": "json",
@@ -61,7 +67,8 @@
     "exec": "echo '{\"text\":\"󰑊 REC\",\"class\":\"rec\"}'",
     "exec-if": "pgrep -x wf-recorder",
     "return-type": "json",
-    "interval": 2,
+    "interval": "once",
+    "signal": 9,
     "on-click": "~/.local/bin/sway-record"
   },
   "custom/notification": {

@@ -20,11 +20,13 @@ window#waybar { background: @bg; color: @fg; border-bottom: 2px solid @bg1; }
 #mode { padding: 0 10px; background: @yellow; color: @bg; }
 
 #clock, #pulseaudio, #backlight, #network, #bluetooth, #battery,
-#custom-nightlight, #custom-recording, #custom-notification, #custom-power, #tray {
+#idle_inhibitor, #custom-nightlight, #custom-recording, #custom-notification, #custom-power, #tray {
   padding: 0 10px; color: @fg;
 }
 #custom-nightlight.off { color: @gray; }
 #custom-nightlight.on { color: @yellow; }
+#idle_inhibitor.deactivated { color: @gray; }
+#idle_inhibitor.activated { color: @yellow; }
 #custom-recording { color: @bg; background: @red; }
 #pulseaudio.muted, #network.disconnected, #bluetooth.off { color: @gray; }
 #battery.charging, #battery.plugged { color: @green; }

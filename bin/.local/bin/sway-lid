@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 # sway-lid close|open — external monitor connected: toggle internal panel; else lock (logind suspends).
+# On open, retry enabling the panel: after s2idle resume the DRM modeset can fail transiently.
+log=${XDG_RUNTIME_DIR:-/tmp}/sway-lid.log
+guard=${XDG_RUNTIME_DIR:-/tmp}/sway-lid.reloaded
 internal=$(swaymsg -t get_outputs -r | jq -r '[.[]|select(.name|test("^(eDP|LVDS)"))][0].name')
 others=$(swaymsg -t get_outputs -r | jq -r --arg i "$internal" '[.[]|select(.name!=$i and .active)]|length')
+active() { swaymsg -t get_outputs -r | jq -e --arg i "$internal" '.[]|select(.name==$i and .active)' >/dev/null; }
 case "$1" in
   close) if [ "${others:-0}" -gt 0 ]; then swaymsg output "$internal" disable; else "$(dirname "$0")/sway-lock"; fi ;;
-  open)  swaymsg output "$internal" enable ;;
+  open)
+    for i in 1 2 3 4 5 6; do
+      swaymsg output "$internal" enable >/dev/null 2>&1
+      swaymsg 'output * power on' >/dev/null 2>&1
+      sleep 1
+      active && { echo "$(date +%T) open: $internal active (try $i)" >>"$log"; rm -f "$guard"; exit 0; }
+    done
+    # bindswitch --reload re-runs this script after a reload; the guard lets us reload only once.
+    if [ -e "$guard" ]; then
+      echo "$(date +%T) open: $internal still inactive after reload, giving up" >>"$log"; rm -f "$guard"; exit 1
+    fi
+    echo "$(date +%T) open: $internal still inactive, reloading" >>"$log"
+    touch "$guard"
+    swaymsg reload
+    ;;
 esac

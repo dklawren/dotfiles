@@ -60,5 +60,8 @@ flatpak install -y --or-update firefoxnightly-origin org.mozilla.FirefoxNightly
 # Enable Wayland support for Thunderbird
 sudo flatpak override --system --env=MOZ_ENABLE_WAYLAND=1 org.mozilla.Thunderbird
 
+# Run Slack (Electron) natively on Wayland: sharp text at fractional scale (sway desktop)
+flatpak override --user --socket=wayland --env=ELECTRON_OZONE_PLATFORM_HINT=auto com.slack.Slack
+
 # Themes
 sudo flatpak override --system --filesystem=xdg-data/themes

@@ -98,13 +98,14 @@ come from `bin/.local/bin/install-sway-ubuntu.sh`, then `stow .`.
 - Launcher/menus: `fuzzel` (also used in `--dmenu` mode by the power menu and
   clipboard picker). Clipboard history: `cliphist` + `wl-clipboard`.
 - Lock/idle: `swaylock` + `swayidle` (dim 5m, lock 10m, screen off 15m,
-  suspend 30m). Lid close locks, or disables the internal panel when an
+  suspend 30m on battery only, via `sway-idle-suspend`; Waybar `idle_inhibitor`
+  blocks all of them). Lid close locks, or disables the internal panel when an
   external monitor is attached.
 - Night light: `wlsunset` (fixed 07:00-19:00 schedule, 3500K) via
   `sway-nightlight`; Waybar has a toggle. Screen recording: `wf-recorder`.
 - Keyboard shortcuts are documented in `KEYBOARD.md`; update it when bindings change.
 - Helper scripts live in `bin/.local/bin/sway-*` (`lock`, `lid`, `powermenu`,
-  `clipboard`, `screenshot`, `record`, `nightlight`). Screenshots use
+  `clipboard`, `screenshot`, `record`, `nightlight`, `idle-suspend`). Screenshots use
   `grim`/`slurp`/`swappy`.
 - Portals: `xdg-desktop-portal/.config/xdg-desktop-portal/sway-portals.conf`
   (wlr for screencast, gtk fallback). Display profiles: `kanshi/`.
