@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Window switcher: list all windows in fuzzel and focus the chosen one.
+list=$(swaymsg -t get_tree | jq -r '
+  .. | select(.pid? and .type? == "con" or .type? == "floating_con")
+  | select(.pid?)
+  | "\(.id)\t\(.app_id // .window_properties.class // "?") — \(.name)"')
+[ -z "$list" ] && exit 0
+sel=$(printf '%s\n' "$list" | fuzzel --dmenu --prompt='󰖯  ' -d $'\t' --with-nth=2 --accept-nth=1) || exit 0
+[ -n "$sel" ] && swaymsg "[con_id=$sel] focus"

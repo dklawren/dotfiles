@@ -10,6 +10,7 @@
 | `Super+Enter` | Terminal (ghostty) |
 | `Super+D` / `Super+Space` | App launcher (fuzzel) |
 | `Super+V` | Clipboard history |
+| `Super+/` | Window switcher (all windows) |
 | `Super+N` | Toggle notification center |
 | `Super+Shift+N` | Toggle Do Not Disturb |
 | `Super+Esc` | Lock screen |
