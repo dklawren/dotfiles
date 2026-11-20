@@ -8,6 +8,21 @@
   environment:
     HOME: "{{ user_home }}"
 
+# The rustup install above only runs once. Keep stable current so new crate
+# releases (which bump their MSRV) can still be built with --locked.
+- name: Update Rust stable toolchain
+  ansible.builtin.shell:
+    cmd: |
+      source {{ user_home }}/.cargo/env
+      rustup update stable --no-self-update
+  register: _rustup_update
+  changed_when: "'updated -' in _rustup_update.stdout"
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    HOME: "{{ user_home }}"
+    CARGO_HOME: "{{ user_home }}/.cargo"
+
 - name: Install cargo tools
   ansible.builtin.shell:
     cmd: |

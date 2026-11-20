@@ -21,3 +21,14 @@
   become_user: "{{ user_name }}"
   environment:
     XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+
+# Run Slack (Electron) natively on Wayland: sharp text at fractional scale (sway)
+- name: Slack Wayland override
+  ansible.builtin.command:
+    cmd: flatpak override --user --socket=wayland --env=ELECTRON_OZONE_PLATFORM_HINT=auto com.slack.Slack
+  become: true
+  become_user: "{{ user_name }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ user_uid }}"
+  changed_when: false
+  when: "'com.slack.Slack' in flatpak_apps"

@@ -19,13 +19,16 @@ snap_packages_to_remove:
   - snapd
 
 apt_packages:
-  - alacritty
   - adb
+  - alacritty
   - ansible
   - apt-transport-https
+  - blueman
+  - brightnessctl
   - btop
   - build-essential
   - ca-certificates
+  - cliphist
   - cmake
   - curl
   - distrobox
@@ -42,32 +45,54 @@ apt_packages:
   - fonts-noto
   - fonts-noto-cjk
   - fonts-noto-color-emoji
+  - fprintd
+  - fuzzel
   - gcc
   - git
-  - gnome-software-plugin-flatpak
+  - gnome-keyring
   - gnome-shell-extension-appindicator
   - gnome-shell-extension-auto-move-windows
+  - gnome-software-plugin-flatpak
   - gnome-tweaks
   - gnupg
+  - grim
+  - jq
+  - kanshi
   - libfuse2t64
+  - libnotify-bin
   - linux-headers-generic
   - make
   - nala
   - nano
   - neovim
+  - network-manager-gnome
   - nodejs
   - npm
   - openjdk-25-jdk
   - p7zip
+  - papirus-icon-theme
+  - pavucontrol
   - perl
+  - pipewire
+  - pipewire-pulse
+  - playerctl
   - podman
+  - policykit-1-gnome
   - preload
   - python3-pip
   - rar
   - sassc
+  - slurp
   - software-properties-common
   - software-properties-gtk
   - stow
+  - swappy
+  - sway
+  - sway-notification-center
+  - swaybg
+  - swayidle
+  - swaylock
+  - swayosd
   - syncthing
   - timeshift
   - tlp
@@ -75,8 +100,15 @@ apt_packages:
   - ubuntu-restricted-extras
   - unrar
   - unzip
+  - waybar
+  - wf-recorder
   - wget
+  - wireplumber
+  - wl-clipboard
+  - wlsunset
   - wmctrl
+  - xdg-desktop-portal-gtk
+  - xdg-desktop-portal-wlr
   - zip
   - zsh
   - vanilla-gnome-default-settings

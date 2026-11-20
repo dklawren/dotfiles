@@ -14,3 +14,68 @@
 # via flatpak, which are already covered by `flatpak_apps` in all.yml.
 - name: Remove snap support
   ansible.builtin.include_tasks: snap.yml
+
+# JetBrainsMono Nerd Font (sway/waybar icons)
+- name: Check for JetBrainsMono Nerd Font
+  ansible.builtin.stat:
+    path: "{{ user_home }}/.local/share/fonts/JetBrainsMonoNerd"
+  register: _jbm_nerd
+
+- name: Install JetBrainsMono Nerd Font
+  when: not _jbm_nerd.stat.exists
+  become: true
+  become_user: "{{ user_name }}"
+  block:
+    - name: Create fonts directory
+      ansible.builtin.file:
+        path: "{{ user_home }}/.local/share/fonts/JetBrainsMonoNerd"
+        state: directory
+        mode: "0755"
+
+    - name: Download and extract font
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+        dest: "{{ user_home }}/.local/share/fonts/JetBrainsMonoNerd"
+        remote_src: true
+
+    - name: Refresh font cache
+      ansible.builtin.command: fc-cache -f
+      changed_when: true
+
+# Ghostty: no apt package; use the mkasberg/ghostty-ubuntu release .deb that
+# matches this Ubuntu version and architecture (newest release that has one).
+- name: Check for ghostty
+  ansible.builtin.command: dpkg-query -W ghostty
+  register: _ghostty
+  changed_when: false
+  failed_when: false
+
+- name: Install ghostty
+  when: _ghostty.rc != 0
+  block:
+    - name: Get ghostty-ubuntu releases
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/mkasberg/ghostty-ubuntu/releases?per_page=20
+        return_content: true
+      register: _ghostty_releases
+
+    - name: Pick the .deb for this release and architecture
+      ansible.builtin.set_fact:
+        _ghostty_deb: >-
+          {{ _ghostty_releases.json
+             | map(attribute='assets') | flatten
+             | selectattr('name', 'match', '^ghostty_.*_' ~ _ghostty_arch ~ '_' ~ ansible_facts['distribution_version'] ~ '\.deb$')
+             | map(attribute='browser_download_url') | first | default('') }}
+      vars:
+        _ghostty_arch: "{{ 'arm64' if ansible_facts['architecture'] == 'aarch64' else 'amd64' }}"
+
+    - name: Install ghostty .deb
+      ansible.builtin.apt:
+        deb: "{{ _ghostty_deb }}"
+      become: true
+      when: _ghostty_deb | length > 0
+
+    - name: Warn if no matching ghostty .deb
+      ansible.builtin.debug:
+        msg: "No ghostty-ubuntu .deb found for Ubuntu {{ ansible_facts['distribution_version'] }}"
+      when: _ghostty_deb | length == 0
