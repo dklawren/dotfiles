@@ -1,4 +1,28 @@
 ---
+# Charm apt repo (provides glow, used by sway-keys)
+- name: Create apt keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Add Charm apt signing key
+  ansible.builtin.shell: >-
+    curl -fsSL https://repo.charm.sh/apt/gpg.key |
+    gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+  args:
+    creates: /etc/apt/keyrings/charm.gpg
+  become: true
+
+- name: Add Charm apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *"
+    filename: charm
+    state: present
+    update_cache: false
+  become: true
+
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true

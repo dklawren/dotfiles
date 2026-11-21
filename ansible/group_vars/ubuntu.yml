@@ -49,6 +49,7 @@ apt_packages:
   - fuzzel
   - gcc
   - git
+  - glow
   - gnome-keyring
   - gnome-shell-extension-appindicator
   - gnome-shell-extension-auto-move-windows

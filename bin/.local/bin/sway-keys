@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Show KEYBOARD.md in a floating, scrollable ghostty window (toggle: run again to close).
+if pgrep -f 'class=dev.dkl.swaykeys' >/dev/null; then
+  pkill -f 'class=dev.dkl.swaykeys'; exit 0
+fi
+exec ghostty --class=dev.dkl.swaykeys --gtk-single-instance=false --title="Keyboard shortcuts" \
+  -e bash -c 'f=~/.config/sway/KEYBOARD.md
+glow -s ~/.config/sway/glow-gruvbox.json "$f" 2>/dev/null \
+  || bat --paging=always --style=plain --language=markdown "$f" \
+  || less "$f"'
