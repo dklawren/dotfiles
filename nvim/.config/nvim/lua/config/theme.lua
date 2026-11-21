@@ -58,7 +58,9 @@ local function apply_custom_highlights()
 		YankyYanked = { bg = colors.surface2 },
 
 		-- [5] Debugger (DAP)
-		DapBreakpoint = { fg = colors.red },
+		DapBreakpoint = { fg = colors.red, bold = true },
+		DiagnosticErrorLine = { bg = "#51202A" },
+		TreeCurrentFile = { fg = colors.yellow, bold = true },
 		DapStopped = { fg = colors.green },
 		DapLogPoint = { fg = colors.yellow },
 

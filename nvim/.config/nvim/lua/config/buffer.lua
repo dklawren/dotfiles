@@ -34,6 +34,22 @@ local function survivor(doomed)
 	return vim.api.nvim_create_buf(true, false)
 end
 
+---The buffer an action about "this file" means. In a quickfix window that is
+---the entry under the cursor, because the list is where a failing run leaves
+---you and the next keypress is about the file it points at.
+---@return integer
+function M.target()
+	local buf = vim.api.nvim_get_current_buf()
+	if vim.bo[buf].buftype == "quickfix" then
+		local idx = vim.fn.getqflist({ idx = 0 }).idx
+		local entry = vim.fn.getqflist({ items = 0 }).items[idx or 0]
+		if entry and entry.bufnr and entry.bufnr > 0 then
+			return entry.bufnr
+		end
+	end
+	return buf
+end
+
 ---@param targets integer[]
 ---@param force boolean? discard unsaved changes instead of asking
 function M.close(targets, force)
@@ -154,6 +170,7 @@ map("n", "<leader>fb", function()
 	require("config.picker").open(vim.fn.getbufinfo({ buflisted = 1 }), {
 		title = "Buffers",
 		skip_single = false,
+		filter = true,
 		format = function(item)
 			-- bufname, not the getbufinfo field: that one is the resolved path
 			local name = vim.fn.bufname(item.bufnr)
@@ -161,7 +178,7 @@ map("n", "<leader>fb", function()
 		end,
 		preview = function(item, ctx)
 			vim.fn.bufload(item.bufnr)
-			ctx.set_lines(vim.api.nvim_buf_get_lines(item.bufnr, 0, -1, false), vim.bo[item.bufnr].filetype)
+			ctx.set_buf(item.bufnr)
 		end,
 		on_confirm = function(item)
 			vim.cmd("buffer " .. item.bufnr)

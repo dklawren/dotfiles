@@ -45,12 +45,7 @@ end
 local function drop_phantoms()
 	for _, buf in ipairs(api.nvim_list_bufs()) do
 		local name = api.nvim_buf_is_valid(buf) and api.nvim_buf_get_name(buf) or ""
-		if
-			name ~= ""
-			and vim.bo[buf].buftype == ""
-			and not vim.bo[buf].modified
-			and vim.uv.fs_stat(name) == nil
-		then
+		if name ~= "" and vim.bo[buf].buftype == "" and not vim.bo[buf].modified and vim.uv.fs_stat(name) == nil then
 			api.nvim_buf_delete(buf, {})
 		end
 	end
@@ -79,7 +74,7 @@ function M.save()
 	end
 	local reason = write(M.file_for(M.cwd()))
 	if reason then
-		vim.notify("Session not saved: " .. reason, vim.log.levels.WARN)
+		vim.notify("not saved: " .. reason, vim.log.levels.WARN, { title = "session" })
 	end
 end
 
@@ -151,9 +146,20 @@ end
 local function restore(target)
 	local ok, why = M.load(target)
 	if not ok then
-		vim.notify(why, vim.log.levels.WARN)
+		vim.notify(why, vim.log.levels.WARN, { title = "session" })
 	end
 	return ok
+end
+
+---Throw a directory's session away, and say what happened.
+---@param target string
+local function remove(target)
+	local name = vim.fn.fnamemodify(target, ":~")
+	if M.delete(target) then
+		vim.notify("deleted " .. name, vim.log.levels.INFO, { title = "session" })
+	else
+		vim.notify("none for " .. name, vim.log.levels.INFO, { title = "session" })
+	end
 end
 
 --------------------------------------------------------------------------
@@ -161,20 +167,55 @@ end
 --------------------------------------------------------------------------
 
 api.nvim_create_user_command("Session", function(args)
-	restore(args.args ~= "" and vim.fn.expand(args.args) or M.cwd())
-end, { nargs = "?", complete = "dir", desc = "Restore the session for a directory" })
+	local sub = args.fargs[1]
+	if sub == "save" then
+		M.save()
+	elseif sub == "list" then
+		local rows = {}
+		for name in vim.fs.dir(dir) do
+			local path = name:gsub("%%2F", "/"):gsub("%.vim$", "")
+			rows[#rows + 1] = { path = vim.uri_decode(path) }
+		end
+		if #rows == 0 then
+			vim.notify("none yet", vim.log.levels.INFO, { title = "session" })
+			return
+		end
+		table.sort(rows, function(a, b)
+			return a.path < b.path
+		end)
+		require("config.picker").open(rows, {
+			title = "Sessions",
+			filter = true,
+			skip_single = false,
+			format = function(item)
+				return item.path
+			end,
+			keys = {
+				-- Not a letter: the filter line takes typing, and a path with a d in it
+				-- would delete instead of narrowing.
+				["<C-d>"] = {
+					desc = "Delete",
+					run = function(item)
+						remove(item.path)
+						vim.cmd("Session list")
+					end,
+				},
+			},
+			on_confirm = function(item)
+				restore(item.path)
+			end,
+		})
+	else
+		restore(sub and vim.fn.expand(sub) or M.cwd())
+	end
+end, { nargs = "*", complete = "dir", desc = "Restore the session for a directory (save, list)" })
 
 vim.keymap.set("n", "<leader>qs", function()
 	restore(M.cwd())
 end, { desc = "Restore the session for this directory" })
 
 vim.keymap.set("n", "<leader>qr", function()
-	local cwd = M.cwd()
-	if M.delete(cwd) then
-		vim.notify("Deleted session for " .. vim.fn.fnamemodify(cwd, ":~"))
-	else
-		vim.notify("No session to delete for " .. vim.fn.fnamemodify(cwd, ":~"))
-	end
+	remove(M.cwd())
 end, { desc = "Delete the session for this directory" })
 
 --------------------------------------------------------------------------

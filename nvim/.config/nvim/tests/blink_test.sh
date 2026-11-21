@@ -210,6 +210,7 @@ end
 -- is open before any key can arrive for it.
 vim.api.nvim_create_autocmd("UIEnter", {
 	once = true,
+	nested = true,
 	callback = function()
 		saw.preloaded = package.loaded["blink.cmp"] ~= nil
 		vim.cmd.edit(vim.fn.fnameescape(vim.env.BLINK_FILE))

@@ -1,3 +1,5 @@
+local typescript = require("config.typescript")
+
 -- vim.fs.root checks markers in order, not by proximity: it searches upward for
 -- marker[1] anywhere above, only falling to marker[2] if marker[1] is found nowhere.
 -- tsconfig/package.json must come first so a project nested under a plain folder
@@ -38,11 +40,12 @@ return {
 		on_dir(project_root or vim.fn.getcwd())
 	end,
 	settings = {
-		typescript = {
+		typescript = vim.tbl_deep_extend("force", typescript.settings(), {
 			tsserver = {
 				maxTsServerMemory = 4096,
 			},
-		},
+		}),
+		javascript = typescript.settings(),
 		vtsls = {
 			autoUseWorkspaceTsdk = true,
 		},

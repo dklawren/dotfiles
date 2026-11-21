@@ -87,7 +87,7 @@ local callouts = {
 local link_icons = {
 	{ "youtube%.com", "󰗃 " },
 	{ "github%.com", "󰊤 " },
-	{ "neovim%.io", "NEOVIM_ICON" },
+	{ "neovim%.io", "\u{f36f} " },
 	{ "stackoverflow%.com", "󰓌 " },
 	{ "discord%.com", "󰙯 " },
 	{ "reddit%.com", "󰑍 " },
@@ -990,29 +990,24 @@ api.nvim_create_autocmd("BufWipeout", {
 	end,
 })
 
--- Markdown preview use cli mdserve
-local mdserve_job = nil
-vim.keymap.set("n", "<leader>mp", function()
-	if mdserve_job then
-		vim.fn.jobstop(mdserve_job) -- stop previous mdserve
-	end
-
+vim.keymap.set("n", "<leader>mo", function()
 	local file = vim.fn.expand("%:p")
 	if file == "" then
-		vim.notify("No file to preview", vim.log.levels.WARN)
+		vim.notify("No file to preview", vim.log.levels.WARN, { title = "markdown" })
 		return
 	end
-	mdserve_job = vim.fn.jobstart({ "mdserve", file, "--port", "1337", "--open" }, { detach = true })
-end, { desc = "Markdown preview (mdserve)" })
-
--- Clean up mdserve process when exiting nvim
-vim.api.nvim_create_autocmd("VimLeavePre", {
-	callback = function()
-		if mdserve_job then
-			vim.fn.jobstop(mdserve_job)
-		end
-	end,
-})
+	-- mo adds the file to its server and opens nothing itself, so the URL it prints
+	-- is opened: the file view when the server starts, the session when it exists.
+	vim.fn.jobstart({ "mo", file }, {
+		stdin = "null",
+		on_stderr = function(_, data)
+			local url = table.concat(data or {}, ""):match("(http://localhost:%d+/?%S*)")
+			if url then
+				vim.fn.jobstart({ "open", url }, { detach = true })
+			end
+		end,
+	})
+end, { desc = "Markdown open (mo)" })
 
 vim.keymap.set("n", "<leader>um", function()
 	enabled = not enabled
@@ -1020,5 +1015,5 @@ vim.keymap.set("n", "<leader>um", function()
 		api.nvim_buf_clear_namespace(buf, ns, 0, -1)
 		schedule(buf)
 	end
-	vim.notify("Markdown rendering " .. (enabled and "on" or "off"))
+	vim.notify(enabled and "on" or "off", vim.log.levels.INFO, { title = "markdown" })
 end, { desc = "Toggle render markdown" })

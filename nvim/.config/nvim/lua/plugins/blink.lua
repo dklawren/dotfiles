@@ -42,7 +42,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 			})
 		end)
 		if not ok then
-			vim.notify("blink.cmp did not load: " .. tostring(err), vim.log.levels.ERROR)
+			vim.notify("blink.cmp did not load: " .. tostring(err), vim.log.levels.ERROR, { title = "completion" })
 		end
 	end,
 })

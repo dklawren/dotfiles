@@ -121,9 +121,9 @@ vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "BufEnter" }, {
 		end, 500)
 	end,
 })
----@type { words: table<integer, integer>, timers: table<integer, uv.uv_timer_t> }
 
-vim.api.nvim_create_autocmd({ "BufWipeout", "BufDelete" }, {
+-- BufFilePost is a rename: the icon and the word count belong to the old name.
+vim.api.nvim_create_autocmd({ "BufWipeout", "BufDelete", "BufFilePost" }, {
 	callback = function(args)
 		_icon_cache[args.buf] = nil
 		_diag_cache[args.buf] = nil
@@ -155,6 +155,7 @@ local function git_fragment()
 	if gs.root then
 		branch = vim.fn.fnamemodify(gs.root, ":t") .. "/" .. branch
 	end
+	branch = branch:gsub("%%", "%%%%")
 	-- "%#" is not a valid string.format conversion, so the groups are pasted
 	local s = "%#StatusGit#  " .. branch .. " %#StatusGitToNorm#"
 	for _, d in ipairs(GIT_DIFF) do
@@ -227,7 +228,7 @@ function M.build()
 	st = st .. git_fragment()
 
 	-- C: filename
-	local fnm = fn.expand("%:.")
+	local fnm = fn.expand("%:."):gsub("%%", "%%%%")
 	if fnm ~= "" then
 		st = st .. "%#StatusFile# " .. fnm .. " " .. (vim.bo.modified and " " or "") .. "%#StatusFileToNorm#"
 	end
@@ -237,10 +238,11 @@ function M.build()
 	-- right align
 	st = st .. "%="
 
-	-- LSP progress (e.g. "indexing…" from language servers)
+	-- LSP progress (e.g. "indexing…" from language servers). A server reports
+	-- its own percentage, and a % is a statusline item unless doubled.
 	local progress = vim.ui.progress_status()
 	if progress ~= "" then
-		st = st .. "%#StatusLSP# " .. progress .. " %#StatusLine#"
+		st = st .. "%#StatusLSP# " .. progress:gsub("%%", "%%%%") .. " %#StatusLine#"
 	end
 
 	-- X: filetype

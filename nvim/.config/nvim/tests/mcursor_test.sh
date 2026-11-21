@@ -2,6 +2,7 @@
 # Run: bash tests/mcursor_test.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
+. tests/lib.sh
 
 # The config module only needs the nvim.multicursor namespace to be empty or
 # populated, so this exercises the real align() on any nvim, with or without
@@ -56,4 +57,4 @@ expect_lines({ "untouched" })
 print("mcursor tests passed")
 '
 
-nvim --headless -u NONE -i NONE -c "lua $SCRIPT" -c 'qa!'
+run_lua "$SCRIPT"

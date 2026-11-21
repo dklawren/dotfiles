@@ -31,23 +31,27 @@
 
 ## Minimal custom features (no plugins required)
 
-| Feature           | File                     | Description                                                                                        |
-| ----------------- | ------------------------ | -------------------------------------------------------------------------------------------------- |
-| Custom Catppuccin | `config/theme.lua`       | Gruvbox-inspired palette, highlight overrides for plugins, syntax, treesitter, LSP semantic tokens |
-| Auto-pairs        | `config/pairs.lua`       | Insert-mode auto-close for brackets, and smart backspace                                           |
-| Statusline        | `config/statusline.lua`  | Git branch/diff, LSP diagnostics, word count for markdown                                          |
-| Tabline           | `config/tabline.lua`     | Smart buffer management with devicons                                                              |
-| Session manager   | `config/session.lua`     | Per-directory auto-save/restore, `:Session <dir>` to switch workspace                              |
-| LSP utilities     | `config/lsp.lua`         | Unified 15+ server setup, inlay hints                                                              |
-| Diagnostics       | `config/diagnostics.lua` | Custom diagnostic display config                                                                   |
-| Pack UI           | `config/pack.lua`        | Browser for `vim.pack` plugin registry                                                             |
-| Picker            | `config/picker.lua`      | Floating list with filter and live preview, also the `vim.ui.select` backend                       |
-| Picker lists      | `config/lists.lua`       | Marks, jumps, registers, quickfix, commands, autocmds and history as previewable pickers          |
-| Jump              | `config/jump.lua`        | Minimal 2-char search with label jump                                                              |
-| Multicursor       | `config/mcursor.lua`     | Column-align native multicursors (`:h multicursor`), keymap `g<Space>`                             |
-| UI overrides      | `config/ui2.lua`         | Native `ui2` message layer, with a pager that fills the window                                     |
-| Markdown render   | `config/markdown.lua`    | In-buffer markdown rendering (headings, code, lists, tables, callouts), image preview, mdserve     |
-| File tree         | `config/tree.lua`        | Sidebar tree that reveals the current file, devicons, bold current file, `h`/`l` fold, `<CR>` opens |
+| Feature           | File                     | Description                                                                                         |
+| ----------------- | ------------------------ | --------------------------------------------------------------------------------------------------- |
+| Custom Catppuccin | `config/theme.lua`       | Gruvbox-inspired palette, highlight overrides for plugins, syntax, treesitter, LSP semantic tokens  |
+| Auto-pairs        | `config/pairs.lua`       | Insert-mode auto-close for brackets, and smart backspace                                            |
+| Statusline        | `config/statusline.lua`  | Git branch/diff, LSP diagnostics, word count for markdown                                           |
+| Tabline           | `config/tabline.lua`     | Smart buffer management with devicons                                                               |
+| Session manager   | `config/session.lua`     | Per-directory auto-save/restore, `:Session` (restore), `save` and `list` picker               |
+| LSP utilities     | `config/lsp.lua`         | Unified 15+ server setup, inlay hints, relative auto-imports end in `.js`                            |
+| TypeScript        | `config/typescript.lua`  | The settings both TypeScript servers share, so the two `lsp/` files cannot drift apart              |
+| Diagnostics       | `config/diagnostics.lua` | Custom diagnostic display config                                                                    |
+| Pack UI           | `config/pack.lua`        | Browser for `vim.pack` plugin registry                                                              |
+| Picker            | `config/picker.lua`      | Floating list with filter and live preview, also the `vim.ui.select` backend                        |
+| Picker lists      | `config/lists.lua`       | Marks, jumps, registers, quickfix, commands, autocmds and history as previewable pickers            |
+| Jump              | `config/jump.lua`        | Minimal 2-char search with label jump                                                               |
+| Multicursor       | `config/mcursor.lua`     | Column-align native multicursors (`:h multicursor`), keymap `g<Space>`                              |
+| UI overrides      | `config/ui2.lua`         | Native `ui2` message layer, with a pager that fills the window                                      |
+| Markdown render   | `config/markdown.lua`    | In-buffer markdown rendering (headings, code, lists, tables, callouts), image preview, mo           |
+| File tree         | `config/tree.lua`        | Sidebar tree that reveals the current file, hides gitignored paths, devicons, `h`/`l` fold, `<CR>` opens |
+| Test runner       | `config/runner.lua`      | Nearest test, file, last run and a project check, failures into quickfix and diagnostics            |
+| Secret cloak      | `config/cloak.lua`       | Masks secret values on screen without touching the file, per file glob, `<leader>ue`                |
+| Buffer close      | `config/buffer.lua`      | Close buffers without breaking the layout, one confirmation for a batch of unsaved ones             |
 
 ## What the runtime already does
 
@@ -56,7 +60,7 @@ The config asks nvim for what nvim has, so the code stays small:
 - `'autoread'` has its own file watchers, so nothing calls `:checktime` on focus.
 - `ui2` is enabled with one change, a pager that fills the window. Every other `messagesopt` item and height is already the default.
 - `config/options.lua` holds only what differs from a `nvim --clean` start, and each plugin setup only what its plugin does not default.
-- `vim.fs.mkdir({parents})`, `nvim_set_hl`, `vim.iter`, `vim.list_slice` and the optional trailing `opts` of the 0.13 API contract replace hand-rolled versions of themselves.
+- `vim.iter`, `vim.list_slice`, `vim.glob` and `nvim_set_hl` replace hand-rolled versions of themselves.
 
 I also wrote a series of articles about my [Neovim config](https://tduyng.com/tags/neovim/)
 
@@ -73,7 +77,10 @@ git clone https://gitlab.com/tduyng/nvim.git ~/.config/nvim
 nvim
 ```
 
-Prerequisites: Neovim 0.13+, Git, Ripgrep, Nerd Font
+Prerequisites: Neovim 0.12+, Git, Ripgrep, Nerd Font. The config is run on
+0.12.4, and the two places 0.13 changes an answer (treesitter queries, the
+message layer) branch on `has("nvim-0.13")` or load the module both versions
+have.
 
 Update plugins: `<leader>pu` or `:lua vim.pack.update()`
 
@@ -90,9 +97,11 @@ just test      # Run every suite in tests/ and luacheck over lua/
 
 `just test` is the gate: one file in `tests/` per feature, each driven through the real config.
 
-Every 0.13 feature this config leans on, and the ones it does not, is written
-up in [docs/native-0.13.md](docs/native-0.13.md) with the measurement that
-settled it.
+A failing suite runs on its own with `just test-<name>` (`just test-picker`).
+`tests/lib.sh` fails a suite when nvim reports a Lua error, because `nvim -c lua`
+exits 0 on one and a suite that never reached its checks would otherwise pass.
+It also points `$XDG_CONFIG_HOME` at this checkout, so a suite loads the code it
+is testing rather than the installed copy of an older build.
 
 ## Quick Start
 
@@ -101,6 +110,11 @@ Leader key: `Space`
 ### Essential keybindings
 
 ```
+Motions
+  gh                First non-blank of the line
+  gl                End of the line
+  ==                Select the whole buffer
+
 Files & Search
   <leader>ff        Find files (fff.nvim)
   <leader>fg        Live grep (fff.nvim)
@@ -109,9 +123,9 @@ Files & Search
   <leader>fr        Recent files (fff.nvim)
   <leader><space>   Smart find files (fff.nvim)
   <leader>/         Grep (fff.nvim)
-  <leader>e         File explorer (oil.nvim)
-  -                 Open parent directory (oil.nvim)
-  <leader>E         File explorer tree, reveals the current file
+  <leader>E         File explorer (oil.nvim)
+  -                 Open parent directory (oil.nvim), and `nvim <dir>` opens a listing too
+  <leader>e         File explorer tree, reveals the current file
   <leader>sr        Search & replace (grug-far.nvim)
 
 Buffers
@@ -129,6 +143,7 @@ Lists (picker)
   <leader>sm        Marks (Enter jumps to the mark)
   <leader>sj        Jumps
   <leader>s"        Registers (Enter pastes, <C-y> yanks)
+
   <leader>sq        Quickfix
   <leader>sl        Location list
   <leader>sC        Commands (Enter fills in the command)
@@ -140,12 +155,18 @@ Windows
   Ctrl-h/j/k/l      Navigate windows
   <leader>sv        Vertical split
   <leader>sh        Horizontal split
+  <leader>tn/tf/tl  Test nearest / file / last (vitest, go test), failures as diagnostics
+  <leader>tc        Project check (tsc, go vet, cargo check) into quickfix
+  <leader>U         Undo states (picker, Enter goes back to one)
   <leader>ww        Other window
   <leader>wd        Delete window
   <leader>w-        Split window below
-  <leader>w|        Split window right
+  <leader>|         Split window right
   <leader>w=        Equalize window sizes
-  <leader>wH/J/K/L  Move window
+  <leader>wH        Move window far left
+  <leader>wJ        Move window to bottom
+  <leader>wK        Move window to top
+  <leader>wL        Move window far right
 
 Tabs
   <leader><tab><tab>  New tab
@@ -165,11 +186,24 @@ LSP (native)
   gI                Goto implementation
   gy                Goto type definition
   K / <leader>k     Hover documentation
-  <leader>ca        Code actions
+  <leader>K         Keywordprg on the word (man, :help for vim)
+  <leader>ca / gra  Code actions, fixes first. In visual mode, for the selection
   <leader>cl        Fix all (LSP)
-  <leader>cf        Format buffer (conform.nvim)
+  <leader>cf        Format buffer (conform.nvim, else the LSP)
   <leader>cF        Which formatter conform picks and why
   <leader>cr        Rename
+  <leader>cR        Restart the LSP servers on this buffer
+
+  Auto-import writes `./thing.js`, not `./thing`, because Node ESM needs the
+  extension and a bundler tsconfig leaves it out, and writes `import type` when
+  the symbol is only used as a type. A project that wants
+  typescript-language-server instead of vtsls puts this in its `.nvim.lua`
+  (nvim runs it once the file is trusted, `:trust`):
+
+    if vim.fn.executable("typescript-language-server") == 1 then
+      vim.lsp.enable("vtsls", false)
+      vim.lsp.enable("ts_ls")
+    end
   <leader>ss        Document symbols
   <leader>cw        Workspace diagnostics
 
@@ -185,7 +219,12 @@ Git (vdiff.nvim)
   <leader>gv        Git: line history
   <leader>gx        Git: close all
   <leader>gm        Git: merge conflicts
+  <leader>g2        Git: compare two files
+  <leader>gy        Git: diff clipboard vs file
   <leader>gr...     Git: review prefix (MR/PR)
+  <leader>ghs       Stage hunk
+  <leader>ghu       Undo staged hunk
+  <leader>ghr       Reset hunk
 
 The file and line history lists preview the commit under the cursor, its diff
 for the current file, as you move. Stash and review lists go through the same
@@ -197,8 +236,8 @@ Debug (DAP)
   <leader>db        Toggle breakpoint
   <leader>dc        Run/Continue
   <leader>di        Step into
-  <leader>do        Step out
-  <leader>dO        Step over
+  <leader>do        Step over
+  <leader>dO        Step out
   <leader>du        DAP view toggle
   <leader>dh        DAP hover
 
@@ -228,12 +267,14 @@ Quickfix / Location
 
 Markdown
   <leader>um        Toggle render markdown
-  <leader>mp        Markdown preview (mdserve)
+  <leader>mo        Markdown open (mo)
 
 Sessions
   <leader>qs        Load the session of this directory
   <leader>qr        Delete the session of this directory
   :Session [dir]    Load a directory's session, the current one by default
+  :Session save     Write the layout now
+  :Session list     Every directory that has a session, <C-d> deletes one
 
 Pack (vim.pack)
   <leader>pp        Pack UI
@@ -248,8 +289,15 @@ UI toggles
   <leader>uA        Toggle tabline
   <leader>uf        Toggle autoformat
   <leader>us        Toggle spell
+  <leader>uh        Toggle inlay hints
+  <leader>ud        Toggle diagnostics
   <leader>R         Restart Neovim
+  <leader>N         Neovim news (:help news)
 ```
+
+Pasting over a selection with `p` replaces the unnamed register with the replaced
+text. Visual `P` writes the same text and leaves the yank in place, so it can be
+pasted again.
 
 ## Screenshots
 

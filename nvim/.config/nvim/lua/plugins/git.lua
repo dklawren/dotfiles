@@ -55,7 +55,7 @@ require("gitsigns").setup({
 		map({ "n", "x" }, "<leader>ghr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
 
 		map("n", "<leader>ghS", gs.stage_buffer, "Stage Buffer")
-		map("n", "<leader>ghu", gs.stage_hunk, "Unstage Hunk")
+		map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
 		map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
 		map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview Hunk Inline")
 		map("n", "<leader>ghb", function()
@@ -79,94 +79,11 @@ require("vdiff").setup({
 	merge_layout = "diff3_vertical", -- 3-way side-by-side
 })
 
-local function git_lines(args)
-	local out = vim.fn.systemlist(vim.list_extend({ "git", "--no-pager" }, args))
-	return vim.v.shell_error == 0 and out or {}
-end
-
-local function refs_under(prefix, kind)
-	local rows = {}
-	local format = "%(refname)\t%(objectname:short)\t%(contents:subject)"
-	local args = { "for-each-ref", "--sort=-committerdate", "--format=" .. format, "refs/" .. prefix }
-	for _, line in ipairs(git_lines(args)) do
-		local full, hash, subject = line:match("^(.-)\t(%x+)\t(.*)$")
-		if full and not full:match("/HEAD$") then
-			local ref = full:gsub("^refs/[^/]+/", "")
-			rows[#rows + 1] = { ref = ref, hash = hash, kind = kind, desc = subject }
-		end
-	end
-	return rows
-end
-
----Branches, remote branches, tags, then the commits the head has. Typing a
----ref by hand is what this list replaces, but the list is not the only answer:
----`<leader>gF` still takes any ref `:VDiff` accepts.
-local function git_refs()
-	local rows = {}
-	vim.list_extend(rows, refs_under("heads", "branch"))
-	vim.list_extend(rows, refs_under("remotes", "remote"))
-	vim.list_extend(rows, refs_under("tags", "tag"))
-	for _, line in ipairs(git_lines({ "log", "--pretty=format:%h\t%cr\t%s", "-n", "40" })) do
-		local hash, age, subject = line:match("^(%x+)\t(.-)\t(.*)$")
-		if hash then
-			rows[#rows + 1] = { ref = hash, hash = hash, kind = "commit", age = age, desc = subject }
-		end
-	end
-	return rows
-end
-
-local function preview_ref(row, ctx)
-	if row.kind == "worktree" then
-		ctx.set_lines({ "Working tree", "", "The files on disk, against HEAD." }, "markdown")
-	else
-		ctx.git({ "log", "--oneline", "--decorate", "--no-color", "-n", "20", row.ref }, "git")
-	end
-end
-
----@param title string
----@param opts { worktree?: boolean }
----@param on_pick fun(row: table)
-local function pick_ref(title, opts, on_pick)
-	local rows = {}
-	if opts.worktree then
-		rows[#rows + 1] = { ref = "", kind = "worktree", desc = "uncommitted changes" }
-	end
-	rows[#rows + 1] = { ref = "HEAD", hash = "", kind = "head", desc = "the checked out commit" }
-	vim.list_extend(rows, git_refs())
-	require("config.picker").open(rows, {
-		title = title,
-		skip_single = false,
-		filter = true,
-		format = function(row)
-			if row.kind == "worktree" then
-				return "working tree  (uncommitted changes)"
-			elseif row.kind == "commit" then
-				return ("%s  %s  %s"):format(row.hash, row.age, row.desc)
-			end
-			return ("%s  %s  %s"):format(row.ref, row.hash or "", row.desc or "")
-		end,
-		preview = preview_ref,
-		on_confirm = on_pick,
-	})
-end
-
--- Accepts any ref: branch, commit, tag, or a commit from the list. The working
--- tree row is the empty ref, which is what `:VDiffCompare` without an argument
--- already means.
-vim.keymap.set("n", "<leader>gc", function()
-	pick_ref("Compare with", { worktree = true }, function(row)
-		vim.cmd("VDiffCompare" .. (row.ref ~= "" and (" " .. row.ref) or ""))
-	end)
-end, { desc = "Git: compare with a ref" })
+-- The ref list, its sections and its diffstat preview live in vdiff.
+vim.keymap.set("n", "<leader>gc", "<Cmd>VDiffComparePick<CR>", { desc = "Git: compare with a ref" })
 
 -- COMPARE TWO REFS (branches, commits, tags)
-vim.keymap.set("n", "<leader>gC", function()
-	pick_ref("Compare from", {}, function(first)
-		pick_ref("Compare to", {}, function(second)
-			vim.cmd(("VDiffCompareRefs %s %s"):format(first.ref, second.ref))
-		end)
-	end)
-end, { desc = "Git: compare two refs" })
+vim.keymap.set("n", "<leader>gC", "<Cmd>VDiffCompareRefsPick<CR>", { desc = "Git: compare two refs" })
 
 -- Quick shortcuts for common comparisons
 vim.keymap.set("n", "<leader>gd", "<Cmd>VDiffCompare<CR>", { desc = "Git: working tree (all files)" })
@@ -200,36 +117,8 @@ end, { desc = "Git: review MR/PR by number, URL or branch" })
 -- CURRENT FILE DIFF
 -- Same principle: accepts any ref or empty for HEAD
 vim.keymap.set("n", "<leader>gf", "<Cmd>VDiff<CR>", { desc = "Git: diff file vs HEAD" })
-vim.keymap.set("n", "<leader>gF", function()
-	pick_ref("Diff file with", {}, function(row)
-		vim.cmd("VDiff " .. row.ref)
-	end)
-end, { desc = "Git: diff file (universal)" })
+vim.keymap.set("n", "<leader>gF", "<Cmd>VDiffPick<CR>", { desc = "Git: diff file (universal)" })
 
--- UTILITY: Compare two arbitrary files with hunk (or vimdiff fallback)
-vim.keymap.set("n", "<leader>g2", function()
-	vim.ui.input({ prompt = "First file: " }, function(file1)
-		if not file1 or not file1:match("%S") then
-			return
-		end
-		vim.ui.input({ prompt = "Second file: " }, function(file2)
-			if file2 and file2:match("%S") then
-				local abs1 = vim.fn.fnamemodify(file1, ":p")
-				local abs2 = vim.fn.fnamemodify(file2, ":p")
-				if vim.fn.executable("hunk") == 1 then
-					vim.cmd("tabnew")
-					vim.cmd.terminal(("hunk difftool %s %s"):format(vim.fn.shellescape(abs1), vim.fn.shellescape(abs2)))
-					local buf = vim.api.nvim_get_current_buf()
-					vim.b[buf].keep_term_on_exit = true
-					for _, lhs in ipairs({ "q", "<CR>", "<Esc>" }) do
-						vim.keymap.set({ "n", "t" }, lhs, "<Cmd>tabclose<CR>", { buffer = buf, silent = true })
-					end
-				else
-					vim.cmd(
-						("tabnew %s | diffthis | vsplit %s | diffthis"):format(vim.fn.fnameescape(abs1), vim.fn.fnameescape(abs2))
-					)
-				end
-			end
-		end)
-	end)
-end, { desc = "Git: compare 2 files (hunk or vimdiff)" })
+-- UTILITY: compare two arbitrary files
+vim.keymap.set("n", "<leader>g2", "<Cmd>VDiffFiles<CR>", { desc = "Git: compare 2 files" })
+vim.keymap.set("n", "<leader>gy", "<Cmd>VDiffClipboard<CR>", { desc = "Git: diff clipboard vs file" })

@@ -42,6 +42,7 @@ vim.api.nvim_create_autocmd("User", {
 -- The parsers nvim 0.13 ships are left out: c, diff, lua, markdown,
 -- markdown_inline, query, vim and vimdoc.
 require("nvim-treesitter").install({
+	"astro",
 	"bash",
 	"blade",
 	"comment",
@@ -55,6 +56,7 @@ require("nvim-treesitter").install({
 	"gomod",
 	"gosum",
 	"gowork",
+	"graphql",
 	"html",
 	"ini",
 	"javascript",
@@ -66,15 +68,18 @@ require("nvim-treesitter").install({
 	"nginx",
 	"nix",
 	"proto",
+	"prisma",
 	"python",
 	"regex",
 	"rust",
 	"scss",
 	"sql",
+	"svelte",
 	"terraform",
 	"toml",
 	"tsx",
 	"typescript",
+	"vue",
 	"xml",
 	"yaml",
 	"zig",
@@ -87,9 +92,9 @@ vim.api.nvim_create_autocmd("PackChanged", {
 		if event.data.kind == "update" then
 			local ok = pcall(vim.cmd.TSUpdate)
 			if ok then
-				vim.notify("TSUpdate completed successfully!", vim.log.levels.INFO)
+				vim.notify("done", vim.log.levels.INFO, { title = "treesitter" })
 			else
-				vim.notify("TSUpdate command not available yet, skipping", vim.log.levels.WARN)
+				vim.notify("skipped, TSUpdate is not available yet", vim.log.levels.WARN, { title = "treesitter" })
 			end
 		end
 	end,

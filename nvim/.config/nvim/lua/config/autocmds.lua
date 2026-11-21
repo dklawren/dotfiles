@@ -46,20 +46,26 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+-- Absolute numbers and no cursorline while typing, put back as they were, so a
+-- window that never had them (the picker's filter line) does not gain them.
+local insert_ui = augroup("insert_ui")
 vim.api.nvim_create_autocmd("InsertEnter", {
-	group = augroup("insert_ui_perf"),
+	group = insert_ui,
 	callback = function()
+		vim.w.insert_ui = { vim.wo.cursorline, vim.wo.relativenumber }
 		vim.wo.cursorline = false
 		vim.wo.relativenumber = false
-		vim.wo.number = true -- keep absolute numbers
 	end,
 })
 
 vim.api.nvim_create_autocmd("InsertLeave", {
-	group = augroup("insert_ui_perf"),
+	group = insert_ui,
 	callback = function()
-		vim.wo.cursorline = true
-		vim.wo.relativenumber = true
+		local saved = vim.w.insert_ui
+		if saved then
+			vim.wo.cursorline, vim.wo.relativenumber = saved[1], saved[2]
+			vim.w.insert_ui = nil
+		end
 	end,
 })
 
@@ -108,14 +114,9 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- auto-delete terminal buffers when process exits to suppress "process exit N" message
--- (callers that want the output to stick around, e.g. a one-shot diff command,
--- set vim.b.keep_term_on_exit to opt out)
 vim.api.nvim_create_autocmd("TermClose", {
 	group = augroup("terminal_close"),
 	callback = function(event)
-		if vim.b[event.buf].keep_term_on_exit then
-			return
-		end
 		vim.cmd("silent! bdelete! " .. event.buf)
 	end,
 })
@@ -148,5 +149,19 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		end
 		local file = vim.uv.fs_realpath(event.match) or event.match
 		vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+	end,
+})
+
+-- :grep, :vimgrep and :make fill the quickfix list and open the plain window.
+-- The picker shows the same rows beside a preview of the file, so one key
+-- closes it and <leader>xq brings the list back.
+vim.api.nvim_create_autocmd("QuickFixCmdPost", {
+	group = augroup("quickfix_picker"),
+	callback = function()
+		vim.schedule(function()
+			if vim.fn.getqflist({ size = 1 }).size > 0 then
+				require("config.lists").quickfix()
+			end
+		end)
 	end,
 })

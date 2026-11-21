@@ -13,6 +13,7 @@
 # re-indent. The speed is measured in .auto/open_bench.sh, not here.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+. tests/lib.sh
 
 SCRIPT='
 -- -u NONE does not turn filetype detection on, and this test is about what the
@@ -180,4 +181,4 @@ vim.fn.delete(path)
 print(("fold tests passed (%d checks)"):format(checks))
 '
 
-nvim --headless -u NONE -i NONE -c "lua $SCRIPT" -c 'qa!'
+run_lua "$SCRIPT"

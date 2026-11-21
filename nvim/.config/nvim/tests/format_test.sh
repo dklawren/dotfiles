@@ -9,9 +9,13 @@
 # monorepo's hoisted prettier is used from a service subdirectory.
 # Run: just test-format
 set -euo pipefail
+cd "$(dirname "$0")/.."
+. tests/lib.sh
 
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
+ROOT=$PWD
+export XDG_CONFIG_HOME="$(repo_config_home "$TMP/conf")"
 
 SRC=$'const x = {a:1,b:2}\nfunction foo(){return   "hello"}\n'
 
@@ -121,5 +125,60 @@ mkdir -p "$R/node_modules/pkg"
 printf '%s' "$SRC" >"$R/node_modules/pkg/t.ts"
 save "$R/node_modules/pkg/t.ts"
 check "node_modules is not formatted" "$(cat "$R/node_modules/pkg/t.ts")" "$(printf '%s' "$SRC")"
+
+echo "9. a filetype with no conform formatter goes to the LSP on the key"
+cat >"$TMP/fallback.lua" <<'LUA'
+local conform = require("conform")
+conform.list_formatters = function()
+	return {}
+end
+local asked = {}
+vim.lsp.get_clients = function()
+	return {
+		{
+			id = 1,
+			name = "stub",
+			supports_method = function()
+				return true
+			end,
+			request = function(_, method)
+				asked[#asked + 1] = method
+				return true, 1
+			end,
+			request_sync = function(_, method)
+				asked[#asked + 1] = method
+				return {}, nil
+			end,
+		}
+	}
+end
+vim.cmd("edit " .. vim.fn.fnameescape(assert(os.getenv("FALLBACK_FILE"))))
+vim.bo.filetype = "sql"
+vim.api.nvim_feedkeys(vim.keycode("<leader>cf"), "x", false)
+vim.wait(500)
+io.write("asked=" .. table.concat(asked, ",") .. "\n")
+LUA
+printf 'select 1;\n' >"$TMP/fb.sql"
+FB=$(FALLBACK_FILE="$TMP/fb.sql" nvim --headless -u "$ROOT/init.lua" -i NONE \
+	-c "luafile $TMP/fallback.lua" -c 'qa!' 2>&1 | sed -n 's/^asked=//p' | tail -1)
+check "no conform formatter means the LSP formats it" "$FB" "textDocument/formatting"
+
+echo "10. <leader>uf turns format-on-save off and back on"
+R=$TMP/toggle
+mkdir -p "$R/src"
+echo '{}' >"$R/biome.json"
+printf '%s' "$SRC" >"$R/src/t.ts"
+OUT=$TMP/toggle.out
+export FMT_OUT="$OUT"
+nvim --headless -u "$ROOT/init.lua" -i NONE "$R/src/t.ts" \
+	-c 'lua vim.api.nvim_feedkeys(vim.keycode("<leader>uf"), "x", false)' \
+	-c 'write' \
+	-c 'lua vim.fn.writefile({ "off=" .. tostring(vim.g.disable_autoformat) .. "|" .. vim.fn.getline(1) }, os.getenv("FMT_OUT"), "a")' \
+	-c 'lua vim.cmd("FormatEnable")' \
+	-c 'write' \
+	-c 'lua vim.fn.writefile({ "on=" .. tostring(vim.g.disable_autoformat) .. "|" .. vim.fn.getline(1) }, os.getenv("FMT_OUT"), "a")' \
+	-c 'qa!' >/dev/null 2>&1 || true
+check "the toggle stops the formatter" "$(sed -n 's/^off=//p' "$OUT")" "true|const x = {a:1,b:2}"
+check "and a second press lets it run again" "$(sed -n 's/^on=//p' "$OUT")" "false|BIOME"
 
 exit $fail

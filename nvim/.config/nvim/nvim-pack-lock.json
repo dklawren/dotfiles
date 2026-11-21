@@ -10,11 +10,12 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "fff.nvim": {
-      "rev": "5d21e4bbdf33a09f58975636208e30747bc8d918",
-      "src": "https://github.com/dmtrKovalenko/fff.nvim"
+      "rev": "95fd777c2529fc7b4d7572dabff64cc07268f2c5",
+      "src": "https://github.com/dmtrKovalenko/fff.nvim",
+      "version": "'v0.11.0'"
     },
     "gitsigns.nvim": {
-      "rev": "ef707fb93301a9b856f36eae4c8f56f5b988a794",
+      "rev": "dc7698f932792a764d3db95fedee26c38e728355",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "grug-far.nvim": {
@@ -32,7 +33,7 @@
       "version": "1.0.0 - 2.0.0"
     },
     "nvim-treesitter": {
-      "rev": "19bdfc04f40ed2ccb3340591d125f759b0406875",
+      "rev": "0bf28a34f1da3259809807d4b4b63c93aa9055aa",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -45,7 +46,7 @@
       "src": "https://github.com/stevearc/oil.nvim"
     },
     "vdiff.nvim": {
-      "rev": "c193a0875cd0a79890822b4174b30e8f6f61907a",
+      "rev": "2a763ac85280b482b7d7b4aed28c7fef97e24018",
       "src": "https://gitlab.com/tduyng/vdiff.nvim"
     },
     "which-key.nvim": {

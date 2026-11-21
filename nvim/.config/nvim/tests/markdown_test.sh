@@ -3,6 +3,15 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+BIN=$(mktemp -d)
+trap 'rm -rf "$BIN"' EXIT
+mkdir -p "$BIN/start" "$BIN/added"
+printf '#!/bin/sh\necho "  http://localhost:6275/?file=abc123  doc.md" >&2\nexit 0\n' >"$BIN/start/mo"
+printf '#!/bin/sh\necho "mo: added 1 item(s) to http://localhost:6275" >&2\nexit 0\n' >"$BIN/added/mo"
+printf '#!/bin/sh\necho "$1" >>"%s/opened"\n' "$BIN" >"$BIN/start/open"
+cp "$BIN/start/open" "$BIN/added/open"
+chmod +x "$BIN/start/mo" "$BIN/start/open" "$BIN/added/mo" "$BIN/added/open"
+
 SCRIPT='
 require("config.markdown")
 
@@ -484,10 +493,30 @@ for _, map in ipairs(vim.api.nvim_get_keymap("n")) do
 end
 assert(#vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, {}) == 0, "toggle did not clear marks")
 
+-- <leader>mo opens the URL mo prints on stderr, and opens nothing when mo fails.
+local bin = assert(vim.env.MO_PROBE_BIN)
+local function mo_keys(fixture)
+	vim.env.PATH = fixture .. ":" .. vim.env.PATH
+	vim.fn.maparg("<leader>mo", "n", false, true).callback()
+end
+mo_keys(bin .. "/start")
+vim.wait(3000, function()
+	return vim.fn.filereadable(bin .. "/opened") == 1
+end)
+local first = vim.fn.filereadable(bin .. "/opened") == 1 and vim.fn.readfile(bin .. "/opened")[1] or ""
+assert(first == "http://localhost:6275/?file=abc123", "a started server opened " .. first)
+vim.fn.delete(bin .. "/opened")
+mo_keys(bin .. "/added")
+vim.wait(3000, function()
+	return vim.fn.filereadable(bin .. "/opened") == 1
+end)
+local second = vim.fn.filereadable(bin .. "/opened") == 1 and vim.fn.readfile(bin .. "/opened")[1] or ""
+assert(second == "http://localhost:6275", "a running server opened " .. second)
+
 print("markdown tests passed")
 '
 
-output=$(nvim --headless -u NONE -i NONE --cmd "set rtp^=$PWD" -c "lua $SCRIPT" -c 'qa!' 2>&1) || {
+output=$(MO_PROBE_BIN="$BIN" nvim --headless -u NONE -i NONE --cmd "set rtp^=$PWD" -c "lua $SCRIPT" -c 'qa!' 2>&1) || {
 	printf '%s\n' "$output"
 	exit 1
 }

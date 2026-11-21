@@ -14,7 +14,6 @@ local function jump()
 
 	local pat = ch:lower()
 	local targets, li = {}, 1
-
 	for idx, line in ipairs(lines) do
 		local lnum = info.topline + idx - 1
 		local col = 1
@@ -41,6 +40,11 @@ local function jump()
 	end
 
 	vim.cmd.redraw()
+	if li - 1 == 0 then
+		vim.api.nvim_buf_clear_namespace(buf, NS, 0, -1)
+		vim.cmd.redraw()
+		return
+	end
 	local label = vim.fn.getcharstr()
 	vim.api.nvim_buf_clear_namespace(buf, NS, 0, -1)
 	vim.cmd.redraw()

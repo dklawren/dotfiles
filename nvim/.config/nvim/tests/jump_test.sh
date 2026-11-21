@@ -145,3 +145,34 @@ if [ ! -f "$tmp/jump.out" ]; then
 fi
 cat "$tmp/jump.out"
 grep -q '^failures=0$' "$tmp/jump.out"
+
+# A letter that is not on screen has nothing to offer, so the second keypress
+# must not be asked for. getcharstr is counted instead of typed at.
+cat >"$tmp/nomatch.lua" <<'LUA'
+require("config.jump")
+local ns = vim.api.nvim_create_namespace("jump")
+local asked, queue = 0, {}
+vim.fn.getcharstr = function()
+	asked = asked + 1
+	return table.remove(queue, 1) or ""
+end
+
+local function press(...)
+	asked, queue = 0, { ... }
+	vim.fn.maparg("f", "n", false, true).callback()
+end
+
+vim.api.nvim_buf_set_lines(0, 0, -1, false, { "nothing here", "still nothing" })
+press("z")
+assert(asked == 1, "no match asked for a label " .. asked .. " times")
+assert(#vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, {}) == 0, "no match left a mark behind")
+
+vim.api.nvim_buf_set_lines(0, 0, -1, false, { "zebra", "zigzag" })
+press("z", "s")
+assert(asked == 2, "a match asked for the label " .. asked .. " times")
+assert(#vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, {}) == 0, "the pick left a mark behind")
+
+print("jump nomatch checks passed")
+LUA
+
+nvim --headless -u NONE -i NONE --cmd "set rtp^=$repo" -c "luafile $tmp/nomatch.lua" -c 'qa!'

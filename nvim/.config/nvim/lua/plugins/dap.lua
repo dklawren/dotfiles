@@ -42,6 +42,10 @@ local function init_dap()
 		return {}
 	end
 
+	local cwd = vim.fn.getcwd
+	local function vitest()
+		return vim.fn.getcwd() .. "/node_modules/vitest/vitest.mjs"
+	end
 	local js_filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" }
 	for _, ft in ipairs(js_filetypes) do
 		dap.configurations[ft] = {
@@ -51,33 +55,33 @@ local function init_dap()
 				name = "Nvim Debug App",
 				port = 9229,
 				address = "localhost",
-				localRoot = vim.fn.getcwd(),
+				localRoot = cwd,
 				remoteRoot = "/usr/src/app",
 				sourceMaps = true,
 				protocol = "inspector",
-				cwd = vim.fn.getcwd(),
+				cwd = cwd,
 			},
 			{
 				type = "pwa-node",
 				request = "launch",
 				name = "Vitest (current file)",
-				program = vim.fn.getcwd() .. "/node_modules/vitest/vitest.mjs",
+				program = vitest,
 				args = function()
 					return { "--run", "--no-file-parallelism", "--testTimeout=0", "--hookTimeout=0", vim.fn.expand("%:p") }
 				end,
 				skipFiles = { "<node_internals>/**" },
 				sourceMaps = true,
-				cwd = vim.fn.getcwd(),
+				cwd = cwd,
 			},
 			{
 				type = "pwa-node",
 				request = "launch",
 				name = "Vitest (sales)",
-				program = vim.fn.getcwd() .. "/node_modules/vitest/vitest.mjs",
+				program = vitest,
 				args = { "--run", "--no-file-parallelism", "--testTimeout=0", "--hookTimeout=0" },
 				skipFiles = { "<node_internals>/**" },
 				sourceMaps = true,
-				cwd = vim.fn.getcwd(),
+				cwd = cwd,
 			},
 		}
 	end
@@ -116,8 +120,8 @@ vim.keymap.set("n", "<leader>di", function() init_dap(); require("dap").step_int
 vim.keymap.set("n", "<leader>dj", function() init_dap(); require("dap").down() end,                     { desc = "Down" })
 vim.keymap.set("n", "<leader>dk", function() init_dap(); require("dap").up() end,                       { desc = "Up" })
 vim.keymap.set("n", "<leader>dl", function() init_dap(); require("dap").run_last() end,                 { desc = "Run Last" })
-vim.keymap.set("n", "<leader>do", function() init_dap(); require("dap").step_out() end,                 { desc = "Step Out" })
-vim.keymap.set("n", "<leader>dO", function() init_dap(); require("dap").step_over() end,                { desc = "Step Over" })
+vim.keymap.set("n", "<leader>do", function() init_dap(); require("dap").step_over() end,                 { desc = "Step Over" })
+vim.keymap.set("n", "<leader>dO", function() init_dap(); require("dap").step_out() end,                 { desc = "Step Out" })
 vim.keymap.set("n", "<leader>dP", function() init_dap(); require("dap").pause() end,                    { desc = "Pause" })
 vim.keymap.set("n", "<leader>dr", function() init_dap(); vim.cmd("DapViewJump repl") end,               { desc = "Toggle REPL" })
 vim.keymap.set("n", "<leader>ds", function() init_dap(); require("dap").session() end,                  { desc = "Session" })

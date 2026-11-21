@@ -34,6 +34,10 @@ end
 
 local items = {
 	{
+		action = { title = "Disable no-undef for this line", kind = "quickfix", diagnostics = { {} } },
+		ctx = {},
+	},
+	{
 		action = { title = "Extract function", kind = "refactor.extract", edit = { documentChanges = { { textDocument = { uri = "file:///tmp/a.lua" } } } } },
 		ctx = {},
 	},
@@ -43,6 +47,10 @@ local items = {
 	},
 	{
 		action = { title = "Run test", command = { title = "test", command = "make test" } },
+		ctx = {},
+	},
+	{
+		action = { title = "Add import from ./util", kind = "quickfix", diagnostics = { {} } },
 		ctx = {},
 	},
 }
@@ -59,11 +67,16 @@ end)
 
 case("the picker is up", true, P.is_open())
 local v = P.visible()
-case("every action is a row", 3, v.count)
-case("the rows are the titles", "Extract function", v.labels[1])
+case("every action is a row", 5, v.count)
+-- Servers answer in no useful order, so the fix for the error comes first
+-- however late it arrived, and a disabled action sinks to the bottom
+case("a quick fix leads", "Add import from ./util", v.labels[1])
+case("silencing the rule is after fixing it", "Disable no-undef for this line", v.labels[2])
+case("refactors follow", "Extract function", v.labels[3])
+case("a bare command is after the kinds", "Run test", v.labels[4])
 -- The caller supplied a formatter, so the row is what the caller asked for and
 -- nothing is added to it
-case("a caller formatter is used as it is", "Organize imports", v.labels[2])
+case("a caller formatter is used as it is", "Organize imports", v.labels[5])
 
 -- The preview spells out what the action would do, which is the part a user
 -- reads before pressing enter
@@ -82,11 +95,11 @@ for _, m in ipairs(vim.api.nvim_buf_get_keymap(list_buf, "n")) do
 		case("enter closes the picker", true, done)
 	end
 end
-case("the choice went back to the caller", "Extract function", chosen and chosen.action and chosen.action.title)
+case("the choice went back to the caller", "Add import from ./util", chosen and chosen.action and chosen.action.title)
 
 -- With no formatter of its own the picker names the actions, and says which are
 -- disabled
-vim.ui.select({ items[2] }, { kind = "codeaction" }, function() end)
+vim.ui.select({ items[3] }, { kind = "codeaction" }, function() end)
 case("one action is still a list", 1, P.visible().count)
 case("the picker names it", "Organize imports (disabled)", P.visible().labels[1])
 for _, m in ipairs(vim.api.nvim_buf_get_keymap(P.visible().buf, "n")) do
@@ -95,6 +108,32 @@ for _, m in ipairs(vim.api.nvim_buf_get_keymap(P.visible().buf, "n")) do
 	end
 end
 case("escape closes it", false, P.is_open())
+
+-- zod exports z as itself and as the default, and tsserver offers both under one
+-- title with the default first. The rows tell them apart, the named one first.
+local function add_import(text)
+	return {
+		action = {
+			title = "Add import from \"zod\"",
+			kind = "quickfix",
+			edit = { changes = { ["file:///tmp/a.ts"] = { { newText = text .. "\n\n" } } } },
+		},
+		ctx = {},
+	}
+end
+vim.ui.select({
+	add_import("import z from \"zod\""),
+	add_import("import { z } from \"zod\""),
+	{ action = { title = "Add import from \"zod/v3\"", kind = "quickfix" }, ctx = {} },
+}, { kind = "codeaction" }, function() end)
+case("the named import leads", "Add import from \"zod\": import { z }", P.visible().labels[1])
+case("the default import is next", "Add import from \"zod\": import z", P.visible().labels[2])
+case("a title of its own is left as it is", "Add import from \"zod/v3\"", P.visible().labels[3])
+for _, m in ipairs(vim.api.nvim_buf_get_keymap(P.visible().buf, "n")) do
+	if m.lhs == "<Esc>" then
+		m.callback()
+	end
+end
 
 case("nothing fell through to the dialog nvim opens", 0, fell_through)
 

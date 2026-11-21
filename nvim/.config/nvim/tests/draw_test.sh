@@ -195,10 +195,11 @@ end
 ---directory checks it.
 local function check_cursor_row()
 	vim.api.nvim_win_set_cursor(0, { 18, 0 })
-	vim.cmd("redraw!")
+	-- An API cursor move does not fire CursorMoved, and the renderer hears about
+	-- the cursor row from that event alone, so say so instead of racing it.
+	vim.api.nvim_exec_autocmds("CursorMoved", { buffer = vim.api.nvim_get_current_buf() })
 	vim.wait(200)
 	vim.cmd("redraw!")
-	vim.wait(200)
 	local rows = screen()
 	ok(has_row(rows, "| :---- |"), "the row under the cursor is not drawn as source")
 	ok(row_with_all(rows, "│", "widget"), "the rows around the cursor lost their drawing")

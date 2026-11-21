@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 vim.pack.add({
-	"https://github.com/dmtrKovalenko/fff.nvim",
+	{ src = "https://github.com/dmtrKovalenko/fff.nvim", version = "v0.11.0" },
 })
 
 -- Only what differs from fff's own defaults: a shell prompt, a taller picker
@@ -51,5 +51,6 @@ vim.keymap.set("n", "<leader>ff", function() require("fff").find_files() end, { 
 vim.keymap.set("n", "<leader>fg", function() require("fff").live_grep() end, { desc = "Grep" })
 vim.keymap.set({ "n", "x" }, "<leader>fw", function() require("fff").live_grep_under_cursor() end, { desc = "Grep Word" })
 vim.keymap.set("n", "<leader>fc", function() require("fff").find_files_in_dir(vim.fn.stdpath("config")) end, { desc = "Find Config File" })
-vim.keymap.set("n", "<leader>fr", function() require("fff").find_files() end, { desc = "Recent Files" })
+vim.keymap.set("n", "<leader>fr", function() require("config.lists").recent() end, { desc = "Recent Files" })
+vim.keymap.set("n", "<leader>fR", function() require("fff").resume() end, { desc = "Resume Last Search" })
 -- stylua: ignore end

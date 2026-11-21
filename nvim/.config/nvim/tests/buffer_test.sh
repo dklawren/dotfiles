@@ -138,6 +138,20 @@ vim.wait(300, function()
 	return false
 end)
 
+-- An action about "this file" has to mean the file under a quickfix row,
+-- because the list is where a failing run leaves the cursor.
+local target_file = vim.fn.tempname() .. ".lua"
+vim.fn.writefile({ "one" }, target_file)
+vim.cmd("edit " .. vim.fn.fnameescape(target_file))
+local target_buf = vim.api.nvim_get_current_buf()
+assert(M.target() == target_buf, "with no list open the target is the current buffer")
+vim.fn.setqflist({}, " ", { items = { { filename = target_file, lnum = 1, col = 1, text = "probe" } } })
+vim.cmd("botright copen")
+assert(vim.bo.buftype == "quickfix", "the probe needs a quickfix window")
+assert(M.target() == target_buf, "in the quickfix window the target is the file on that row, got "
+	.. vim.fn.bufname(M.target()))
+vim.cmd("cclose")
+
 print("buffer tests passed")
 '
 

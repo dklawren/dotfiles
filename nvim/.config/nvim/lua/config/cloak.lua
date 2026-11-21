@@ -35,11 +35,17 @@ local rules = vim
 		{ files = { "*.env*", "*.vars*", "*.tfvars*", ".envrc" }, pattern = [[\v\c\=\zs.*$]] },
 		{ files = { "*.opencode.json", "opencode.json" }, pattern = [[\v\c"apiKey"\s*:\s*"\zs[^"]*]] },
 		{
-			-- fish secrets file: `set [-flags] VAR value` -> hide the value
+			-- fish secrets file: `set [-flags] VAR value` -> hide the value. The
+			-- flags come in any number: -x, -gx, --global, -g -x.
 			files = { "secrets.fish" },
-			pattern = [[\v\c^\s*set\s+(-[a-z]+\s+)?[a-z_][a-z0-9_]*\s+\zs.*]],
+			pattern = [[\v\c^\s*set\s+(-\S+\s+)*[a-z_][a-z0-9_]*\s+\zs.*]],
 		},
-		{ files = { "*.toml", "*.yaml", "*.yml" }, pattern = [[\v\c(]] .. keys .. [[)\s*[:=]\s*\zs[^#]*]] },
+		{
+			-- A quoted value ends at its closing quote, and a # inside it is part
+			-- of the secret, not a comment.
+			files = { "*.toml", "*.yaml", "*.yml" },
+			pattern = [[\v\c(]] .. keys .. [[)\s*[:=]\s*\zs("[^"]*"|'[^']*'|[^#"]*)]],
+		},
 		{
 			files = { "*.json", "*.jsonc", "auth.json", "service.json", ".pi/agent/auth.json", ".opencode/service.json" },
 			pattern = [[\v\c"[a-z0-9_-]*(]] .. keys .. [[)[a-z0-9_-]*"\s*:\s*"\zs[^"]*]],
@@ -114,7 +120,7 @@ local function schedule(bufnr)
 	end, 150)
 end
 
-vim.api.nvim_create_autocmd({ "BufWinEnter", "BufReadPost", "BufEnter" }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufReadPost", "BufEnter", "BufFilePost" }, {
 	callback = function(ev)
 		apply(ev.buf)
 	end,
@@ -140,4 +146,5 @@ vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
 vim.keymap.set("n", "<leader>ue", function()
 	enabled = not enabled
 	apply(0)
+	vim.notify(enabled and "on" or "off", vim.log.levels.INFO, { title = "cloak" })
 end, { desc = "Toggle Cloak" })

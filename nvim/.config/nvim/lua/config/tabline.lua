@@ -87,7 +87,9 @@ local function render_buf(bufnr, current)
 	end
 
 	local name = vim.api.nvim_buf_get_name(bufnr)
-	local content = icon_for(name) .. get_display_name(name)
+	-- The tabline is evaluated like a statusline, so a `%` in the file name is
+	-- an item to expand unless it is doubled.
+	local content = (icon_for(name) .. get_display_name(name)):gsub("%%", "%%%%")
 	local active = bufnr == current
 	return ("%%#%s# %s%s%%#MyBufSeparator#"):format(
 		active and "MyBufActive" or "MyBufInactive",

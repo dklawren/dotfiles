@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run: bash tests/tree_test.sh
 #
-# <leader>E opens a tree with the file you are editing already revealed, keeps
+# <leader>e opens a tree with the file you are editing already revealed, keeps
 # the cursor in the editing window, and moves with you while it is open. The
 # tree is hand-rolled on vim.fs, so nothing here is a plugin's default: the
 # reveal walks the ancestors itself, and the follow is a BufEnter autocmd that
@@ -9,6 +9,7 @@
 # under the cursor.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+. tests/lib.sh
 
 SCRIPT='
 vim.g.mapleader = " "
@@ -66,9 +67,9 @@ vim.cmd.cd(vim.fn.fnameescape(tmp))
 vim.cmd.edit(vim.fn.fnameescape(deep))
 
 local code_win = api.nvim_get_current_win()
-vim.api.nvim_feedkeys(vim.keycode("<leader>E"), "x", false)
-ok(vim.wait(2000, function() return tree_win() ~= nil end), "<leader>E should open the tree")
-ok(api.nvim_get_current_win() == code_win, "<leader>E should leave the cursor in the file window")
+vim.api.nvim_feedkeys(vim.keycode("<leader>e"), "x", false)
+ok(vim.wait(2000, function() return tree_win() ~= nil end), "<leader>e should open the tree")
+ok(api.nvim_get_current_win() == code_win, "<leader>e should leave the cursor in the file window")
 
 -- The reveal has to expand every directory between the root and the file, and
 -- put the cursor on the file itself. A tree that opens at the root and stops
@@ -128,18 +129,48 @@ ok(not listed("fresh.lua"), "a file that does not exist yet should not be listed
 vim.cmd("silent write")
 ok(vim.wait(2000, function() return listed("fresh.lua") end), "writing a file should list it, got " .. vim.inspect(lines()))
 
-vim.api.nvim_feedkeys(vim.keycode("<leader>E"), "x", false)
-ok(tree_win() == nil, "a second <leader>E should close the tree")
+vim.api.nvim_feedkeys(vim.keycode("<leader>e"), "x", false)
+ok(tree_win() == nil, "a second <leader>e should close the tree")
 
 -- From a directory buffer the tree opens at that directory, which is what
--- <leader>E means inside oil or netrw.
+-- <leader>e means inside oil or netrw.
 vim.cmd.edit(vim.fn.fnameescape(tmp .. "/a"))
-vim.api.nvim_feedkeys(vim.keycode("<leader>E"), "x", false)
-ok(tree_win() ~= nil, "<leader>E should open the tree from a directory buffer")
+vim.api.nvim_feedkeys(vim.keycode("<leader>e"), "x", false)
+ok(tree_win() ~= nil, "<leader>e should open the tree from a directory buffer")
 ok(listed("b/") and not listed("deep.lua"), "the tree should start at the directory, got " .. vim.inspect(lines()))
+
+vim.api.nvim_feedkeys(vim.keycode("q"), "x", false)
+ok(vim.wait(2000, function() return tree_win() == nil end), "q from the editing window should close the tree")
+
+vim.api.nvim_feedkeys(vim.keycode("qz"), "x", false)
+ok(vim.fn.reg_recording() == "z", "q with no tree open should still start a macro")
+vim.api.nvim_feedkeys(vim.keycode("q"), "x", false)
+ok(vim.fn.reg_recording() == "", "q while recording should stop the macro")
+
+-- A sidebar that lists node_modules is a sidebar nobody opens. git is the one
+-- that knows what is ignored, and the tree has to ask before it draws.
+vim.fn.delete(tmp, "rf")
+vim.fn.mkdir(tmp .. "/secrets", "p")
+vim.fn.mkdir(tmp .. "/src", "p")
+vim.fn.mkdir(tmp .. "/build", "p")
+vim.fn.writefile({ "secrets/", "*.log", "build/" }, tmp .. "/.gitignore")
+vim.fn.writefile({ "key" }, tmp .. "/secrets/key.txt")
+vim.fn.writefile({ "trace" }, tmp .. "/debug.log")
+vim.fn.writefile({ "out" }, tmp .. "/build/out.js")
+vim.fn.writefile({ "return 1" }, tmp .. "/src/keep.lua")
+vim.fn.system({ "git", "init", "-q", tmp })
+vim.cmd.cd(vim.fn.fnameescape(tmp))
+vim.cmd.edit(vim.fn.fnameescape(tmp .. "/src/keep.lua"))
+vim.api.nvim_feedkeys(vim.keycode("<leader>e"), "x", false)
+ok(vim.wait(2000, function() return tree_win() ~= nil end), "<leader>e should open the tree in a git repo")
+ok(listed("keep.lua"), "a tracked file should be listed, got " .. vim.inspect(lines()))
+ok(not listed("secrets/"), "an ignored directory should be hidden, got " .. vim.inspect(lines()))
+ok(not listed("debug.log"), "an ignored file should be hidden, got " .. vim.inspect(lines()))
+ok(not listed("build/"), "an ignored build directory should be hidden, got " .. vim.inspect(lines()))
+ok(listed(".gitignore"), ".gitignore itself is not ignored and should be listed")
 
 vim.fn.delete(tmp, "rf")
 print(("tree tests passed (%d checks)"):format(checks))
 '
 
-nvim --headless -u NONE -i NONE -c "lua $SCRIPT" -c 'qa!'
+run_lua "$SCRIPT"

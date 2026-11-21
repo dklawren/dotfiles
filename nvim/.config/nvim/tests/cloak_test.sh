@@ -58,7 +58,13 @@ case("a vars file leaves a line without one alone", "", masked("app.vars", { "to
 case("a tfvars file masks the value", "0:9+8", masked("app.tfvars", { "api_key = secret1", "plain line" }))
 case("a quoted json value is masked", "0:13+7", masked("data.json", { [[{ "apiKey": "secret1", "x": 1 }]], "plain line" }))
 case("a fish set line is masked", "0:16+7", masked("secrets.fish", { "set -gx API_KEY secret1", "plain line" }))
+-- The flags come in any number, and a long one is still a flag.
+case("a fish line with two flags is masked", "0:18+7", masked("secrets.fish", { "set -x -g API_KEY secret1" }))
+case("a fish line with a long flag is masked", "0:21+7", masked("secrets.fish", { "set --global API_KEY secret1" }))
 case("a toml value is masked", "0:10+9", masked("cfg.toml", { [[api_key = "secret1"]], "plain line" }))
+-- A # inside the quotes is part of the secret, not the start of a comment.
+case("a quoted toml value is masked whole", "0:11+7", masked("cfg.toml", { [[password = "ab#cd"]] }))
+case("an unquoted toml value stops at the comment", "0:11+2", masked("cfg.toml", { "password = ab#cd" }))
 case("a yaml value is masked", "0:9+12", masked("cfg.yaml", { "api_key: secret1value", "plain line" }))
 case("a file with no secret in it is untouched", "", masked("notes.md", { "api_key = secret1", "plain line" }))
 
@@ -72,6 +78,13 @@ for _, m in ipairs(vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, { details = true 
 	end
 end
 case("the mask is asterisks", true, all_stars)
+
+-- A buffer renamed to a secret file is masked without an edit: :saveas into a
+-- .env used to leave the values on screen until the next keystroke.
+masked("notes.txt", { "API_KEY=secret1" })
+case("a file with no secret is not masked when it is opened", 0, #vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, {}))
+vim.cmd("file " .. vim.fn.fnameescape(dir .. "/renamed.env"))
+case("a renamed buffer is masked at once", 1, #vim.api.nvim_buf_get_extmarks(0, ns, 0, -1, {}))
 
 -- The toggle takes the masks away and puts them back
 masked("app.env", { "api_key = secret1" })

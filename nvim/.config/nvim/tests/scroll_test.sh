@@ -40,7 +40,12 @@ repo=$PWD
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
-python3 .auto/mk_interact_fixtures.py "$tmp"
+for i in $(seq 1 60); do
+	printf '## Section %d\n\nSome **bold** text and `code` in paragraph %d.\n\n- item one\n- item two\n\n' "$i" "$i"
+done >"$tmp/doc.md"
+for i in $(seq 1 300); do
+	printf 'local value_%d = %d\n' "$i" "$i"
+done >"$tmp/code.lua"
 mkdir -p "$tmp/cfg/nvim"
 cat >"$tmp/cfg/nvim/init.lua" <<LUA
 vim.opt.runtimepath:prepend("$repo")
@@ -142,6 +147,7 @@ api.nvim_create_autocmd("WinScrolled", {
 
 api.nvim_create_autocmd("UIEnter", {
 	once = true,
+	nested = true,
 	callback = function()
 		vim.cmd.edit(vim.fn.fnameescape(dir .. "/doc.md"))
 		vim.wo.conceallevel = 2

@@ -4,7 +4,9 @@ vim.pack.add({
 })
 
 require("oil").setup({
-	default_file_explorer = false,
+	-- Directories open in oil, so `nvim` on a folder is a listing instead of an
+	-- empty buffer.
+	default_file_explorer = true,
 	delete_to_trash = true,
 	skip_confirm_for_simple_edits = true,
 	view_options = {
@@ -27,7 +29,7 @@ require("oil").setup({
 	},
 })
 
-vim.keymap.set("n", "<leader>e", function()
+vim.keymap.set("n", "<leader>E", function()
 	if vim.bo.filetype == "oil" then
 		require("oil").close()
 	else

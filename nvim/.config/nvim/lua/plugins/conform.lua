@@ -171,12 +171,50 @@ conform.setup({
 	end,
 })
 
+-- The flag conform's format_on_save reads, so the toggle lives here and not in
+-- the LSP layer.
+vim.api.nvim_create_user_command("FormatDisable", function(opts)
+	if opts.bang then
+		vim.b.disable_autoformat = true
+	else
+		vim.g.disable_autoformat = true
+	end
+	vim.notify("off" .. (opts.bang and " (buffer)" or " (global)"), vim.log.levels.WARN, { title = "autoformat" })
+end, { desc = "Disable autoformat-on-save", bang = true })
+
+vim.api.nvim_create_user_command("FormatEnable", function()
+	vim.b.disable_autoformat = false
+	vim.g.disable_autoformat = false
+	vim.notify("on", vim.log.levels.INFO, { title = "autoformat" })
+end, { desc = "Re-enable autoformat-on-save" })
+
+vim.keymap.set("n", "<leader>uf", function()
+	if vim.g.disable_autoformat or vim.b[0].disable_autoformat then
+		vim.cmd("FormatEnable")
+	else
+		vim.cmd("FormatDisable")
+	end
+end, { desc = "Toggle Autoformat" })
+
 vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 vim.keymap.set({ "n", "v" }, "<leader>cf", function()
-	conform.format({ async = true }, function(err)
+	local bufnr = require("config.buffer").target()
+	-- sql is left out of format_on_save so a save stays instant, and the plan for
+	-- it has always been the LSP formatter. Asking conform for a file it has no
+	-- formatter for would only answer "no formatters available".
+	if #conform.list_formatters(bufnr) == 0 then
+		local clients = vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/formatting" })
+		if #clients == 0 then
+			vim.notify("No formatter for " .. vim.bo[bufnr].filetype, vim.log.levels.WARN, { title = "format" })
+			return
+		end
+		vim.lsp.buf.format({ bufnr = bufnr, async = true, timeout_ms = 2000 })
+		return
+	end
+	conform.format({ async = true, bufnr = bufnr }, function(err)
 		if err then
-			vim.notify(err, vim.log.levels.ERROR, { title = "Conform" })
+			vim.notify(err, vim.log.levels.ERROR, { title = "format" })
 		end
 	end)
 end, { desc = "Format buffer" })

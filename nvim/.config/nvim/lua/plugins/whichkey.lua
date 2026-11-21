@@ -17,7 +17,9 @@ wk.add({
 	{ "<leader>gr", group = "review" },
 	{ "<leader>m", group = "markdown" },
 	{ "<leader>q", group = "quit/session" },
+	{ "<leader>l", group = "location list" },
 	{ "<leader>s", group = "search" },
+	{ "<leader>t", group = "test/check" },
 	{ "<leader>u", group = "ui", icon = { icon = "󰙵 ", color = "cyan" } },
 	{ "<leader>x", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
 	{ "[", group = "prev" },
@@ -48,7 +50,7 @@ wk.add({
 			"<leader>fCf",
 			function()
 				vim.fn.setreg("+", vim.fn.expand("%:p")) -- Copy full file path to clipboard
-				vim.notify("Copied full file path: " .. vim.fn.expand("%:p"))
+				vim.notify(vim.fn.expand("%:p"), vim.log.levels.INFO, { title = "copied path" })
 			end,
 			desc = "Copy full file path",
 		},
@@ -56,7 +58,7 @@ wk.add({
 			"<leader>fCn",
 			function()
 				vim.fn.setreg("+", vim.fn.expand("%:t")) -- Copy file name to clipboard
-				vim.notify("Copied file name: " .. vim.fn.expand("%:t"))
+				vim.notify(vim.fn.expand("%:t"), vim.log.levels.INFO, { title = "copied name" })
 			end,
 			desc = "Copy file name",
 		},
@@ -65,7 +67,7 @@ wk.add({
 			function()
 				local rel_path = vim.fn.expand("%:.")
 				vim.fn.setreg("+", rel_path)
-				vim.notify("Copied relative file path: " .. rel_path)
+				vim.notify(rel_path, vim.log.levels.INFO, { title = "copied path" })
 			end,
 			desc = "Copy relative file path",
 		},

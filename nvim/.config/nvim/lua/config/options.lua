@@ -49,6 +49,7 @@ vim.fn.mkdir(vim.o.undodir, "p")
 vim.opt.updatetime = 500
 vim.opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
 vim.opt.autowrite = true -- Auto save
+vim.opt.exrc = true -- Per-project `.nvim.lua`, e.g. vim.lsp.enable("eslint")
 
 vim.opt.path:append("**") -- include subdirectories in search
 vim.opt.mouse = "a" -- Enable mouse support
@@ -69,8 +70,9 @@ vim.opt.splitkeep = "screen"
 vim.opt.wildmode = "longest:full,full"
 vim.opt.wildignore:append("*.o,*.obj,*.pyc,*.class,*.jar")
 
--- Better diff options (indent-heuristic + inline:char are now defaults, linematch stays custom)
-vim.opt.diffopt:append("linematch:60,indent-heuristic,inline:char")
+-- The default already has linematch:40, and appending a second one keeps both.
+vim.opt.diffopt:remove("linematch:40")
+vim.opt.diffopt:append("linematch:60")
 
 -- Performance improvements
 vim.opt.redrawtime = 10000

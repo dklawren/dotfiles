@@ -226,8 +226,9 @@ local function open()
 		close()
 		local ok, err = pcall(vim.pack.del, { name })
 		vim.notify(
-			ok and ("vim.pack: deleted %s"):format(name) or "vim.pack: " .. tostring(err),
-			ok and vim.log.levels.INFO or vim.log.levels.ERROR
+			ok and ("deleted %s"):format(name) or tostring(err),
+			ok and vim.log.levels.INFO or vim.log.levels.ERROR,
+			{ title = "pack" }
 		)
 	end, o)
 
@@ -235,7 +236,7 @@ local function open()
 		buffer = state.bufnr,
 		once = true,
 		callback = function(ev)
-			if vim._tointeger(ev.match) == state.winid then
+			if tonumber(ev.match) == state.winid then
 				state.winid, state.bufnr, state.expanded = nil, nil, {}
 			end
 		end,

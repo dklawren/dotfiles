@@ -236,11 +236,6 @@ local function close()
 end
 
 ---Whether the picker is up, as far as anything outside this file can tell.
----
----A caller that refreshes the picker on a timer needs to know whether the user
----is still looking at it, or it will put a window back in front of someone who
----has closed it. There was no way to ask before, which is why the one caller
----that refreshes did it on a fixed 300ms and hoped.
 ---@return boolean
 function M.is_open()
 	return state.list_win ~= nil and vim.api.nvim_win_is_valid(state.list_win)
@@ -426,7 +421,7 @@ function M.score(needle, label)
 	if earliest == math.huge then
 		earliest = 0
 	end
-	return whole * 1000000 - loose * 1000000000 - scattered - earliest * 1000 - math.min(#label, 999)
+	return whole * 1000000 - loose * 1000000000 - scattered - math.min(earliest, 999) * 1000 - math.min(#label, 999)
 end
 
 ---Which of a list of labels survive a needle, best answer first. Rows that
@@ -498,30 +493,79 @@ function ctx.set_lines(lines, ft)
 	then
 		state.preview_buf = vim.api.nvim_create_buf(false, true)
 	end
+	state.preview_source = nil
 	vim.api.nvim_win_set_buf(state.preview_win, state.preview_buf)
 	vim.bo[state.preview_buf].modifiable = true
 	vim.api.nvim_buf_set_lines(state.preview_buf, 0, -1, false, lines)
 	vim.bo[state.preview_buf].modifiable = false
-	vim.bo[state.preview_buf].filetype = ft or ""
-end
-
-function ctx.set_cursor(lnum, col)
-	if state.preview_win and vim.api.nvim_win_is_valid(state.preview_win) then
-		vim.api.nvim_win_set_cursor(state.preview_win, { lnum, col or 0 })
-		vim.api.nvim_win_call(state.preview_win, function()
-			vim.cmd("normal! zz")
-		end)
+	-- Setting the same filetype again still fires FileType and restarts the
+	-- highlighter, which is most of what a row change costs.
+	if vim.bo[state.preview_buf].filetype ~= (ft or "") then
+		vim.bo[state.preview_buf].filetype = ft or ""
 	end
 end
 
-function ctx.set_file(path, lnum, col)
-	local lines = vim.fn.filereadable(path) == 1 and vim.fn.readfile(path) or { "[unreadable] " .. path }
-	ctx.set_lines(lines, vim.filetype.match({ filename = path }))
-	lnum = math.min(math.max(lnum or 1, 1), math.max(#lines, 1))
-	vim.api.nvim_win_set_cursor(state.preview_win, { lnum, math.max((col or 1) - 1, 0) })
+---@param lnum integer 1-based, clamped to the preview's lines
+---@param col? integer 0-based
+function ctx.set_cursor(lnum, col)
+	if not (state.preview_win and vim.api.nvim_win_is_valid(state.preview_win)) then
+		return
+	end
+	local last = vim.api.nvim_buf_line_count(vim.api.nvim_win_get_buf(state.preview_win))
+	vim.api.nvim_win_set_cursor(state.preview_win, { math.min(math.max(lnum or 1, 1), last), math.max(col or 0, 0) })
 	vim.api.nvim_win_call(state.preview_win, function()
 		vim.cmd("normal! zz")
 	end)
+end
+
+---A preview is a copy of the whole buffer or file into a scratch buffer, so a
+---lockfile or a minified bundle in a grep result costs a second per row. Past
+---this many bytes it says what it skipped instead.
+local PREVIEW_MAX_BYTES = 1024 * 1024
+
+---@param size integer
+---@return string
+local function too_big(size)
+	return ("[%.1f MB, too big to preview]"):format(size / 1048576)
+end
+
+---The text of a buffer, copied only when it is not already the one shown, so
+---moving between rows of one buffer moves the cursor and nothing else.
+---@param buf integer
+function ctx.set_buf(buf)
+	local source = ("buf:%d:%d"):format(buf, vim.api.nvim_buf_get_changedtick(buf))
+	if state.preview_source ~= source then
+		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		local bytes = 0
+		for _, line in ipairs(lines) do
+			bytes = bytes + #line + 1
+		end
+		if bytes > PREVIEW_MAX_BYTES then
+			lines = { too_big(bytes) }
+		end
+		ctx.set_lines(lines, vim.bo[buf].filetype)
+		state.preview_source = source
+	end
+end
+
+---A file, read from the buffer that holds it when there is one, since that is
+---what the jump lands on and it can differ from the disk.
+---@param col? integer 1-based
+function ctx.set_file(path, lnum, col)
+	local buf = vim.fn.bufnr(path)
+	if buf > 0 and vim.api.nvim_buf_is_loaded(buf) then
+		ctx.set_buf(buf)
+	elseif state.preview_source ~= "file:" .. path then
+		local stat = vim.uv.fs_stat(path)
+		if stat and stat.size > PREVIEW_MAX_BYTES then
+			ctx.set_lines({ too_big(stat.size) }, "")
+		else
+			local lines = vim.fn.filereadable(path) == 1 and vim.fn.readfile(path) or { "[unreadable] " .. path }
+			ctx.set_lines(lines, vim.filetype.match({ filename = path }))
+		end
+		state.preview_source = "file:" .. path
+	end
+	ctx.set_cursor(lnum, (col or 1) - 1)
 end
 
 ---Preview what a git command says. Debounced and last answer wins: holding an
@@ -564,6 +608,7 @@ end
 ---@field on_cancel? fun() Called when the picker closes without a choice
 ---@field filter? boolean add a line to narrow the list as you type
 ---@field keys? table<string, { desc: string, run: fun(item: any) }> extra buffer-local keys, shown in the title
+---@field paths? boolean the rows name files a split can show, which enables the split keys
 
 ---@param items table[] list of arbitrary entries
 ---@param opts picker.Opts
@@ -595,11 +640,13 @@ function M.open(items, opts)
 	end
 	if filter then
 		hints[#hints + 1] = "<CR> open"
+		if opts.paths then
+			hints[#hints + 1] = "<C-v> vsplit"
+			hints[#hints + 1] = "<C-t> tab"
+		end
 	end
 	local title = opts.title or ""
-	if #hints > 0 then
-		title = title == "" and table.concat(hints, "  ") or (title .. "   " .. table.concat(hints, "  "))
-	end
+	local footer = #hints > 0 and table.concat(hints, "  ") or nil
 
 	state.items = items
 	state.on_cancel = opts.on_cancel
@@ -626,12 +673,15 @@ function M.open(items, opts)
 		border = "rounded",
 		title = title,
 		title_pos = "center",
+		footer = footer,
+		footer_pos = footer and "center" or nil,
 	})
 	vim.wo[state.list_win].cursorline = true
 	vim.wo[state.list_win].wrap = false
 
 	-- Tracked in state so close() can delete it.
 	state.preview_buf = vim.api.nvim_create_buf(false, true)
+	state.preview_source = nil
 	state.preview_win = vim.api.nvim_open_win(state.preview_buf, false, {
 		relative = "editor",
 		row = row,
@@ -795,7 +845,7 @@ function M.open(items, opts)
 		render()
 	end
 
-	local function confirm()
+	local function confirm(how)
 		-- The last letter and the Enter can arrive in one chunk, before the
 		-- narrowing has run, so the needle is applied here rather than
 		-- trusting that it already was. Without this, Enter on a fast
@@ -810,6 +860,17 @@ function M.open(items, opts)
 		end
 		state.confirmed = true
 		close()
+		-- The split exists before the source opens anything, so its edit lands
+		-- in the new window and the window the picker was opened from is left
+		-- on the file it already had. Doing it afterwards would open the file
+		-- twice, once in the old window and once in the split.
+		if how == "vsplit" then
+			vim.cmd.vsplit()
+		elseif how == "split" then
+			vim.cmd.split()
+		elseif how == "tabedit" then
+			vim.cmd.tabnew()
+		end
 		opts.on_confirm(item)
 	end
 
@@ -828,7 +889,20 @@ function M.open(items, opts)
 
 	vim.api.nvim_create_autocmd("CursorMoved", { buffer = state.list_buf, callback = render })
 	for _, lhs in ipairs({ "<CR>", "<C-o>" }) do
-		vim.keymap.set("n", lhs, confirm, { buffer = state.list_buf })
+		vim.keymap.set("n", lhs, function()
+			confirm()
+		end, { buffer = state.list_buf })
+	end
+	-- Open the row in a split instead of the current window, the telescope
+	-- keys. No source has to know how the row is opened, only that it names
+	-- something a window can show: the split is made before the source's own
+	-- edit runs. A source that copies text instead leaves the empty split
+	-- behind, so those keys are only there when the rows are files.
+	local splits = opts.paths and { ["<C-v>"] = "vsplit", ["<C-s>"] = "split", ["<C-t>"] = "tabedit" } or {}
+	for lhs, how in pairs(splits) do
+		vim.keymap.set("n", lhs, function()
+			confirm(how)
+		end, { buffer = state.list_buf })
 	end
 	for _, lhs in ipairs({ "<Esc>", "q", "<C-c>" }) do
 		vim.keymap.set("n", lhs, close, { buffer = state.list_buf })
@@ -867,6 +941,12 @@ function M.open(items, opts)
 			vim.cmd.stopinsert()
 			confirm()
 		end, { buffer = state.filter_buf })
+		for lhs, how in pairs(splits) do
+			vim.keymap.set("i", lhs, function()
+				vim.cmd.stopinsert()
+				confirm(how)
+			end, { buffer = state.filter_buf })
+		end
 		vim.keymap.set("i", "<C-c>", close, { buffer = state.filter_buf })
 		-- Tab finishes the word being typed from the rows that are left, which
 		-- is the one thing a keyboard filter has that typing alone does not.
@@ -930,6 +1010,11 @@ function M.open(items, opts)
 		vim.keymap.set("n", "<CR>", function()
 			confirm()
 		end, { buffer = state.filter_buf })
+		for lhs, how in pairs(splits) do
+			vim.keymap.set("n", lhs, function()
+				confirm(how)
+			end, { buffer = state.filter_buf })
+		end
 		vim.keymap.set("n", "<C-c>", close, { buffer = state.filter_buf })
 		vim.keymap.set("n", "<Esc>", escape, { buffer = state.filter_buf })
 		-- Arrows and the other two ways of walking a list, from the line the
@@ -984,14 +1069,14 @@ function M.diagnostics(items, title, opts)
 	M.open(items, {
 		title = title,
 		filter = true,
+		paths = true,
 		format = function(item)
 			local sev = ({ "Err", "Warn", "Info", "Hint" })[item.severity] or "?"
 			local name = vim.api.nvim_buf_get_name(item.bufnr)
 			return ("[%s] %s:%d: %s"):format(sev, vim.fn.fnamemodify(name, ":."), item.lnum + 1, item.message)
 		end,
 		preview = function(item, ctx)
-			local lines = vim.api.nvim_buf_get_lines(item.bufnr, 0, -1, false)
-			ctx.set_lines(lines, vim.bo[item.bufnr].filetype)
+			ctx.set_buf(item.bufnr)
 			ctx.set_cursor(item.lnum + 1, item.col)
 		end,
 		on_confirm = confirm,
@@ -1004,6 +1089,7 @@ function M.locations(items, title)
 	M.open(items, {
 		title = title,
 		filter = true,
+		paths = true,
 		format = function(item)
 			return ("%s:%d: %s"):format(vim.fn.fnamemodify(path_of(item), ":."), item.lnum, vim.trim(item.text or ""))
 		end,
@@ -1019,7 +1105,62 @@ function M.locations(items, title)
 	})
 end
 
+-- A linter answers every error with a fix and a way to silence the rule. The
+-- silencing ones are quick fixes too, and must not crowd out a real fix.
+local SILENCERS = { "^Disable ", "^Ignore ", "^Show documentation", "^Suppress " }
+
+---@param action lsp.CodeAction|lsp.Command
+---@return integer
+local function action_rank(action)
+	if action.disabled then
+		return 6
+	end
+	local kind = action.kind or ""
+	if kind:find("^quickfix") or action.diagnostics then
+		for _, pattern in ipairs(SILENCERS) do
+			if action.title:find(pattern) then
+				return 2
+			end
+		end
+		return action.isPreferred and 0 or 1
+	end
+	if kind:find("^refactor") then
+		return 3
+	end
+	if kind:find("^source") then
+		return 4
+	end
+	return 5
+end
+
+---@param action lsp.CodeAction|lsp.Command
+---@return string? import the line the action adds, without its `from` clause
+local function import_added(action)
+	local edit = action.edit
+	if not edit then
+		return nil
+	end
+	local lists = vim.tbl_values(edit.changes or {})
+	for _, change in ipairs(edit.documentChanges or {}) do
+		table.insert(lists, change.edits or {})
+	end
+	for _, edits in ipairs(lists) do
+		for _, e in ipairs(edits) do
+			local line = e.newText:match("import [^\n]- from")
+			if line then
+				return line:sub(1, -6)
+			end
+		end
+	end
+end
+
 ---LSP code actions, fed from `vim.ui.select` with `kind == 'codeaction'`.
+---nvim lists them in whatever order the clients answered, so they are sorted
+---the way VSCode shows them: quick fixes, refactors, source actions, the rest.
+---Ties keep the server's order.
+---tsserver offers a module that exports one value both ways (zod's `z`) as two
+---"Add import" rows with the same title, the default import first. The rows
+---say which import they write, and the named one leads.
 ---`items` are `{ action: lsp.CodeAction|lsp.Command, ctx: lsp.HandlerContext }`;
 ---`on_choice` is Neovim's own callback, which resolves (codeAction/resolve) and applies the edit.
 ---@param items table[]
@@ -1031,6 +1172,38 @@ function M.code_actions(items, on_choice, format_item)
 			local title = item.action and item.action.title or "(unnamed)"
 			return item.action and item.action.disabled and (title .. " (disabled)") or title
 		end
+	local arrival, first, twins, default = {}, {}, {}, {}
+	for i, item in ipairs(items) do
+		local action = item.action or item
+		arrival[item] = i
+		twins[action.title] = first[action.title] and true or false
+		first[action.title] = first[action.title] or i
+	end
+	local label = format_item
+	format_item = function(item)
+		local action = item.action or item
+		local import = twins[action.title] and import_added(action)
+		return import and ("%s: %s"):format(label(item), import) or label(item)
+	end
+	for _, item in ipairs(items) do
+		local import = import_added(item.action or item)
+		default[item] = import ~= nil and import:find("^import [^{*]+$") ~= nil
+	end
+	items = vim.list_extend({}, items)
+	table.sort(items, function(a, b)
+		local aa, ba = a.action or a, b.action or b
+		local ra, rb = action_rank(aa), action_rank(ba)
+		if ra ~= rb then
+			return ra < rb
+		end
+		if first[aa.title] ~= first[ba.title] then
+			return first[aa.title] < first[ba.title]
+		end
+		if default[a] ~= default[b] then
+			return default[b]
+		end
+		return arrival[a] < arrival[b]
+	end)
 	M.open(items, {
 		title = "Code Actions",
 		skip_single = false,

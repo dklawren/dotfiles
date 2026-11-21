@@ -89,6 +89,17 @@ case("the warning is counted", true, line:find("%%#StatusWarnIcon#%S+ 1 ") ~= ni
 case("an info count is left out", false, line:find("StatusInfoIcon") ~= nil)
 case("the diagnostic fragment resets the colour", true, line:find("%%#StatusLine# %%#StatusLSPToNorm#") ~= nil)
 
+-- A server reports its own progress, and a % in it is a statusline item: a
+-- message like "indexing 50%" used to swallow the items after it.
+local progress = vim.ui.progress_status
+vim.ui.progress_status = function()
+	return "indexing 50% of 2"
+end
+line = SL.build()
+case("a percentage in the progress text is escaped", true, line:find("indexing 50%% of 2", 1, true) ~= nil)
+vim.ui.progress_status = progress
+case("and with no progress there is no fragment", false, SL.build():find("indexing", 1, true) ~= nil)
+
 print(("statusline checks=%d failures=%d"):format(checks, failures))
 if failures > 0 then
 	error("statusline test failed")

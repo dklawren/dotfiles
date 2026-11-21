@@ -21,7 +21,7 @@ local M = {}
 --- Pads with spaces so the n-th cursor of every line shares a column.
 function M.align()
 	local buf = vim.api.nvim_get_current_buf()
-	local marks = vim.api.nvim_buf_get_extmarks(buf, NS, 0, -1)
+	local marks = vim.api.nvim_buf_get_extmarks(buf, NS, 0, -1, {})
 	if #marks == 0 then
 		return
 	end
@@ -56,7 +56,7 @@ function M.align()
 	end
 
 	local pcursor = vim.api.nvim_win_get_cursor(0)
-	local pmark = vim.api.nvim_buf_set_extmark(buf, PRIMARY_NS, pcursor[1] - 1, pcursor[2])
+	local pmark = vim.api.nvim_buf_set_extmark(buf, PRIMARY_NS, pcursor[1] - 1, pcursor[2], {})
 
 	-- Right to left: each insertion shifts the cursors after it.
 	for row, cols in pairs(rows) do
@@ -68,20 +68,26 @@ function M.align()
 		end
 	end
 
-	local moved = vim.api.nvim_buf_get_extmark_by_id(buf, PRIMARY_NS, pmark)
+	local moved = vim.api.nvim_buf_get_extmark_by_id(buf, PRIMARY_NS, pmark, {})
 	vim.api.nvim_buf_clear_namespace(buf, PRIMARY_NS, 0, -1)
 	vim.api.nvim_win_set_cursor(0, { moved[1] + 1, moved[2] })
 end
 
 vim.keymap.set("n", "g<Space>", M.align, { desc = "Align multicursors into a column" })
 
--- q-{motion} replays one motion at every cursor, then disables follow-mode
--- (q= is a toggle; one-shot is the common case).
+-- <leader>M-{motion} replays one motion at every cursor, then disables follow-mode
+-- (q= is a toggle; one-shot is the common case). CmdAtom, which is what tells
+-- the replay that the motion finished, arrived with native multicursor in 0.13.
 local function follow_once()
+	if vim.fn.has("nvim-0.13") == 0 then
+		vim.notify("Multicursor needs Neovim 0.13", vim.log.levels.WARN)
+		return
+	end
 	vim.cmd("normal! 1q=")
+	---@diagnostic disable-next-line: param-type-mismatch
 	vim.api.nvim_create_autocmd("CmdAtom", {
 		callback = function(ev)
-			if ev.data.lhs == "q-" then
+			if ev.data.lhs == vim.keycode("<leader>M-") then
 				return -- Skip the mapping itself.
 			end
 			vim.cmd("normal! 2q=")
@@ -90,6 +96,6 @@ local function follow_once()
 	})
 end
 
-vim.keymap.set("n", "q-", follow_once, { desc = "Multicursor: replay next motion at every cursor" })
+vim.keymap.set("n", "<leader>M-", follow_once, { desc = "Multicursor: replay next motion at every cursor" })
 
 return M

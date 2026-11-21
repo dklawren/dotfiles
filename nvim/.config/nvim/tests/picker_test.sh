@@ -12,7 +12,7 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
 # step name <TAB> the keys to send, hex so an escape can be written.
-printf 'A.open\t\nA.opened\t\nA.b\t62\nA.ba\t78\nA.back\t7f\nA.clear\t7f\nA.gam\t67616d\nA.z\t7a\nA.esc_clears\t1b\nA.esc_closes\t1b\nB.open\t\nB.confirm\t620d\nC.open\t\nC.run\t18\nD.open\t\nD.pick\t6a0d\nE.open\t\nF.open\t\nF.one\t6f6e65\nF.dismiss\t1b\nG.open\t\nG.type\t62657461\nG.pick\t0d\nH.open\t\nH.confg\t636f6e6667\nH.dismiss\t1b\nI.open\t\nI.confg\t636f6e6667\nI.dismiss\t1b\nI.typed\t636f6e6669675069636b6572\nI.hits\t\nI.close\t1b\nJ.open\t\nJ.up\t1b5b41\nJ.down\t1b5b42\nJ.one\t6f6e65\nJ.clear\t7f7f7f\nJ.pick\t0d\nK.open\t\nK.word\t6c75612f636f6e6669672f73657373696f6e2e6c7561\nK.grow\t6162636465666768696a6b6c\nK.shrink\t7f7f7f7f7f7f7f7f7f7f7f7f\nK.back\t\nL.open\t\nL.part\t6c75612f636f6e\nL.shared\t09\nL.word\t09\nL.whole\t09\nL.other\t09\nL.last\t09\nL.wrap\t09\nL.close\t1b\nM.open\t\nM.part\t6c75612f63\nM.tab1\t09\nM.typed\t73\nM.tab2\t09\nM.tab3\t09\nM.close\t1b\nO.open\t\nO.numbered\t\nO.close\t1b\nN.open\t\nN.part\t6c75612f636f6e6669672f706169\nN.tab1\t09\nN.tab2\t09\nN.tab3\t09\nN.tab4\t09\nN.tab5\t09\nN.close\t1b\nP.open\t\nP.type_a\t61\nP.painted\t\nP.back\t7f\nP.cleared\t\nP.close\t1b\nR.open\t\nR.pick\t0d\nS.open\t\nS.rows\t\nS.close\t1b\nT.select\t\nT.type\t62657461\nT.pick\t0d\nT.done\t\nU.select\t\nU.pick\t0d\nU.done\t\nV.select\t\nV.esc\t1b\nV.done\t\nW.open\t\nW.pick\t74776f0d\nW.done\t\nX.open\t\nX.type\t68656c6c6f0d\nX.done\t\nY.open\t\nY.pick\t0d\nY.done\t\ndone\t\n' >"$tmp/keys"
+printf 'A.open\t\nA.opened\t\nA.b\t62\nA.ba\t78\nA.back\t7f\nA.clear\t7f\nA.gam\t67616d\nA.z\t7a\nA.esc_clears\t1b\nA.esc_closes\t1b\nB.open\t\nB.confirm\t620d\nC.open\t\nC.run\t18\nD.open\t\nD.pick\t6a0d\nE.open\t\nF.open\t\nF.one\t6f6e65\nF.dismiss\t1b\nG.open\t\nG.type\t62657461\nG.pick\t0d\nH.open\t\nH.confg\t636f6e6667\nH.dismiss\t1b\nI.open\t\nI.confg\t636f6e6667\nI.dismiss\t1b\nI.typed\t636f6e6669675069636b6572\nI.hits\t\nI.close\t1b\nJ.open\t\nJ.up\t1b5b41\nJ.down\t1b5b42\nJ.one\t6f6e65\nJ.clear\t7f7f7f\nJ.pick\t0d\nK.open\t\nK.word\t6c75612f636f6e6669672f73657373696f6e2e6c7561\nK.grow\t6162636465666768696a6b6c\nK.shrink\t7f7f7f7f7f7f7f7f7f7f7f7f\nK.back\t\nL.open\t\nL.part\t6c75612f636f6e\nL.shared\t09\nL.word\t09\nL.whole\t09\nL.other\t09\nL.last\t09\nL.wrap\t09\nL.close\t1b\nM.open\t\nM.part\t6c75612f63\nM.tab1\t09\nM.typed\t73\nM.tab2\t09\nM.tab3\t09\nM.close\t1b\nO.open\t\nO.numbered\t\nO.close\t1b\nN.open\t\nN.part\t6c75612f636f6e6669672f706169\nN.tab1\t09\nN.tab2\t09\nN.tab3\t09\nN.tab4\t09\nN.tab5\t09\nN.close\t1b\nP.open\t\nP.type_a\t61\nP.painted\t\nP.back\t7f\nP.cleared\t\nP.close\t1b\nR.open\t\nR.pick\t0d\nS.open\t\nS.rows\t\nS.close\t1b\nT.select\t\nT.type\t62657461\nT.pick\t0d\nT.done\t\nU.select\t\nU.pick\t0d\nU.done\t\nV.select\t\nV.esc\t1b\nV.done\t\nW.open\t\nW.pick\t74776f0d\nW.done\t\nX.open\t\nX.type\t68656c6c6f0d\nX.done\t\nY.open\t\nY.pick\t0d\nY.done\t\nU2.open\t\nU2.pick\t\nU2.done\t\nZ.open\t\nZ.vsplit\t16\nZ.done\t\ndone\t\n' >"$tmp/keys"
 
 cat >"$tmp/probe.lua" <<'LUA'
 local P = require("config.picker")
@@ -280,6 +280,85 @@ eq("history rows are newest first", L.history_items(":")[1].entry, "echo lists")
 check("commands are rows", #L.command_items() > 0, #L.command_items())
 check("autocmds are rows", #L.autocmd_items() > 0, #L.autocmd_items())
 
+local other_file = lists_dir .. "/other.lua"
+vim.fn.writefile({ "x" }, other_file)
+vim.cmd.badd(vim.fn.fnameescape(other_file))
+local recent = vim.tbl_map(function(row)
+	return vim.fn.fnamemodify(row.path, ":t")
+end, L.recent_items())
+check("a listed buffer is a recent file", vim.tbl_contains(recent, "other.lua"), vim.inspect(recent))
+check("the current file is not", not vim.tbl_contains(recent, "marks.lua"), vim.inspect(recent))
+
+-- Two rows in one loaded buffer: the second row moves the preview's cursor and
+-- does not copy the text again, and the text is the buffer's, not the disk's.
+vim.api.nvim_buf_set_lines(0, 0, 1, false, { "unsaved" })
+local undo = L.undo_items()
+check("an edited buffer has an undo state", #undo > 0 and undo[1].seq >= 1, vim.inspect(undo))
+check("the header line of :undolist is not a row", undo[1] ~= nil and undo[1].when ~= nil, vim.inspect(undo))
+P.locations({
+	{ filename = lists_file, lnum = 1, col = 1, text = "one" },
+	{ filename = lists_file, lnum = 2, col = 1, text = "two" },
+}, "probe locations")
+local list_win = vim.fn.bufwinid(P.visible().buf)
+local preview_win = vim.iter(vim.api.nvim_list_wins()):find(function(w)
+	return vim.api.nvim_win_get_config(w).title ~= nil and w ~= list_win and vim.api.nvim_win_get_config(w).title[1][1] == "preview"
+end)
+local preview_buf = preview_win and vim.api.nvim_win_get_buf(preview_win)
+eq("the preview shows the unsaved buffer", preview_buf and vim.api.nvim_buf_get_lines(preview_buf, 0, 1, false), { "unsaved" })
+local tick = preview_buf and vim.api.nvim_buf_get_changedtick(preview_buf)
+vim.api.nvim_win_set_cursor(list_win, { 2, 0 })
+vim.api.nvim_exec_autocmds("CursorMoved", { buffer = vim.api.nvim_win_get_buf(list_win) })
+eq("the next row in the same file is not copied again", preview_buf and vim.api.nvim_buf_get_changedtick(preview_buf), tick)
+eq("but the cursor moves to it", preview_win and vim.api.nvim_win_get_cursor(preview_win)[1], 2)
+for _, w in ipairs(vim.api.nvim_list_wins()) do
+	if vim.api.nvim_win_get_config(w).relative ~= "" then
+		vim.api.nvim_win_close(w, true)
+	end
+end
+vim.cmd.stopinsert()
+vim.cmd("silent! %bwipeout!")
+
+-- A picker whose rows are not files does not offer a split: the key would open
+-- an empty window on nothing.
+P.open({ { name = "plain" } }, { title = "plain", skip_single = false, format = function(item)
+	return item.name
+end })
+local plain_win = vim.fn.bufwinid(P.visible().buf)
+local plain_footer = table.concat(vim.api.nvim_win_get_config(plain_win).footer or {}, " ")
+eq("no split hint when the rows are not files", plain_footer:find("<C-v>", 1, true), nil)
+eq("and no split key", vim.fn.maparg("<C-v>", "n", false, true).buffer, nil)
+for _, w in ipairs(vim.api.nvim_list_wins()) do
+	if vim.api.nvim_win_get_config(w).relative ~= "" then
+		vim.api.nvim_win_close(w, true)
+	end
+end
+vim.cmd("silent! %bwipeout!")
+
+-- A row for a file too big to copy into the preview says so instead of
+-- spending a second on a lockfile that matched a grep.
+local big = lists_dir .. "/big.lua"
+local fh = assert(io.open(big, "w"))
+fh:write(("x"):rep(2 * 1024 * 1024) .. "\n")
+fh:close()
+P.locations({
+	{ filename = big, lnum = 1, col = 1, text = "big" },
+	{ filename = lists_file, lnum = 1, col = 1, text = "one" },
+}, "big files")
+local big_preview
+for _, w in ipairs(vim.api.nvim_list_wins()) do
+	local c = vim.api.nvim_win_get_config(w)
+	if c.relative ~= "" and c.title and c.title[1][1] == "preview" then
+		big_preview = vim.api.nvim_buf_get_lines(vim.api.nvim_win_get_buf(w), 0, 1, false)[1]
+	end
+end
+check("a huge file is named, not copied", big_preview ~= nil and big_preview:find("too big to preview", 1, true) ~= nil, big_preview)
+for _, w in ipairs(vim.api.nvim_list_wins()) do
+	if vim.api.nvim_win_get_config(w).relative ~= "" then
+		vim.api.nvim_win_close(w, true)
+	end
+end
+vim.cmd("silent! %bwipeout!")
+
 -- 4. a real picker, typed into
 local items = { { name = "alpha" }, { name = "beta" }, { name = "gamma" } }
 local confirmed, run = nil, nil
@@ -287,6 +366,7 @@ local function open(opts)
 	P.open(items, vim.tbl_extend("force", {
 		title = "probe",
 		skip_single = false,
+		paths = true,
 		format = function(item)
 			return item.name
 		end,
@@ -1180,6 +1260,69 @@ local steps = {
 	end },
 	{ name = "Y.done" },
 
+	-- 20. the undo list is reached from its own key and jumps the buffer to the
+	-- state that was picked.
+	{
+		name = "U2.open",
+		open = function()
+			undo_target = lists_dir .. "/undo.lua"
+			vim.fn.writefile({ "one" }, undo_target)
+			vim.cmd.edit(vim.fn.fnameescape(undo_target))
+			vim.cmd("normal! otwo")
+			vim.cmd("normal! othree")
+			undo_states = require("config.lists").undo_items()
+			require("config.lists").undo()
+			eq("the undo list is up with a row per state", P.is_open() and P.visible().count, #undo_states)
+		end,
+	},
+	{ name = "U2.pick", check = function()
+		local win = vim.fn.bufwinid(P.visible().buf)
+		vim.api.nvim_set_current_win(win)
+		vim.api.nvim_win_set_cursor(win, { P.visible().count, 0 })
+		vim.api.nvim_feedkeys(vim.keycode("<CR>"), "x", false)
+		-- The oldest row, so the sequence number the pick runs is one the buffer
+		-- was not already at, whether the edits landed in one undo block or three.
+		eq("the pick moves the buffer to the state on the row", vim.fn.undotree().seq_cur, undo_states[#undo_states].seq)
+	end },
+	{ name = "U2.done" },
+
+	-- <C-v> opens the row in a split and leaves the window the picker was opened
+	-- from on the file it already had.
+	{
+		name = "Z.open",
+		open = function()
+			vim.cmd.stopinsert()
+			split_target = lists_dir .. "/split.lua"
+			vim.fn.writefile({ "split target" }, split_target)
+			split_win = vim.api.nvim_get_current_win()
+			split_buf = vim.api.nvim_win_get_buf(split_win)
+			split_wins = #vim.api.nvim_list_wins()
+			P.open({ { path = split_target }, { path = lists_dir .. "/marks.lua" } }, {
+				title = "split probe",
+				skip_single = false,
+				filter = true,
+				paths = true,
+				format = function(item)
+					return vim.fn.fnamemodify(item.path, ":t")
+				end,
+				on_confirm = function(item)
+					vim.cmd.edit(vim.fn.fnameescape(item.path))
+				end,
+			})
+			local win = vim.fn.bufwinid(P.visible().buf)
+			local footer = win ~= 0 and vim.api.nvim_win_get_config(win).footer or nil
+			local text = type(footer) == "table" and table.concat(vim.tbl_map(function(chunk)
+				return chunk[1]
+			end, footer), "") or ""
+			eq("the footer names the keys the picker answers to", text:find("<C-v>", 1, true) ~= nil, true)
+		end,
+	},
+	{ name = "Z.vsplit", check = function()
+		eq("the split key adds one window", #vim.api.nvim_list_wins(), split_wins + 1)
+		eq("the row opens in it", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t"), "split.lua")
+		eq("and the window the picker came from keeps its own buffer", vim.api.nvim_win_get_buf(split_win), split_buf)
+	end },
+
 	{ name = "done" },
 }
 
@@ -1192,6 +1335,9 @@ local function report()
 	out:write(text)
 	out:close()
 end
+
+local split_target, split_win, split_buf, split_wins
+local undo_target, undo_states
 
 local i = 0
 local function run()
@@ -1207,12 +1353,19 @@ local function run()
 	-- The check belongs to the step above: those keys have been sitting in the
 	-- terminal for a whole step by now, so this is where they are judged, and
 	-- it has to run before the next picker is opened over the top of it.
+	-- A check that raises is a failure with the step's name on it, not a run
+	-- that dies part way through with no result to read.
 	local previous = steps[i - 1]
-	if previous and previous.check then
-		previous.check()
-	end
-	if step.open then
-		step.open()
+	local ok, err = pcall(function()
+		if previous and previous.check then
+			previous.check()
+		end
+		if step.open then
+			step.open()
+		end
+	end)
+	if not ok then
+		check((previous and previous.name or step.name) .. " raised", false, err)
 	end
 	local f = io.open(os.getenv("PICKER_STATUS") or "/dev/null", "a")
 	f:write(step.name .. "\n")
@@ -1222,12 +1375,24 @@ local function run()
 	vim.defer_fn(run, 600)
 end
 
+-- Started first, so it is the thing still writing when a step never comes: a
+-- stall with ticks means the keys are not arriving, and a stall without them
+-- means a step never returned.
+local function beat()
+	local f = io.open(os.getenv("PICKER_HEART") or "/dev/null", "a")
+	f:write("tick\\n")
+	f:close()
+	vim.defer_fn(beat, 1000)
+end
+
+vim.defer_fn(beat, 1000)
 vim.defer_fn(run, 600)
 LUA
 
 # Long: the picker is driven one step per 600ms, and the suite has more than
-# a hundred steps, so the default one minute deadline is the run, not a hang.
-if ! PTY_DEADLINE=180 python3 tests/pty_drive.py "$tmp/keys" "$tmp/status" "$tmp/result" -- \
+# a hundred steps, so the total deadline covers a loaded machine and a step that
+# never answers is caught by the stall deadline instead.
+if ! PTY_DEADLINE=900 PTY_STALL=120 python3 tests/pty_drive.py "$tmp/keys" "$tmp/status" "$tmp/result" -- \
 	nvim -u NONE -i NONE --cmd "set rtp^=$PWD" -c "autocmd VimEnter * luafile $tmp/probe.lua"; then
 	printf 'picker test did not pass\n'
 	exit 1

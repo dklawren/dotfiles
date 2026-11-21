@@ -126,8 +126,45 @@ elseif mode == "restore" then
 	})
 elseif mode == "empty" then
 	session.save()
+elseif mode == "save" then
+	vim.cmd("edit " .. assert(os.getenv("SESSION_TEST_SAVE_FILE")))
+	vim.cmd("Session save")
+elseif mode == "list" then
+	vim.cmd("Session list")
+	vim.wait(200)
+	local vis = require("config.picker").visible()
+	local rows = vis and table.concat(vim.api.nvim_buf_get_lines(vis.buf, 0, -1, false), "\n") or ""
+	say("listed", rows:find(assert(os.getenv("SESSION_TEST_WANT")), 1, true) ~= nil)
+	say("windows", #vim.iter(vim.api.nvim_list_wins()):filter(function(w)
+		return vim.api.nvim_win_get_config(w).relative == ""
+	end):totable())
+elseif mode == "cmd-restore" then
+	vim.cmd("Session " .. assert(os.getenv("SESSION_TEST_PROJ")))
+	say("windows", windows())
 elseif mode == "delete" then
 	say("deleted", session.delete(assert(os.getenv("SESSION_TEST_PROJ"))))
+elseif mode == "list-delete" then
+	vim.cmd("Session list")
+	vim.wait(200)
+	-- The filter line takes the keys in insert mode, and a headless nvim does
+	-- not hold the startinsert the picker asks for. A letter has to stay
+	-- typeable, so the delete key is a control key.
+	local keys = vim.api.nvim_get_mode().mode:find("^i") and "<C-d>" or "i<C-d>"
+	vim.api.nvim_feedkeys(vim.keycode(keys), "x", false)
+	vim.wait(400)
+	say("gone", vim.fn.filereadable(session.file_for(assert(os.getenv("SESSION_TEST_DELETE")))) == 0)
+	say("kept", vim.fn.filereadable(session.file_for(assert(os.getenv("SESSION_TEST_KEEP")))) == 0)
+elseif mode == "list-type" then
+	vim.cmd("Session list")
+	vim.wait(200)
+	-- A letter typed into the filter narrows the list. It must not run an
+	-- action: most paths hold an a, a b, a d.
+	local keys = vim.api.nvim_get_mode().mode:find("^i") and "zzq" or "izzq"
+	vim.api.nvim_feedkeys(vim.keycode(keys), "x", false)
+	vim.wait(300)
+	say("exists", vim.fn.filereadable(session.file_for(assert(os.getenv("SESSION_TEST_KEEP")))) == 1)
+	say("rows", require("config.picker").visible().count)
+	vim.cmd("qa!")
 end
 LUA
 
@@ -210,10 +247,46 @@ OUT=$(mktemp)
 run empty
 check "an empty nvim does not overwrite a session" "1" "$(sessions)"
 
+# The commands are how a person reaches these without a :lua call, and the
+# second project has no session yet, so a save there is the only new file.
+OUT=$(mktemp)
+SESSION_TEST_DIR="$PROJ2" SESSION_TEST_SAVE_FILE="$PROJ2/only.lua" run save
+check ":Session save writes the layout" "2" "$(sessions)"
+
+OUT=$(mktemp)
+SESSION_TEST_WANT="$PROJ2" run list
+check ":Session list names the directories that have one" "true" "$(fact listed)"
+
+OUT=$(mktemp)
+SESSION_TEST_DIR="$PROJ2" run cmd-restore
+check ":Session <dir> puts the layout back" "only.lua" "$(fact windows)"
+
 OUT=$(mktemp)
 run delete
 check "a session can be thrown away" "true" "$(fact deleted)"
-check "throwing it away removed the file" "0" "$(sessions)"
+OUT=$(mktemp)
+SESSION_TEST_WANT="$PROJ" run list
+check "throwing it away removed the file" "false" "$(fact listed)"
+check "and listing a single session does not load it" "1" "$(fact windows)"
+
+# The list is a picker, so a session is deleted from it without leaving the
+# list and typing a directory name. The row under the cursor is the first, and
+# the name sorts first.
+PROJ3="$WORK/aa-delete-me"
+mkdir -p "$PROJ3"
+printf 'z\n' >"$PROJ3/z.lua"
+OUT=$(mktemp)
+SESSION_TEST_DIR="$PROJ3" SESSION_TEST_SAVE_FILE="$PROJ3/z.lua" run save
+OUT=$(mktemp)
+SESSION_TEST_DELETE="$PROJ3" SESSION_TEST_KEEP="$PROJ2" run list-delete
+check "<C-d> in the session list deletes the row it is on" "true" "$(fact gone)"
+check "and the other sessions are left alone" "false" "$(fact kept)"
+
+# The same list narrows as you type, and a letter is a letter.
+OUT=$(mktemp)
+SESSION_TEST_KEEP="$PROJ2" run list-type
+check "typing a letter in the session list keeps the session" "true" "$(fact exists)"
+check "and leaves nothing matching the input" "0" "$(fact rows)"
 
 # A format check leaves a buffer named after a file it never wrote. mksession
 # records it, and every later nvim in that directory opens an empty tab for the
@@ -223,7 +296,9 @@ mkdir -p "$PHANTOM"
 
 OUT=$(mktemp)
 SESSION_TEST_DIR="$PHANTOM" SESSION_TEST_PHANTOM="_fmt_check.lua" run phantom
-check "a session is written for a directory holding only a phantom buffer" "1" "$(sessions)"
+OUT=$(mktemp)
+SESSION_TEST_WANT="$PHANTOM" run list
+check "a session is written for a directory holding only a phantom buffer" "true" "$(fact listed)"
 
 OUT=$(mktemp)
 SESSION_TEST_DIR="$PHANTOM" SESSION_TEST_PHANTOM="_fmt_check.lua" run restore

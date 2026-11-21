@@ -20,13 +20,57 @@ local function root_for(path)
 	return vim.fs.root(path, ".git") or (under(path, vim.fn.getcwd()) and vim.fn.getcwd()) or vim.fs.dirname(path)
 end
 
+local known = {}
+local scanned = {}
+
+local function names_in(dir)
+	local names = {}
+	for name in vim.fs.dir(dir) do
+		if name ~= ".git" then
+			names[#names + 1] = name
+		end
+	end
+	return names
+end
+
+-- A sidebar that lists node_modules is a sidebar nobody opens. git already
+-- knows what is ignored, and one call covers every directory this render needs
+-- to draw, which is cheaper than a spawn per directory.
+local function prepare(dirs)
+	local pending = {}
+	for _, dir in ipairs(dirs) do
+		if not scanned[dir] then
+			scanned[dir] = true
+			for _, name in ipairs(names_in(dir)) do
+				local path = vim.fs.joinpath(dir, name)
+				if known[path] == nil then
+					pending[#pending + 1] = path
+				end
+			end
+		end
+	end
+	if #pending == 0 or vim.fn.executable("git") == 0 or not vim.fs.root(state.root, ".git") then
+		return
+	end
+	local res = vim
+		.system({ "git", "check-ignore", "--stdin", "-z" }, { stdin = table.concat(pending, "\0") .. "\0", text = true })
+		:wait()
+	for _, path in ipairs(pending) do
+		known[path] = false
+	end
+	if res.code == 0 then
+		for path in (res.stdout or ""):gmatch("([^%z]+)") do
+			known[path] = true
+		end
+	end
+end
+
 local function children(dir)
 	local out = {}
-	for name, kind in vim.fs.dir(dir) do
-		if name ~= ".git" then
-			local path = vim.fs.joinpath(dir, name)
-			local is_dir = kind == "directory" or (kind == "link" and vim.fn.isdirectory(path) == 1)
-			out[#out + 1] = { name = name, path = path, dir = is_dir }
+	for _, name in ipairs(names_in(dir)) do
+		local path = vim.fs.joinpath(dir, name)
+		if not known[path] then
+			out[#out + 1] = { name = name, path = path, dir = vim.fn.isdirectory(path) == 1 }
 		end
 	end
 	table.sort(out, function(a, b)
@@ -41,7 +85,6 @@ end
 local ns = api.nvim_create_namespace("config-tree")
 local FOLDER = { open = "\u{e5fe}", closed = "\u{e5ff}" }
 local devicons = nil
-api.nvim_set_hl(0, "TreeCurrentFile", { bold = true, default = true })
 
 local function icons()
 	if devicons == nil then
@@ -54,6 +97,14 @@ end
 local function render()
 	local lines, index, marks = {}, {}, {}
 	local dev = icons()
+
+	local dirs = { state.root }
+	for path, open in pairs(state.expanded) do
+		if open and path ~= state.root and under(path, state.root) then
+			dirs[#dirs + 1] = path
+		end
+	end
+	prepare(dirs)
 
 	local function walk(dir, depth)
 		for _, entry in ipairs(children(dir)) do
@@ -224,6 +275,11 @@ function M.toggle()
 		return
 	end
 
+	-- A fresh tree rereads the ignore rules, so a .gitignore edit shows up on
+	-- the next open instead of after a restart.
+	known = {}
+	scanned = {}
+
 	local name = api.nvim_buf_get_name(0)
 	local file = name ~= "" and vim.bo.buftype == "" and vim.fn.isdirectory(name) == 0
 
@@ -275,6 +331,12 @@ api.nvim_create_autocmd("WinClosed", {
 	end,
 })
 
-vim.keymap.set("n", "<leader>E", M.toggle, { desc = "File Explorer (tree)" })
+vim.keymap.set("n", "<leader>e", M.toggle, { desc = "File Explorer (tree)" })
+vim.keymap.set("n", "q", function()
+	if vim.fn.reg_recording() ~= "" or not visible() then
+		return "q"
+	end
+	return "<Cmd>lua require('config.tree').close()<CR><Cmd>redraw<CR>"
+end, { desc = "Close file explorer (tree), else record macro", expr = true })
 
 return M

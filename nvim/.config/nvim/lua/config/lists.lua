@@ -34,8 +34,8 @@ end
 local function preview_at(item, ctx)
 	local buf = buffer_of(item)
 	if buf then
-		ctx.set_lines(vim.api.nvim_buf_get_lines(buf, 0, -1, false), vim.bo[buf].filetype)
-		ctx.set_cursor(item.lnum, math.max((item.col or 1) - 1, 0))
+		ctx.set_buf(buf)
+		ctx.set_cursor(item.lnum, (item.col or 1) - 1)
 	else
 		ctx.set_file(item.path, item.lnum, item.col)
 	end
@@ -104,6 +104,7 @@ end
 
 function M.marks()
 	show("Marks", M.mark_items(), {
+		paths = true,
 		format = function(item)
 			return ("%s  %s"):format(item.mark, label(item.path, item.lnum, item.text))
 		end,
@@ -138,11 +139,58 @@ end
 
 function M.jumps()
 	show("Jumps", M.jump_items(), {
+		paths = true,
 		format = function(item)
 			return ("%3d  %s"):format(item.nr, label(item.path, item.lnum, item.text))
 		end,
 		preview = preview_at,
 		on_confirm = jump_at,
+	})
+end
+
+---The change list of this buffer, newest first, the rows `:changes` prints.
+---@return { path: string, lnum: integer }[]
+function M.change_items()
+	local path = vim.api.nvim_buf_get_name(0)
+	local rows = {}
+	for _, change in ipairs(vim.fn.getchangelist(0)[1] or {}) do
+		rows[#rows + 1] = { path = path, lnum = change.lnum }
+	end
+	return vim.fn.reverse(rows)
+end
+
+function M.changes()
+	show("Changes", M.change_items(), {
+		format = function(item)
+			local line = vim.api.nvim_buf_get_lines(0, item.lnum - 1, item.lnum, false)[1] or ""
+			return label(item.path, item.lnum, line)
+		end,
+		preview = preview_at,
+		on_confirm = jump_at,
+	})
+end
+
+---Every line `:messages` still holds, newest first. Confirming copies one, since
+---the reason to open this is to paste an error somewhere else.
+function M.messages()
+	local rows = {}
+	for _, line in ipairs(vim.split(vim.api.nvim_exec2("messages", { output = true }).output, "\n", { plain = true })) do
+		if line ~= "" then
+			rows[#rows + 1] = { text = line }
+		end
+	end
+	rows = vim.fn.reverse(rows)
+	show("Messages", rows, {
+		format = function(item)
+			return item.text
+		end,
+		preview = function(item, ctx)
+			ctx.set_lines({ item.text }, "text")
+		end,
+		on_confirm = function(item)
+			vim.fn.setreg("+", item.text)
+			vim.notify(item.text, vim.log.levels.INFO, { title = "copied" })
+		end,
 	})
 end
 
@@ -215,9 +263,13 @@ local function quickfix_rows(list)
 	return rows
 end
 
-function M.quickfix()
-	local list = vim.fn.getqflist({ items = 1 })
-	show("Quickfix", quickfix_rows(list), {
+---The quickfix list and the location list are the same rows from a different
+---list.
+---@param title string
+---@param list { items: table[] }
+local function show_list(title, list)
+	show(title, quickfix_rows(list), {
+		paths = true,
 		format = function(item)
 			local kind = item.type ~= "" and (item.type .. " ") or ""
 			return kind .. label(item.path, item.lnum, item.text)
@@ -227,16 +279,12 @@ function M.quickfix()
 	})
 end
 
+function M.quickfix()
+	show_list("Quickfix", vim.fn.getqflist({ items = 1 }))
+end
+
 function M.location()
-	local list = vim.fn.getloclist(0, { items = 1 })
-	show("Location List", quickfix_rows(list), {
-		format = function(item)
-			local kind = item.type ~= "" and (item.type .. " ") or ""
-			return kind .. label(item.path, item.lnum, item.text)
-		end,
-		preview = preview_at,
-		on_confirm = jump_at,
-	})
+	show_list("Location List", vim.fn.getloclist(0, { items = 1 }))
 end
 
 ---User commands of this buffer and of the editor, one row each.
@@ -387,6 +435,80 @@ function M.history(name)
 			vim.schedule(function()
 				vim.api.nvim_feedkeys(item.name .. item.entry, "n", false)
 			end)
+		end,
+	})
+end
+
+---Files edited before, most recent first: this session's buffers by last use,
+---The buffer's undo states, newest first, as `:undolist` prints them.
+---@return { seq: integer, changes: integer, when: string }[]
+function M.undo_items()
+	local rows = {}
+	for line in vim.api.nvim_exec2("undolist", { output = true }).output:gmatch("[^\n]+") do
+		local seq, changes, when = line:match("^%s*(%d+)%s+(%d+)%s+(.-)%s*$")
+		if seq then
+			rows[#rows + 1] = { seq = tonumber(seq), changes = tonumber(changes), when = when }
+		end
+	end
+	return vim.fn.reverse(rows)
+end
+
+---Pick an undo state and jump to it, which is what `<leader>U` is for. A newer
+---state is reached with `:redo`, so the list only has to answer "older how far".
+function M.undo()
+	local rows = M.undo_items()
+	show(vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t") .. " undo", rows, {
+		format = function(row)
+			return ("#%d  %d changes  %s"):format(row.seq, row.changes, row.when)
+		end,
+		on_confirm = function(row)
+			vim.cmd("undo " .. row.seq)
+		end,
+	})
+end
+
+---then shada's oldfiles, those under the working directory ahead of the rest.
+---The current file is left out, since it is where you already are.
+---@return { path: string }[]
+function M.recent_items()
+	local current = vim.api.nvim_buf_get_name(0)
+	local cwd = vim.fn.getcwd() .. "/"
+	local seen = { [current] = true }
+	local session, here, elsewhere = {}, {}, {}
+	local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+	table.sort(bufs, function(a, b)
+		return a.lastused > b.lastused
+	end)
+	for _, info in ipairs(bufs) do
+		if info.name ~= "" and not seen[info.name] and vim.bo[info.bufnr].buftype == "" then
+			seen[info.name] = true
+			session[#session + 1] = { path = info.name }
+		end
+	end
+	for _, path in ipairs(vim.v.oldfiles) do
+		path = vim.fs.normalize(path)
+		if not seen[path] and vim.fn.filereadable(path) == 1 then
+			seen[path] = true
+			local rows = vim.startswith(path, cwd) and here or elsewhere
+			rows[#rows + 1] = { path = path }
+		end
+	end
+	return vim.list_extend(vim.list_extend(session, here), elsewhere)
+end
+
+function M.recent()
+	show("Recent Files", M.recent_items(), {
+		paths = true,
+		format = function(item)
+			return vim.fn.fnamemodify(item.path, ":~:.")
+		end,
+		preview = function(item, ctx)
+			ctx.set_file(item.path, 1)
+		end,
+		-- An edit and not a jump, so the last-position autocmd puts the cursor
+		-- where the file was left.
+		on_confirm = function(item)
+			vim.cmd.edit(vim.fn.fnameescape(item.path))
 		end,
 	})
 end

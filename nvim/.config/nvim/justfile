@@ -83,6 +83,30 @@ test-blink:
 test-scroll:
 	@bash tests/scroll_test.sh
 
+test-runner:
+	@bash tests/runner_test.sh
+
+test-lsp:
+	@bash tests/lsp_test.sh
+
+test-explorer:
+	@bash tests/explorer_test.sh
+
+test-yank:
+	@bash tests/yank_test.sh
+
+test-toggles:
+	@bash tests/toggles_test.sh
+
+test-motions:
+	@bash tests/motions_test.sh
+
+test-tabline:
+	@bash tests/tabline_test.sh
+
+test-readme:
+	@bash tests/readme_test.sh
+
 # Every suite in tests/, and the static readings, in one command.
 #
 # The per-suite targets above are for working on one thing. This is the one to
@@ -96,7 +120,7 @@ test-scroll:
 # mistake no behaviour test can see: a name used in a function before the local
 # that holds it is declared is a global, and a global that happens to be nil
 # formats into a string as the text "nil" rather than complaining.
-test: test-session test-picker test-markdown test-buffer test-mcursor test-pairs test-pack test-statusline test-cloak test-jump test-codeaction test-filetype test-plugins test-tree test-fold test-format test-blink test-scroll test-draw lint-lua
+test: test-session test-picker test-markdown test-buffer test-mcursor test-pairs test-pack test-statusline test-tabline test-cloak test-jump test-codeaction test-filetype test-plugins test-tree test-fold test-format test-blink test-scroll test-runner test-toggles test-motions test-readme test-draw test-lsp test-explorer test-yank lint-lua
 	@echo "✅ All suites passed"
 
 # Skipped, not failed, when luacheck is not installed: a machine without it has
