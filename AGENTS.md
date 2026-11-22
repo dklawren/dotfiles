@@ -107,7 +107,7 @@ come from `bin/.local/bin/install-sway-ubuntu.sh`, then `stow .`.
   (warm 3500K 19:00-07:00); the toggle (Super+Shift+T / Waybar) forces warm
   3500K immediately at any time. Log: `$XDG_RUNTIME_DIR/sway-nightlight.log`. Screen recording: `wf-recorder`.
 - Keyboard shortcuts are documented in `KEYBOARD.md`; update it when bindings change.
-- Helper scripts live in `bin/.local/bin/sway-*` (`lock`, `lid`, `powermenu`,
+- Helper scripts live in `sway/.config/sway/scripts/sway-*` (`lock`, `lid`, `powermenu`,
   `clipboard`, `screenshot`, `record`, `nightlight`). Screenshots use
   `grim`/`slurp`/`swappy`.
 - Portals: `xdg-desktop-portal/.config/xdg-desktop-portal/sway-portals.conf`
