@@ -8,7 +8,7 @@ set $term ghostty
 set $menu fuzzel
 set $scripts ~/.config/sway/scripts
 
-font pango:JetBrainsMono Nerd Font 10
+font pango:Adwaita Sans 10
 
 # Gruvbox palette
 set $bg     #282828

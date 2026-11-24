@@ -7,7 +7,7 @@
 @define-color accent  #83a598;
 @define-color alert   #fb4934;
 
-* { font-family: "JetBrainsMono Nerd Font"; font-size: 13px; }
+* { font-family: "Adwaita Sans", "JetBrainsMono Nerd Font"; font-size: 13px; }
 
 .notification-row { outline: none; }
 .notification {
