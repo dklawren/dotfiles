@@ -7,6 +7,16 @@ pgrep -x swaylock >/dev/null && exit 0
 swaylock -f
 pid=$(pgrep -n -x swaylock) || exit 0
 
+# "sway-lock off": turn the screen off 10s after locking; any input wakes it.
+if [ "$1" = off ]; then
+  setsid bash -c '
+    swayidle -w timeout 10 "swaymsg \"output * power off\"" \
+      resume "swaymsg \"output * power on\"" &
+    while kill -0 "$1" 2>/dev/null; do sleep 1; done
+    kill $!; swaymsg "output * power on"
+  ' _ "$pid" >/dev/null 2>&1 </dev/null &
+fi
+
 command -v fprintd-verify >/dev/null || exit 0
 
 log=${XDG_RUNTIME_DIR:-/tmp}/sway-lock-fp.log
