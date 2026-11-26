@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-choice=$(printf '󰌾  Lock\n󰍃  Logout\n󰤄  Suspend\n󰜉  Reboot\n󰐥  Shutdown\n' | fuzzel --dmenu --prompt='  ' --lines=5 --width=22) || exit 0
+choice=$(printf '󰌾  Lock\n󰍃  Logout\n󰤄  Suspend\n󰜉  Reboot\n󰐥  Shutdown\n' | fuzzel --dmenu --prompt='󰐥  ' --lines=5 --width=22) || exit 0
 confirm() { [ "$(printf 'No\nYes\n' | fuzzel --dmenu --prompt="$1? " --lines=2 --width=22)" = Yes ]; }
 case "$choice" in
   *Lock)     "$(dirname "$0")/sway-lock" ;;
